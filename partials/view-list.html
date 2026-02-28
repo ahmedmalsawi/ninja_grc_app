@@ -1,0 +1,46 @@
+    <!-- Case list view -->
+    <div id="viewList" class="view-list view-visible">
+      <div class="case-list-toolbar">
+        <h2 id="listTitle" style="margin:0; font-size:1.1rem;">Cases</h2>
+        <button type="button" class="btn btn-primary" id="btnNewCase">New case</button>
+        <button type="button" class="btn" id="btnPrintListReport">Print report</button>
+      </div>
+      <div id="caseListContent">
+        <p class="empty-state" id="emptyState">No cases yet. Click "New case" to add one.</p>
+        <table class="case-table" id="caseTable" style="display:none;">
+          <thead>
+            <tr>
+              <th id="thSeq">#</th>
+              <th id="thId">Case ID</th>
+              <th id="thReceived">Received</th>
+              <th id="thPhase">Phase</th>
+              <th id="thPath">Path</th>
+              <th id="thScore">Score</th>
+              <th id="thStatus">Status</th>
+              <th id="thActions">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="caseTableBody"></tbody>
+        </table>
+      </div>
+      <details class="scoring-ref-inline" id="scoringRefInline">
+        <summary id="scoringRefInlineSummary">Scoring Reference</summary>
+        <div class="scoring-ref-inline-body">
+          <p class="scoring-ref-intro" id="scoringRefIntroList">Based on the unified report and investigation record. Use this as a guide when scoring cases.</p>
+          <div class="notes-ref">
+            <h4 class="notes-ref-sub">Scoring axes (1-5 each)</h4>
+            <p><strong id="refSovList">Sovereignty:</strong> Impact on sovereign regulations (SAMA, ZATCA, PDPL). 1–2: Minor breach. 3–4: Material policy breach. 5: Sovereign/labour law breach.</p>
+            <p><strong id="refFinList">Financial:</strong> 1–2: Under 10k SAR. 3–4: 10k–100k SAR. 5: Over 100k SAR or senior staff.</p>
+            <p><strong id="refEvList">Evidence:</strong> 1: Allegation. 2–3: Partial support. 4–5: Digital/conclusive evidence.</p>
+            <p><strong id="refRepList">Reputation:</strong> 1: Limited impact. 2–3: Department/trust. 4–5: Senior execs or public disclosure risk.</p>
+          </div>
+          <div class="notes-ref">
+            <h4 class="notes-ref-sub">Path (Total 4-20)</h4>
+            <p><span class="path-badge path-green">Green (4-8)</span> Preliminary closure / administrative referral.</p>
+            <p><span class="path-badge path-yellow">Yellow (9-14)</span> Restricted follow-up; one investigator, exploratory review.</p>
+            <p><span class="path-badge path-red">Red (15-20)</span> Immediate formal investigation; Legal Privilege; notify board chair.</p>
+          </div>
+        </div>
+      </details>
+    </div>
+

@@ -1,0 +1,59 @@
+    <!-- Reports view -->
+    <div id="viewReports" class="view-reports">
+      <h2 id="reportsTitle" style="margin:0 0 1rem 0;">Reports</h2>
+      <div class="reports-toolbar">
+        <input type="text" id="searchCaseId" class="reports-search" placeholder="Search by Case ID" aria-label="Search by Case ID">
+        <input type="date" id="filterDateFrom" aria-label="From date">
+        <input type="date" id="filterDateTo" aria-label="To date">
+        <select id="filterPath">
+          <option value="">All paths</option>
+          <option value="green">Green</option>
+          <option value="yellow">Yellow</option>
+          <option value="red">Red</option>
+        </select>
+        <select id="filterPhase">
+          <option value="">All phases</option>
+        </select>
+        <select id="filterStatus">
+          <option value="">All statuses</option>
+        </select>
+        <div class="reports-export-group">
+          <label class="reports-export-option">
+            <input type="checkbox" id="exportFilteredOnly">
+            <span id="labelExportFilteredOnly">Export filtered only</span>
+          </label>
+          <button type="button" class="btn" id="btnPrintReports">Print report</button>
+          <button type="button" class="btn btn-primary" id="btnExportJson">Export JSON</button>
+          <button type="button" class="btn" id="btnExportCsv">Export CSV</button>
+          <button type="button" class="btn" id="btnExportExcel">Export to Excel</button>
+        </div>
+        <label class="reports-checkbox">
+          <input type="checkbox" id="filterControlRecs">
+          <span id="labelFilterControlRecs">Control recommendations only</span>
+        </label>
+      </div>
+      <div class="reports-column-toggles" id="reportsColumnToggles">
+        <span class="column-toggles-label">Show columns:</span>
+        <label><input type="checkbox" id="colReporter" checked> Reporter</label>
+        <label><input type="checkbox" id="colSubScope"> Sub-scope</label>
+      </div>
+      <div class="reports-summary" id="reportsSummary"></div>
+      <div class="table-wrap">
+        <table class="case-table" id="reportsTable">
+          <thead>
+            <tr>
+              <th id="rThId">Case ID</th>
+              <th id="rThReceived">Received</th>
+              <th id="rThPhase">Phase</th>
+              <th id="rThPath">Path</th>
+              <th id="rThScore">Score</th>
+              <th class="col-reporter" id="rThReporter">Reporter</th>
+              <th class="col-subscope" id="rThSubScope" style="display:none;">Sub-scope</th>
+              <th id="rThStatus">Status</th>
+            </tr>
+          </thead>
+          <tbody id="reportsTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+

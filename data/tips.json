@@ -1,0 +1,72 @@
+{
+  "sectionCaseInfo": {
+    "en": "Enter the case identifier and key dates. Complexity (days) is used to compute target close date. Phase (1–9) reflects the current stage in the investigation lifecycle.",
+    "ar": "أدخل رقم الحالة والتواريخ الأساسية. التعقيد (أيام) يُستخدم لحساب تاريخ الإغلاق المستهدف. المرحلة (1–9) تعكس المرحلة الحالية في دورة التحقيق."
+  },
+  "sectionScoring": {
+    "en": "Score each axis 1–5. Total (4–20) determines the path: Green (4–8) = preliminary closure / HR referral; Yellow (9–14) = restricted follow-up, single investigator; Red (15–20) = formal investigation, activate legal privilege, notify board.",
+    "ar": "قيّم كل محور من 1 إلى 5. المجموع (4–20) يحدد المسار: أخضر (4–8) = حفظ مبدئي/إحالة إدارية؛ أصفر (9–14) = متابعة مقيدة، محقق واحد؛ أحمر (15–20) = تحقيق رسمي، تفعيل الامتياز القانوني، إخطار مجلس الإدارة."
+  },
+  "sovereigntyTip": {
+    "en": "1–2: Minor internal procedural breach. 3–4: Breach of material company policy. 5: Clear breach of sovereign regulations (SAMA, ZATCA, PDPL) or labour law.",
+    "ar": "1–2: مخالفة إجرائية داخلية بسيطة. 3–4: مخالفة لسياسات الشركة الجوهرية. 5: انتهاك صريح لأنظمة سيادية أو تشريعات العمل.",
+    "display": "hover"
+  },
+  "financialTip": {
+    "en": "1–2: Under 10,000 SAR. 3–4: Between 10,000 and 100,000 SAR. 5: Over 100,000 SAR or involves senior staff.",
+    "ar": "1–2: أقل من 10 آلاف ريال. 3–4: بين 10 آلاف و100 ألف ريال. 5: أكثر من 100 ألف ريال أو تمس كبار الموظفين.",
+    "display": "hover"
+  },
+  "evidenceTip": {
+    "en": "1: Mere allegation or rumour. 2–3: Documents or messages partly support the claim. 4–5: Digital evidence (logs) or conclusive documents.",
+    "ar": "1: مجرد ادعاء مرسل أو شائعة. 2–3: وجود مستندات أو رسائل تدعم الادعاء جزئياً. 4–5: وجود أدلة رقمية (Logs) أو مستندات قطعية.",
+    "display": "hover"
+  },
+  "reputationTip": {
+    "en": "1: Very limited internal impact. 2–3: May affect department or management trust. 4–5: Senior executives involved or risk of public disclosure.",
+    "ar": "1: أثر داخلي محدود جداً. 2–3: قد يؤثر على ثقة القسم أو الإدارة. 4–5: تورط كبار التنفيذيين أو احتمال وصول الخبر للعموم.",
+    "display": "hover"
+  },
+  "sectionReporter": {
+    "en": "Record who reported and how. Protection measures: Confidentiality, no-retaliation warning, limit access. Reporter status can be Known or Unknown.",
+    "ar": "سجّل من أبلغ وكيف. تدابير الحماية: السرية، تحذير عدم الانتقام، تحديد الوصول. حالة المُبلّغ قد تكون معروف أو مجهول."
+  },
+  "sectionClassification": {
+    "en": "Report type (Internal/External/Institutional/Third-party). Geographic and city for data residency. PDPL action: None, Minimize data, or Mask identities. Legal entities: ZATCA, SAMA, CMA, HRSD, Nazaha, etc.",
+    "ar": "نوع التقرير (داخلي/خارجي/مؤسسي/طرف ثالث). الجغرافيا والمدينة لموطن البيانات. إجراء PDPL: لا شيء، تقليل البيانات، أو إخفاء الهويات. الجهات القانونية: ZATCA، SAMA، CMA، HRSD، نزاهة، إلخ."
+  },
+  "sectionScope": {
+    "en": "Scope: Institutional investigations, Integrity/due diligence, Technical fraud/cyber, Financial crimes, IP. Escalation: Normal, to senior management, or to board. Severity: Low, Medium, High, Critical. Investigating body: Compliance, HR, Legal, Board committee, External.",
+    "ar": "النطاق: تحقيقات مؤسسية، نزاهة وعناية واجبة، احتيال تقني/سيبراني، جرائم مالية، ملكية فكرية. التصعيد: عادي، للإدارة العليا، لمجلس الإدارة. الخطورة: منخفضة، متوسطة، عالية، حرجة. جهة التحقيق: الالتزام، HR، قانونية، لجنة المجلس، جهة خارجية."
+  },
+  "precautionaryTip": {
+    "en": "e.g. Suspend financial authorities, freeze access to warehouses, notify banks in coordination with legal.",
+    "ar": "مثال: إيقاف الصلاحيات المالية، تجميد الوصول للمستودعات، إشعار المصارف بالتنسيق مع القانونية."
+  },
+  "sectionProcess": {
+    "en": "Case acceptance: Approved, Rejected, or Scope amended. Legal privilege: Yes (required for Red path 15–20), No, or Not required. Clearance: e.g. signed independence and confidentiality statement. Scope amendment reason: e.g. material information, expanded suspects, new evidence, new related parties.",
+    "ar": "حالة القبول: تم الحصول على موافقة نظامية، مرفوض، تعديل نطاق. الامتياز القانوني: نعم (مطلوب للمسار الأحمر 15–20)، لا، غير مطلوب. التخليص: مثلاً توقيع إقرار استقلالية وسرية. سبب تعديل النطاق: معلومات جوهرية، توسيع دائرة المشتبه بهم، أدلة جديدة، أطراف ذات علاقة جديدة."
+  },
+  "tipRedPath": {
+    "en": "Red path (15–20): Activate legal privilege and notify board.",
+    "ar": "المسار الأحمر (15–20): تفعيل الامتياز القانوني وإخطار مجلس الإدارة.",
+    "display": "conditional",
+    "showWhen": { "path": "red" }
+  },
+  "sectionInterview": {
+    "en": "Classification: Informal fact-finding, Formal with witnesses, or Confrontation with suspect. Rights notified: signed, or verbal with witness (refused to sign). Documentation: written signed minutes, digital recording (with consent), real-time notes, or audio transcript. Summons: Red path = immediate notice; Yellow = 24h notice; or scheduled.",
+    "ar": "التصنيف: غير رسمية لتقصي الحقائق، رسمية مع شهود، مقابلة مواجهة مع مشتبه به. تم الإخطار بالحقوق: تم الإخطار والتوقيع، أو شفهياً مع شاهد (رفض التوقيع). التوثيق: محضر خطي موقع، تسجيل رقمي (بموافقة)، ملاحظات لحظية، تفريغ صوتي. الاستدعاء: المسار الأحمر = إخطار فوري؛ الأصفر = إخطار قبل 24 ساعة؛ أو مجدول."
+  },
+  "sectionEvidence": {
+    "en": "Form: Electronic, paper, witness testimony, public info, company systems, physical. Data category: standard files, password protected, deleted (full/partial), hidden, encrypted. Examination: workplace inspection, systems review, storage media, technical equipment. Chain of custody: full documentation, link to source, prevent tampering. Supporting party: IT, qualified digital forensics team, accredited external party.",
+    "ar": "الشكل: إلكتروني، ورقي، شهادة شهود، معلومات عامة، أنظمة الشركة، أدلة فيزيائية. فئة البيانات: ملفات قياسية، محمية بكلمة مرور، محذوفة كلياً/جزئياً، مخفية، مشفرة. الفحص: تفتيش مكان العمل، فحص أنظمة الشركة، مراجعة وسائط التخزين، فحص عتاد تقني. التتبع: توثيق كامل لسلسلة الحيازة، ربط الملف بالمصدر الأصلي، منع التلاعب. الجهة المساندة: إدارة تقنية المعلومات، فريق جنائي رقمي مؤهل، جهة خارجية معتمدة."
+  },
+  "sectionExternalParties": {
+    "en": "Party type: Law enforcement, regulator, legal counsel, support. Nature: exploratory requirements, sharing procedures, evidence request. Use encrypted email; need-to-know only. Written agreement, defined scope, confidentiality, check conflict of interest. Approval: legal written, direct legal commitment, or concerned management.",
+    "ar": "نوع الطرف: إنفاذ قانون، جهة تنظيمية/رقابية، مستشار قانوني، جهة مساندة. طبيعة التواصل: استكشاف متطلبات، مشاركة إجراءات، طلب أدلة. تفعيل تشفير المراسلات؛ قصر الاطلاع على (Need-to-Know). عقد مكتوب، نطاق عمل محدد، التزام بالسرية، التحقق من سجل تضارب المصالح. مرجع الموافقة: كتابية من القانونية، التزام قانوني مباشر، موافقة الإدارة المعنية."
+  },
+  "sectionImpact": {
+    "en": "Report content: Purpose, methodology, sources, facts, conclusions, recommendations, scope limits, constraints, assumptions. Recommendation type: Legal/sovereign referral, Improve controls, or Close investigation. Mandatory level: Must (يجب), Should (ينبغي), May (يجوز). Disciplinary: Warning, deduction, termination Art. 80 (no severance), sovereign referral. Root causes: e.g. segregation of duties, policy gap, weak controls, lack of awareness, financial pressure, collusion, obstruction.",
+    "ar": "محتوى السجل: الغرض، المنهجية، المصادر، عرض الوقائع، الاستنتاجات، التوصيات، حدود النطاق، القيود، الافتراضات. نوع التوصية: إحالة قضائية/سيادية، تحسين ضوابط، حفظ التحقيق. مستوى الإلزام: يجب، ينبغي، يجوز. الإجراء التأديبي: إنذار، حسم، فصل بموجب المادة 80 بدون مكافأة، إحالة سيادية. الأسباب الجذرية: انعدام فصل المهام، غياب السياسات، ضعف الرقابة، نقص وعي، ضغوط مالية، تواطؤ، عرقلة متعمدة."
+  }
+}
