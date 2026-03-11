@@ -27,10 +27,6 @@
     investigatingBody: 'investigatingBody',
     caseAcceptanceStatus: 'caseAcceptanceStatus',
     legalPrivilege: 'legalPrivilege',
-    legalRep1: 'employees',
-    legalRep2: 'employees',
-    legalRep3: 'employees',
-    managementRep: 'employees',
     interviewClassification: 'interviewClassification',
     rightsNotified: 'rightsNotified',
     documentationMethod: 'documentationMethod',
@@ -197,7 +193,10 @@
     var lang = (typeof NinjaI18n !== 'undefined' && NinjaI18n.getLang()) ? NinjaI18n.getLang() : 'en';
     var groupConfigs = [
       { containerId: 'investigatingBodyGroup', key: 'investigatingBody', name: 'scope.investigatingBody' },
-      { containerId: 'teamMembersGroup', key: 'teamMemberRoles', name: 'scope.teamMembers' }
+      { containerId: 'teamMembersGroup', key: 'teamMemberRoles', name: 'scope.teamMembers' },
+      { containerId: 'regulatoryRefGroup', key: 'regulatoryRef', name: 'impact.regulatoryRef' },
+      { containerId: 'formChecklistGroup', key: 'formChecklist', name: 'impact.formChecklist' },
+      { containerId: 'qualityReviewGroup', key: 'qualityReview', name: 'impact.qualityReview' }
     ];
     groupConfigs.forEach(function (cfg) {
       var container = document.getElementById(cfg.containerId);

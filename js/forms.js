@@ -84,6 +84,7 @@
         legalRep2: '',
         legalRep3: '',
         managementRep: '',
+        legalPrivilegeJustification: [],
         clearance: '',
         scopeAmendmentReason: ''
       },
@@ -143,7 +144,7 @@
     caseObj.complexityDays = get('complexityDays', true);
     caseObj.targetCloseDate = get('targetCloseDate');
     caseObj.actualCloseDate = get('actualCloseDate');
-    caseObj.currentPhase = Math.min(9, Math.max(1, get('currentPhase', true) || 1));
+    caseObj.currentPhase = Math.min(12, Math.max(1, get('currentPhase', true) || 1));
     caseObj.sovereignty = get('sovereignty', true) || 1;
     caseObj.financial = get('financial', true) || 1;
     caseObj.evidence = get('evidence', true) || 1;
@@ -170,6 +171,9 @@
     caseObj.classification.pdplAction = get('pdplAction');
     caseObj.classification.reporterStatus = get('reporterStatus');
 
+    var indSigned = formEl.querySelector('[name="scope.independenceSigned"]');
+    var noConflict = formEl.querySelector('[name="scope.noConflictDisclosed"]');
+    var secClear = formEl.querySelector('[name="scope.securityClearanceObtained"]');
     caseObj.scope = {
       scope: get('scopeType'),
       subScope: get('subScope'),
@@ -178,11 +182,23 @@
       severity: get('severity'),
       precautionaryMeasures: get('precautionaryMeasures'),
       investigatingBody: (window.NinjaSettings && NinjaSettings.getCheckboxGroupValues) ? NinjaSettings.getCheckboxGroupValues('investigatingBodyGroup') : [],
-      teamMembers: (window.NinjaSettings && NinjaSettings.getCheckboxGroupValues) ? NinjaSettings.getCheckboxGroupValues('teamMembersGroup') : []
+      teamMembers: (window.NinjaSettings && NinjaSettings.getCheckboxGroupValues) ? NinjaSettings.getCheckboxGroupValues('teamMembersGroup') : [],
+      investigationSubject: get('investigationSubject'),
+      scopeDateFrom: get('scopeDateFrom'),
+      scopeDateTo: get('scopeDateTo'),
+      scopeEntities: get('scopeEntities'),
+      scopeConstraints: get('scopeConstraints'),
+      scopeExclusions: get('scopeExclusions'),
+      independenceSigned: indSigned && indSigned.checked,
+      noConflictDisclosed: noConflict && noConflict.checked,
+      securityClearanceObtained: secClear && secClear.checked
     };
+    var legalPrivJust = [];
+    formEl.querySelectorAll('[name="process.legalPrivilegeJustification"]:checked').forEach(function (cb) { legalPrivJust.push(cb.value); });
     caseObj.process = {
       caseAcceptanceStatus: get('caseAcceptanceStatus'),
       legalPrivilege: get('legalPrivilege'),
+      legalPrivilegeJustification: legalPrivJust,
       legalRep1: get('legalRep1'),
       legalRep2: get('legalRep2'),
       legalRep3: get('legalRep3'),
@@ -197,13 +213,24 @@
       receiptResponseStatus: get('receiptResponseStatus'),
       interviewDate: get('interviewDate'),
       summonsId: get('summonsId'),
-      summonsStatus: get('summonsStatus')
+      summonsStatus: get('summonsStatus'),
+      interview2Classification: get('interview2Classification'),
+      interview2Date: get('interview2Date'),
+      interview2RightsNotified: get('interview2RightsNotified'),
+      interview2Minutes: get('interview2Minutes'),
+      interview3Classification: get('interview3Classification'),
+      interview3Date: get('interview3Date'),
+      interview3RightsNotified: get('interview3RightsNotified'),
+      interview3Minutes: get('interview3Minutes'),
+      interviewAdditional: get('interviewAdditional')
     };
     caseObj.evidenceDetails = {
       formOfEvidence: get('formOfEvidence'),
       dataCategory: get('dataCategory'),
       examinationType: get('examinationType'),
+      evidenceHashValue: get('evidenceHashValue'),
       chainOfCustody: get('chainOfCustody'),
+      evidenceItemsList: get('evidenceItemsList'),
       supportingParty: get('supportingParty')
     };
     caseObj.externalParties = {
@@ -216,13 +243,78 @@
       })(),
       confidentiality: get('externalConfidentiality')
     };
+    var rcHuman = formEl.querySelector('[name="impact.rootCauseHuman"]');
+    var rcOrg = formEl.querySelector('[name="impact.rootCauseOrg"]');
+    var rcTech = formEl.querySelector('[name="impact.rootCauseTech"]');
+    var closureNoV = formEl.querySelector('[name="impact.closureNoViolation"]');
+    var closureMal = formEl.querySelector('[name="impact.closureMalicious"]');
+    var closurePart = formEl.querySelector('[name="impact.closurePartial"]');
+    var closureFile = formEl.querySelector('[name="impact.closureFileClosed"]');
+    var termImm = formEl.querySelector('[name="impact.termImmediate"]');
+    var deduct = formEl.querySelector('[name="impact.deduction"]');
+    var finWarn = formEl.querySelector('[name="impact.finalWarning"]');
+    var refProc = formEl.querySelector('[name="impact.referralProsecution"]');
+    var refNaz = formEl.querySelector('[name="impact.referralNazaha"]');
+    var refSec = formEl.querySelector('[name="impact.referralSecurity"]');
+    var wbCash = formEl.querySelector('[name="impact.whistleblowerCash"]');
+    var wbThanks = formEl.querySelector('[name="impact.whistleblowerThanks"]');
+    var wbNo = formEl.querySelector('[name="impact.whistleblowerNo"]');
+    var wbProt = formEl.querySelector('[name="impact.whistleblowerProtection"]');
     caseObj.impact = caseObj.impact || {};
+    caseObj.impact.regulatoryRef = (window.NinjaSettings && NinjaSettings.getCheckboxGroupValues) ? NinjaSettings.getCheckboxGroupValues('regulatoryRefGroup') : [];
+    caseObj.impact.regulatoryRefArticle = get('regulatoryRefArticle');
     caseObj.impact.currentStatus = get('currentStatus') || 'Open';
-    caseObj.impact.purpose = get('purpose');
-    caseObj.impact.methodology = get('methodology');
-    caseObj.impact.facts = get('facts');
-    caseObj.impact.conclusions = get('conclusions');
-    caseObj.impact.recommendations = get('recommendations');
+    caseObj.impact.technicalViolation = get('technicalViolation');
+    caseObj.impact.fiveWhys1 = get('fiveWhys1');
+    caseObj.impact.fiveWhys2 = get('fiveWhys2');
+    caseObj.impact.fiveWhys3 = get('fiveWhys3');
+    caseObj.impact.fiveWhys4 = get('fiveWhys4');
+    caseObj.impact.fiveWhys5 = get('fiveWhys5');
+    var fw1 = (caseObj.impact.fiveWhys1 || '').trim();
+    var fw2 = (caseObj.impact.fiveWhys2 || '').trim();
+    var fw3 = (caseObj.impact.fiveWhys3 || '').trim();
+    var fw4 = (caseObj.impact.fiveWhys4 || '').trim();
+    var fw5 = (caseObj.impact.fiveWhys5 || '').trim();
+    caseObj.impact.fiveWhys = [fw1, fw2, fw3, fw4, fw5].filter(Boolean).length ? ['1. ' + fw1, '2. ' + fw2, '3. ' + fw3, '4. ' + fw4, '5. ' + fw5].join('\n') : '';
+    caseObj.impact.rootCauseHuman = rcHuman && rcHuman.checked;
+    caseObj.impact.rootCauseOrg = rcOrg && rcOrg.checked;
+    caseObj.impact.rootCauseTech = rcTech && rcTech.checked;
+    caseObj.impact.regulatoryImpact = get('regulatoryImpact');
+    caseObj.impact.financialOperationalImpact = get('financialOperationalImpact');
+    caseObj.impact.reputationLegalImpact = get('reputationLegalImpact');
+    caseObj.impact.recoveryOpportunityValue = get('recoveryOpportunityValue');
+    caseObj.impact.recoveryStatus = get('recoveryStatus');
+    caseObj.impact.recoveryPath = get('recoveryPath');
+    caseObj.impact.amountRecovered = get('amountRecovered');
+    caseObj.impact.netSavings = get('netSavings');
+    caseObj.impact.correctiveActions = get('correctiveActions');
+    caseObj.impact.preventiveActions = get('preventiveActions');
+    caseObj.impact.closureNoViolation = closureNoV && closureNoV.checked;
+    caseObj.impact.closureMalicious = closureMal && closureMal.checked;
+    caseObj.impact.closurePartial = closurePart && closurePart.checked;
+    caseObj.impact.closureFileClosed = closureFile && closureFile.checked;
+    caseObj.impact.closureObjectiveReasons = get('closureObjectiveReasons');
+    caseObj.impact.closureTechnicalReasons = get('closureTechnicalReasons');
+    caseObj.impact.rcaGapClosed = get('rcaGapClosed');
+    caseObj.impact.termImmediate = termImm && termImm.checked;
+    caseObj.impact.deduction = deduct && deduct.checked;
+    caseObj.impact.finalWarning = finWarn && finWarn.checked;
+    caseObj.impact.referralProsecution = refProc && refProc.checked;
+    caseObj.impact.referralNazaha = refNaz && refNaz.checked;
+    caseObj.impact.referralSecurity = refSec && refSec.checked;
+    caseObj.impact.assetRecoveryAmount = get('assetRecoveryAmount');
+    caseObj.impact.whistleblowerCash = wbCash && wbCash.checked;
+    caseObj.impact.whistleblowerThanks = wbThanks && wbThanks.checked;
+    caseObj.impact.whistleblowerNo = wbNo && wbNo.checked;
+    caseObj.impact.whistleblowerAmount = get('whistleblowerAmount');
+    caseObj.impact.whistleblowerNoReason = get('whistleblowerNoReason');
+    caseObj.impact.whistleblowerProtection = wbProt && wbProt.checked;
+    caseObj.impact.grievanceDate = get('grievanceDate');
+    caseObj.impact.grievanceGrounds = get('grievanceGrounds');
+    caseObj.impact.grievanceAcceptance = get('grievanceAcceptance');
+    caseObj.impact.grievanceDecisionAmendment = get('grievanceDecisionAmendment');
+    caseObj.impact.formChecklist = (window.NinjaSettings && NinjaSettings.getCheckboxGroupValues) ? NinjaSettings.getCheckboxGroupValues('formChecklistGroup') : [];
+    caseObj.impact.qualityReview = (window.NinjaSettings && NinjaSettings.getCheckboxGroupValues) ? NinjaSettings.getCheckboxGroupValues('qualityReviewGroup') : [];
     caseObj.impact.recommendationType = get('recommendationType');
     caseObj.impact.disciplinaryAction = get('disciplinaryAction');
     caseObj.impact.impactValue = get('impactValue');
@@ -277,10 +369,27 @@
         NinjaSettings.setCheckboxGroupValues('investigatingBodyGroup', caseObj.scope.investigatingBody || []);
         NinjaSettings.setCheckboxGroupValues('teamMembersGroup', caseObj.scope.teamMembers || []);
       }
+      set('investigationSubject', caseObj.scope.investigationSubject);
+      set('scopeDateFrom', caseObj.scope.scopeDateFrom);
+      set('scopeDateTo', caseObj.scope.scopeDateTo);
+      set('scopeEntities', caseObj.scope.scopeEntities);
+      set('scopeConstraints', caseObj.scope.scopeConstraints);
+      set('scopeExclusions', caseObj.scope.scopeExclusions);
+      var is = formEl.querySelector('[name="scope.independenceSigned"]');
+      var nc = formEl.querySelector('[name="scope.noConflictDisclosed"]');
+      var sc = formEl.querySelector('[name="scope.securityClearanceObtained"]');
+      if (is) is.checked = !!caseObj.scope.independenceSigned;
+      if (nc) nc.checked = !!caseObj.scope.noConflictDisclosed;
+      if (sc) sc.checked = !!caseObj.scope.securityClearanceObtained;
     }
     if (caseObj.process) {
       set('caseAcceptanceStatus', caseObj.process.caseAcceptanceStatus);
       set('legalPrivilege', caseObj.process.legalPrivilege);
+      var jg = formEl.querySelector('#legalPrivilegeJustificationGroup');
+      if (jg) {
+        var arr = caseObj.process.legalPrivilegeJustification || [];
+        jg.querySelectorAll('[name="process.legalPrivilegeJustification"]').forEach(function (cb) { cb.checked = arr.indexOf(cb.value) !== -1; });
+      }
       set('legalRep1', caseObj.process.legalRep1);
       set('legalRep2', caseObj.process.legalRep2);
       set('legalRep3', caseObj.process.legalRep3);
@@ -296,12 +405,23 @@
       set('interviewDate', caseObj.interview.interviewDate || '');
       set('summonsId', caseObj.interview.summonsId || '');
       set('summonsStatus', caseObj.interview.summonsStatus || '');
+      set('interview2Classification', caseObj.interview.interview2Classification);
+      set('interview2Date', caseObj.interview.interview2Date);
+      set('interview2RightsNotified', caseObj.interview.interview2RightsNotified);
+      set('interview2Minutes', caseObj.interview.interview2Minutes);
+      set('interview3Classification', caseObj.interview.interview3Classification);
+      set('interview3Date', caseObj.interview.interview3Date);
+      set('interview3RightsNotified', caseObj.interview.interview3RightsNotified);
+      set('interview3Minutes', caseObj.interview.interview3Minutes);
+      set('interviewAdditional', caseObj.interview.interviewAdditional);
     }
     var evidenceSection = caseObj.evidenceDetails || (typeof caseObj.evidence === 'object' && caseObj.evidence && !Array.isArray(caseObj.evidence) ? caseObj.evidence : null);
     set('formOfEvidence', evidenceSection && evidenceSection.formOfEvidence != null ? evidenceSection.formOfEvidence : '');
     set('dataCategory', evidenceSection && evidenceSection.dataCategory != null ? evidenceSection.dataCategory : '');
     set('examinationType', evidenceSection && evidenceSection.examinationType != null ? evidenceSection.examinationType : '');
+    set('evidenceHashValue', evidenceSection && evidenceSection.evidenceHashValue != null ? evidenceSection.evidenceHashValue : '');
     set('chainOfCustody', evidenceSection && evidenceSection.chainOfCustody != null ? evidenceSection.chainOfCustody : '');
+    set('evidenceItemsList', evidenceSection && evidenceSection.evidenceItemsList != null ? evidenceSection.evidenceItemsList : '');
     set('supportingParty', evidenceSection && evidenceSection.supportingParty != null ? evidenceSection.supportingParty : '');
     if (caseObj.externalParties) {
       set('partyType', caseObj.externalParties.partyType);
@@ -311,12 +431,82 @@
       set('externalConfidentiality', caseObj.externalParties.confidentiality);
     }
     if (caseObj.impact) {
+      if (window.NinjaSettings && NinjaSettings.setCheckboxGroupValues) {
+        NinjaSettings.setCheckboxGroupValues('regulatoryRefGroup', caseObj.impact.regulatoryRef || []);
+        NinjaSettings.setCheckboxGroupValues('formChecklistGroup', caseObj.impact.formChecklist || []);
+        NinjaSettings.setCheckboxGroupValues('qualityReviewGroup', caseObj.impact.qualityReview || []);
+      }
+      set('regulatoryRefArticle', caseObj.impact.regulatoryRefArticle);
       set('currentStatus', caseObj.impact.currentStatus || 'Open');
-      set('purpose', caseObj.impact.purpose);
-      set('methodology', caseObj.impact.methodology);
-      set('facts', caseObj.impact.facts);
-      set('conclusions', caseObj.impact.conclusions);
-      set('recommendations', caseObj.impact.recommendations);
+      set('technicalViolation', caseObj.impact.technicalViolation);
+      if (caseObj.impact.fiveWhys1 !== undefined || caseObj.impact.fiveWhys2 !== undefined) {
+        set('fiveWhys1', caseObj.impact.fiveWhys1);
+        set('fiveWhys2', caseObj.impact.fiveWhys2);
+        set('fiveWhys3', caseObj.impact.fiveWhys3);
+        set('fiveWhys4', caseObj.impact.fiveWhys4);
+        set('fiveWhys5', caseObj.impact.fiveWhys5);
+      } else if (caseObj.impact.fiveWhys) {
+        var parts = (caseObj.impact.fiveWhys || '').split(/\n|\r/).map(function (s) { return s.replace(/^\s*\d+\.\s*/, '').trim(); });
+        set('fiveWhys1', parts[0] || '');
+        set('fiveWhys2', parts[1] || '');
+        set('fiveWhys3', parts[2] || '');
+        set('fiveWhys4', parts[3] || '');
+        set('fiveWhys5', parts[4] || '');
+      }
+      var rcH = formEl.querySelector('[name="impact.rootCauseHuman"]');
+      var rcO = formEl.querySelector('[name="impact.rootCauseOrg"]');
+      var rcT = formEl.querySelector('[name="impact.rootCauseTech"]');
+      if (rcH) rcH.checked = !!caseObj.impact.rootCauseHuman;
+      if (rcO) rcO.checked = !!caseObj.impact.rootCauseOrg;
+      if (rcT) rcT.checked = !!caseObj.impact.rootCauseTech;
+      set('regulatoryImpact', caseObj.impact.regulatoryImpact);
+      set('financialOperationalImpact', caseObj.impact.financialOperationalImpact);
+      set('reputationLegalImpact', caseObj.impact.reputationLegalImpact);
+      set('recoveryOpportunityValue', caseObj.impact.recoveryOpportunityValue);
+      set('recoveryStatus', caseObj.impact.recoveryStatus);
+      set('recoveryPath', caseObj.impact.recoveryPath);
+      set('amountRecovered', caseObj.impact.amountRecovered);
+      set('netSavings', caseObj.impact.netSavings);
+      set('correctiveActions', caseObj.impact.correctiveActions);
+      set('preventiveActions', caseObj.impact.preventiveActions);
+      var cNoV = formEl.querySelector('[name="impact.closureNoViolation"]');
+      var cMal = formEl.querySelector('[name="impact.closureMalicious"]');
+      var cPart = formEl.querySelector('[name="impact.closurePartial"]');
+      var cFile = formEl.querySelector('[name="impact.closureFileClosed"]');
+      if (cNoV) cNoV.checked = !!caseObj.impact.closureNoViolation;
+      if (cMal) cMal.checked = !!caseObj.impact.closureMalicious;
+      if (cPart) cPart.checked = !!caseObj.impact.closurePartial;
+      if (cFile) cFile.checked = !!caseObj.impact.closureFileClosed;
+      set('closureObjectiveReasons', caseObj.impact.closureObjectiveReasons);
+      set('closureTechnicalReasons', caseObj.impact.closureTechnicalReasons);
+      set('rcaGapClosed', caseObj.impact.rcaGapClosed);
+      var tImm = formEl.querySelector('[name="impact.termImmediate"]');
+      var ded = formEl.querySelector('[name="impact.deduction"]');
+      var fWarn = formEl.querySelector('[name="impact.finalWarning"]');
+      var rProc = formEl.querySelector('[name="impact.referralProsecution"]');
+      var rNaz = formEl.querySelector('[name="impact.referralNazaha"]');
+      var rSec = formEl.querySelector('[name="impact.referralSecurity"]');
+      if (tImm) tImm.checked = !!caseObj.impact.termImmediate;
+      if (ded) ded.checked = !!caseObj.impact.deduction;
+      if (fWarn) fWarn.checked = !!caseObj.impact.finalWarning;
+      if (rProc) rProc.checked = !!caseObj.impact.referralProsecution;
+      if (rNaz) rNaz.checked = !!caseObj.impact.referralNazaha;
+      if (rSec) rSec.checked = !!caseObj.impact.referralSecurity;
+      set('assetRecoveryAmount', caseObj.impact.assetRecoveryAmount);
+      var wbC = formEl.querySelector('[name="impact.whistleblowerCash"]');
+      var wbT = formEl.querySelector('[name="impact.whistleblowerThanks"]');
+      var wbN = formEl.querySelector('[name="impact.whistleblowerNo"]');
+      var wbP = formEl.querySelector('[name="impact.whistleblowerProtection"]');
+      if (wbC) wbC.checked = !!caseObj.impact.whistleblowerCash;
+      if (wbT) wbT.checked = !!caseObj.impact.whistleblowerThanks;
+      if (wbN) wbN.checked = !!caseObj.impact.whistleblowerNo;
+      if (wbP) wbP.checked = !!caseObj.impact.whistleblowerProtection;
+      set('whistleblowerAmount', caseObj.impact.whistleblowerAmount);
+      set('whistleblowerNoReason', caseObj.impact.whistleblowerNoReason);
+      set('grievanceDate', caseObj.impact.grievanceDate);
+      set('grievanceGrounds', caseObj.impact.grievanceGrounds);
+      set('grievanceAcceptance', caseObj.impact.grievanceAcceptance);
+      set('grievanceDecisionAmendment', caseObj.impact.grievanceDecisionAmendment);
       set('recommendationType', caseObj.impact.recommendationType);
       set('disciplinaryAction', caseObj.impact.disciplinaryAction);
       set('impactValue', caseObj.impact.impactValue);

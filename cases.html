@@ -1,21 +1,130 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cases - Ninja GRC</title>
+  <script>
+  (function(){var lang=typeof localStorage!=='undefined'?localStorage.getItem('ninja-grc-lang'):null;var d=document.documentElement;if(lang==='ar'){d.setAttribute('dir','rtl');d.setAttribute('lang','ar');}else{d.setAttribute('dir','ltr');d.setAttribute('lang','en');}}());
+  </script>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/theme-ninja.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <style>
+    html, body, .main, .view-list, .view-form, .view-reports, .view-settings, .view-notes,
+    input, select, textarea, button, label, th, td, h1, h2, h3, h4, p, span, a {
+      font-family: 'Tajawal', 'Segoe UI', system-ui, sans-serif !important;
+    }
+  </style>
+</head>
+<body>
+  <script>
+  (function(){var k='ninjaNavStyle';var v=typeof localStorage!=='undefined'?localStorage.getItem(k):null;if(v==='safe')document.documentElement.classList.add('nav-style-safe');})();
+  </script>
+  <a href="#main" class="skip-link" id="skipLink">Skip to main content</a>
+  <header class="app-header app-header--ninja">
+    <a href="cases.html" class="app-logo" id="appLogo" aria-label="Ninja GRC">
+      <img src="https://web-assets.ananinja.com/_next/static/media/Logo-black.95b82e2c.png" alt="Ninja" width="120" height="40">
+      <span class="app-logo-fallback" style="display:none;font-weight:700;font-size:1.25rem;">Ninja</span>
+    </a>
+    <span class="app-brand" id="appBrand">GRC</span>
+    <div class="header-actions">
+      <div class="style-switch" role="group" aria-label="Navbar style">
+        <button type="button" id="styleDefault" class="style-switch-btn active" aria-pressed="true" title="Default theme">Default</button>
+        <button type="button" id="styleSafe" class="style-switch-btn" aria-pressed="false" title="Fail-safe minimal style">Safe</button>
+      </div>
+      <div class="lang-switcher">
+        <button type="button" id="langAr" aria-label="Arabic">عربي</button>
+        <button type="button" id="langEn" aria-label="English">English</button>
+      </div>
+      <nav class="nav-tabs" role="navigation" aria-label="Main sections">
+        <a href="cases.html" class="nav-tab nav-tab--cases active" aria-current="page" id="navCases">Cases</a>
+        <a href="reports.html" class="nav-tab nav-tab--reports" id="navReports">Reports</a>
+        <a href="settings.html" class="nav-tab nav-tab--settings" id="navSettings">Settings</a>
+        <a href="scoring-reference.html" class="nav-tab nav-tab--notes" id="navNotes">Scoring Reference</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main" id="main" data-current-view="list">
+<div id="messageArea"></div>
+<div id="viewPanels" class="view-panels">
+    <!-- Case list view -->
+    <div id="viewList" class="view-list view-visible">
+      <div class="case-list-toolbar">
+        <h2 id="listTitle" class="list-title">Cases</h2>
+        <button type="button" class="btn btn-primary" id="btnNewCase">New case</button>
+        <button type="button" class="btn" id="btnPrintListReport">Print report</button>
+      </div>
+      <div id="caseListContent">
+        <p class="empty-state" id="emptyState">No cases yet. Click "New case" to add one.</p>
+        <table class="case-table" id="caseTable" style="display:none;">
+          <thead>
+            <tr>
+              <th id="thSeq">#</th>
+              <th id="thId">Case ID</th>
+              <th id="thReceived">Received</th>
+              <th id="thPhase">Phase</th>
+              <th id="thPath">Path</th>
+              <th id="thScore">Score</th>
+              <th id="thStatus">Status</th>
+              <th id="thActions">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="caseTableBody"></tbody>
+        </table>
+      </div>
+      <details class="scoring-ref-inline" id="scoringRefInline">
+        <summary id="scoringRefInlineSummary">Scoring Reference</summary>
+        <div class="scoring-ref-inline-body">
+          <p class="scoring-ref-intro" id="scoringRefIntroList">Based on the unified report and investigation record. Use this as a guide when scoring cases.</p>
+          <div class="notes-ref">
+            <h4 class="notes-ref-sub">Scoring axes (1-5 each)</h4>
+            <p><strong id="refSovList">Sovereignty:</strong> Impact on sovereign regulations (SAMA, ZATCA, PDPL). 1–2: Minor breach. 3–4: Material policy breach. 5: Sovereign/labour law breach.</p>
+            <p><strong id="refFinList">Financial:</strong> 1–2: Under 10k SAR. 3–4: 10k–100k SAR. 5: Over 100k SAR or senior staff.</p>
+            <p><strong id="refEvList">Evidence:</strong> 1: Allegation. 2–3: Partial support. 4–5: Digital/conclusive evidence.</p>
+            <p><strong id="refRepList">Reputation:</strong> 1: Limited impact. 2–3: Department/trust. 4–5: Senior execs or public disclosure risk.</p>
+          </div>
+          <div class="notes-ref">
+            <h4 class="notes-ref-sub">Path (Total 4-20)</h4>
+            <p><span class="path-badge path-green">Green (4-8)</span> Preliminary closure / administrative referral.</p>
+            <p><span class="path-badge path-yellow">Yellow (9-14)</span> Restricted follow-up; one investigator, exploratory review.</p>
+            <p><span class="path-badge path-red">Red (15-20)</span> Immediate formal investigation; Legal Privilege; notify board chair.</p>
+          </div>
+        </div>
+      </details>
+    </div>
+
+
     <!-- Case form view -->
     <div id="viewForm" class="view-form">
       <div class="case-list-toolbar">
         <button type="button" class="btn" id="btnBackToList">Back to list</button>
         <span class="form-context" id="formContext" aria-live="polite"></span>
       </div>
-      <nav class="form-tabs" id="formSectionNav" role="tablist" aria-label="Form sections">
-        <button type="button" role="tab" class="form-tab active" data-section="sectionCaseInfo" aria-selected="true" aria-controls="sectionCaseInfo" id="tabCaseInfo">Case info</button>
-        <button type="button" role="tab" class="form-tab" data-section="sectionScoring" aria-selected="false" aria-controls="sectionScoring" id="tabScoring">Scoring</button>
-        <button type="button" role="tab" class="form-tab" data-section="sectionReporter" aria-selected="false" aria-controls="sectionReporter" id="tabReporter">Reporter</button>
-        <button type="button" role="tab" class="form-tab" data-section="sectionClassification" aria-selected="false" aria-controls="sectionClassification" id="tabClassification">Classification</button>
-        <button type="button" role="tab" class="form-tab" data-section="sectionScope" aria-selected="false" aria-controls="sectionScope" id="tabScope">Scope</button>
-        <button type="button" role="tab" class="form-tab" data-section="sectionProcess" aria-selected="false" aria-controls="sectionProcess" id="tabProcess">Process</button>
-        <button type="button" role="tab" class="form-tab" data-section="sectionInterview" aria-selected="false" aria-controls="sectionInterview" id="tabInterview">Interview</button>
-        <button type="button" role="tab" class="form-tab" data-section="sectionEvidence" aria-selected="false" aria-controls="sectionEvidence" id="tabEvidence">Evidence</button>
-        <button type="button" role="tab" class="form-tab" data-section="sectionExternalParties" aria-selected="false" aria-controls="sectionExternalParties" id="tabExternalParties">External parties</button>
-        <button type="button" role="tab" class="form-tab" data-section="sectionImpact" aria-selected="false" aria-controls="sectionImpact" id="tabImpact">Impact</button>
-      </nav>
+      <div class="case-form-layout">
+        <aside class="case-form-sidebar" aria-label="Form sections">
+          <div class="case-form-progress" role="status" aria-live="polite">
+            <span class="case-form-progress-text" id="formProgressText">Section 1 of 10</span>
+            <div class="case-form-progress-bar" aria-hidden="true"><span class="case-form-progress-fill" id="formProgressFill" style="width:10%"></span></div>
+          </div>
+          <nav class="form-tabs form-tabs--vertical" id="formSectionNav" role="tablist" aria-label="Form sections">
+            <button type="button" role="tab" class="form-tab active" data-section="sectionCaseInfo" data-step="1" aria-selected="true" aria-controls="sectionCaseInfo" id="tabCaseInfo"><span class="form-tab-num">1</span><span class="form-tab-label">Case info</span></button>
+            <button type="button" role="tab" class="form-tab" data-section="sectionScoring" data-step="2" aria-selected="false" aria-controls="sectionScoring" id="tabScoring"><span class="form-tab-num">2</span><span class="form-tab-label">Scoring</span></button>
+            <button type="button" role="tab" class="form-tab" data-section="sectionReporter" data-step="3" aria-selected="false" aria-controls="sectionReporter" id="tabReporter"><span class="form-tab-num">3</span><span class="form-tab-label">Reporter</span></button>
+            <button type="button" role="tab" class="form-tab" data-section="sectionClassification" data-step="4" aria-selected="false" aria-controls="sectionClassification" id="tabClassification"><span class="form-tab-num">4</span><span class="form-tab-label">Classification</span></button>
+            <button type="button" role="tab" class="form-tab" data-section="sectionScope" data-step="5" aria-selected="false" aria-controls="sectionScope" id="tabScope"><span class="form-tab-num">5</span><span class="form-tab-label">Scope</span></button>
+            <button type="button" role="tab" class="form-tab" data-section="sectionProcess" data-step="6" aria-selected="false" aria-controls="sectionProcess" id="tabProcess"><span class="form-tab-num">6</span><span class="form-tab-label">Process</span></button>
+            <button type="button" role="tab" class="form-tab" data-section="sectionInterview" data-step="7" aria-selected="false" aria-controls="sectionInterview" id="tabInterview"><span class="form-tab-num">7</span><span class="form-tab-label">Interview</span></button>
+            <button type="button" role="tab" class="form-tab" data-section="sectionEvidence" data-step="8" aria-selected="false" aria-controls="sectionEvidence" id="tabEvidence"><span class="form-tab-num">8</span><span class="form-tab-label">Evidence</span></button>
+            <button type="button" role="tab" class="form-tab" data-section="sectionExternalParties" data-step="9" aria-selected="false" aria-controls="sectionExternalParties" id="tabExternalParties"><span class="form-tab-num">9</span><span class="form-tab-label">External parties</span></button>
+            <button type="button" role="tab" class="form-tab" data-section="sectionImpact" data-step="10" aria-selected="false" aria-controls="sectionImpact" id="tabImpact"><span class="form-tab-num">10</span><span class="form-tab-label">Impact</span></button>
+          </nav>
+        </aside>
+        <div class="case-form-main">
+          <h2 class="case-form-section-title" id="formSectionTitle" aria-live="polite">Case info</h2>
       <form id="caseForm" class="form-container">
         <div id="formSectionContentSlot" class="form-section-content-slot">
         <div class="form-section form-tab-panel" id="sectionCaseInfo" role="tabpanel" aria-labelledby="tabCaseInfo">
@@ -88,7 +197,7 @@
           </div>
         </div>
 
-        <div class="form-section form-tab-panel" id="sectionReporter" role="tabpanel" aria-labelledby="tabReporter" >
+        <div class="form-section form-tab-panel" id="sectionReporter" role="tabpanel" aria-labelledby="tabReporter">
           <div class="form-section-body" id="sectionReporterBody">
           <p class="section-tip" id="tipReporter" data-tip="sectionReporter" aria-live="polite"></p>
           <button type="button" class="btn-link btn-toggle-tip" data-tip="sectionReporter" aria-expanded="false"><span class="tip-label">Show tips</span></button>
@@ -159,7 +268,7 @@
           </div>
         </div>
 
-        <div class="form-section form-tab-panel" id="sectionClassification" role="tabpanel" aria-labelledby="tabClassification" >
+        <div class="form-section form-tab-panel" id="sectionClassification" role="tabpanel" aria-labelledby="tabClassification">
           <div class="form-section-body" id="sectionClassificationBody">
           <p class="section-tip" id="tipClassification" data-tip="sectionClassification" aria-live="polite"></p>
           <button type="button" class="btn-link btn-toggle-tip" data-tip="sectionClassification" aria-expanded="false"><span class="tip-label">Show tips</span></button>
@@ -225,7 +334,7 @@
           </div>
         </div>
 
-        <div class="form-section form-tab-panel" id="sectionScope" role="tabpanel" aria-labelledby="tabScope" >
+        <div class="form-section form-tab-panel" id="sectionScope" role="tabpanel" aria-labelledby="tabScope">
           <div class="form-section-body" id="sectionScopeBody">
           <p class="section-tip" id="tipScope" data-tip="sectionScope" aria-live="polite"></p>
           <button type="button" class="btn-link btn-toggle-tip" data-tip="sectionScope" aria-expanded="false"><span class="tip-label">Show tips</span></button>
@@ -327,7 +436,7 @@
           </div>
         </div>
 
-        <div class="form-section form-tab-panel" id="sectionProcess" role="tabpanel" aria-labelledby="tabProcess" >
+        <div class="form-section form-tab-panel" id="sectionProcess" role="tabpanel" aria-labelledby="tabProcess">
           <div class="form-section-body" id="sectionProcessBody">
           <p class="section-tip" id="tipProcess" data-tip="sectionProcess" aria-live="polite"></p>
           <button type="button" class="btn-link btn-toggle-tip" data-tip="sectionProcess" aria-expanded="false"><span class="tip-label">Show tips</span></button>
@@ -403,7 +512,7 @@
           </div>
         </div>
 
-        <div class="form-section form-tab-panel" id="sectionInterview" role="tabpanel" aria-labelledby="tabInterview" >
+        <div class="form-section form-tab-panel" id="sectionInterview" role="tabpanel" aria-labelledby="tabInterview">
           <div class="form-section-body" id="sectionInterviewBody">
           <p class="section-tip" id="tipInterview" data-tip="sectionInterview" aria-live="polite"></p>
           <button type="button" class="btn-link btn-toggle-tip" data-tip="sectionInterview" aria-expanded="false"><span class="tip-label">Show tips</span></button>
@@ -424,8 +533,8 @@
               <input type="date" id="interviewDate" name="interview.interviewDate" aria-describedby="interviewDurationNote">
             </div>
             <div class="form-group">
-              <label for="interviewDurationDays" id="labelInterviewDuration">Duration (report → interview, days)</label>
-              <output id="interviewDurationDays" class="form-readonly" aria-live="polite">—</output>
+              <label id="labelInterviewDuration">Duration (report → interview, days)</label>
+              <span id="interviewDurationDays" class="form-readonly" aria-live="polite">—</span>
             </div>
             <div class="form-group">
               <label for="rightsNotified" id="labelRightsNotified">Rights notified</label>
@@ -530,7 +639,7 @@
           </div>
         </div>
 
-        <div class="form-section form-tab-panel" id="sectionEvidence" role="tabpanel" aria-labelledby="tabEvidence" >
+        <div class="form-section form-tab-panel" id="sectionEvidence" role="tabpanel" aria-labelledby="tabEvidence">
           <div class="form-section-body" id="sectionEvidenceBody">
           <p class="section-tip" id="tipEvidence" data-tip="sectionEvidence" aria-live="polite"></p>
           <button type="button" class="btn-link btn-toggle-tip" data-tip="sectionEvidence" aria-expanded="false"><span class="tip-label">Show tips</span></button>
@@ -594,7 +703,7 @@
           </div>
         </div>
 
-        <div class="form-section form-tab-panel" id="sectionExternalParties" role="tabpanel" aria-labelledby="tabExternalParties" >
+        <div class="form-section form-tab-panel" id="sectionExternalParties" role="tabpanel" aria-labelledby="tabExternalParties">
           <div class="form-section-body" id="sectionExternalPartiesBody">
           <p class="section-tip" id="tipExternalParties" data-tip="sectionExternalParties" aria-live="polite"></p>
           <button type="button" class="btn-link btn-toggle-tip" data-tip="sectionExternalParties" aria-expanded="false"><span class="tip-label">Show tips</span></button>
@@ -641,7 +750,7 @@
           </div>
         </div>
 
-        <div class="form-section form-tab-panel" id="sectionImpact" role="tabpanel" aria-labelledby="tabImpact" >
+        <div class="form-section form-tab-panel" id="sectionImpact" role="tabpanel" aria-labelledby="tabImpact">
           <div class="form-section-body" id="sectionImpactBody">
           <p class="section-tip" id="tipImpact" data-tip="sectionImpact" aria-live="polite"></p>
           <button type="button" class="btn-link btn-toggle-tip" data-tip="sectionImpact" aria-expanded="false"><span class="tip-label">Show tips</span></button>
@@ -887,4 +996,29 @@
           <button type="button" class="btn btn-danger" id="btnDelete" style="display:none;">Delete</button>
         </div>
       </form>
+        </div>
+      </div>
     </div>
+
+</div>  </main>
+
+  <!-- View is set only by js/router.js (single source of truth) -->
+  <script src="js/i18n.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/forms.js"></script>
+  <script src="js/settings.js"></script>
+  <script src="js/sections.js"></script>
+  <script src="js/tips.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/router.js"></script>
+  <script src="js/list-view.js"></script>
+  <script src="js/form-view.js"></script>
+  <script src="js/reports-view.js"></script>
+  <script src="js/settings-view.js"></script>
+  <script src="js/print-view.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+  (function(){var k='ninjaNavStyle';var def=document.getElementById('styleDefault');var safe=document.getElementById('styleSafe');function apply(mode){var isSafe=mode==='safe';document.documentElement.classList.toggle('nav-style-safe',isSafe);try{localStorage.setItem(k,mode);}catch(e){}if(def){def.classList.toggle('active',!isSafe);def.setAttribute('aria-pressed',!isSafe?'true':'false');}if(safe){safe.classList.toggle('active',isSafe);safe.setAttribute('aria-pressed',isSafe?'true':'false');}}function init(){var v;try{v=localStorage.getItem(k);}catch(e){v=null;}var isSafe=(v==='safe');document.documentElement.classList.toggle('nav-style-safe',isSafe);if(def){def.classList.toggle('active',!isSafe);def.setAttribute('aria-pressed',!isSafe?'true':'false');def.addEventListener('click',function(){apply('default');});}if(safe){safe.classList.toggle('active',isSafe);safe.setAttribute('aria-pressed',isSafe?'true':'false');safe.addEventListener('click',function(){apply('safe');});}}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();})();
+  </script>
+</body>
+</html>

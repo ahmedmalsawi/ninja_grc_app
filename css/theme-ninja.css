@@ -1,0 +1,515 @@
+/**
+ * Ninja GRC - Ana Ninja theme + 2026 modern styling
+ * Inspired by https://ananinja.com
+ */
+:root {
+  --color-primary: #1989fa;
+  --color-primary-hover: #1677e0;
+  --color-primary-light: rgba(25, 137, 250, 0.12);
+  --color-bg: #f8fafc;
+  --color-surface: #ffffff;
+  --color-border: #e5e7eb;
+  --color-text: #0f172a;
+  --color-muted: #64748b;
+  --font-sans: 'Tajawal', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-ar: 'Tajawal', 'Segoe UI', 'Arabic UI Display', sans-serif;
+  --radius: 10px;
+  --radius-sm: 8px;
+  --radius-lg: 14px;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+  --transition: 0.2s ease;
+}
+
+body {
+  font-family: var(--font-sans);
+}
+
+/* Header - Ana Ninja style */
+.app-header--ninja {
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  padding: 0.75rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  box-shadow: var(--shadow-sm);
+}
+[dir="rtl"] .app-header--ninja {
+  flex-direction: row-reverse;
+}
+[dir="rtl"] .app-header--ninja .header-actions {
+  flex-direction: row-reverse;
+  margin-inline-start: 0;
+  margin-inline-end: auto;
+}
+
+.app-logo {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+.app-logo img {
+  height: 36px;
+  width: auto;
+  object-fit: contain;
+}
+.app-brand {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  letter-spacing: 0.02em;
+  margin-inline-end: 0.5rem;
+}
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-inline-start: auto;
+}
+
+/* Fail-safe style switch - minimal dependency */
+.style-switch {
+  display: flex;
+  gap: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--color-bg);
+}
+.style-switch-btn {
+  padding: 0.4rem 0.65rem;
+  border: none;
+  background: transparent;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--color-muted);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.style-switch-btn:hover {
+  color: var(--color-text);
+  background: rgba(0, 0, 0, 0.05);
+}
+.style-switch-btn.active {
+  background: var(--color-surface);
+  color: var(--color-primary);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Tab navigation - 2026 modern */
+.nav-tabs {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 0.25rem;
+  background: var(--color-bg);
+  padding: 0.25rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--color-border);
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  min-width: 0;
+}
+.nav-tab {
+  padding: 0.5rem 1rem;
+  border: none;
+  background: transparent;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--color-muted);
+  cursor: pointer;
+  transition: all var(--transition);
+  flex-shrink: 0;
+  text-decoration: none;
+  display: inline-block;
+  box-sizing: border-box;
+}
+a.nav-tab {
+  font-family: inherit;
+}
+.nav-tab:hover {
+  color: var(--color-text);
+  background: rgba(255, 255, 255, 0.7);
+}
+.nav-tab[aria-current="page"] {
+  background: var(--color-surface);
+  color: var(--color-primary);
+  box-shadow: var(--shadow-sm);
+}
+.nav-tab.active {
+  background: var(--color-surface);
+  color: var(--color-primary);
+  box-shadow: var(--shadow-sm);
+}
+.nav-tab[aria-selected="true"] {
+  background: var(--color-surface);
+  color: var(--color-primary);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Fail-safe navbar: when .nav-style-safe is on <html>, use minimal high-contrast styles that do not depend on theme */
+html.nav-style-safe .app-header.app-header--ninja {
+  background: #fff !important;
+  border-bottom: 2px solid #333 !important;
+  padding: 0.5rem 1rem !important;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 0.5rem !important;
+  align-items: center !important;
+  box-shadow: none !important;
+}
+html.nav-style-safe .app-header--ninja .app-brand {
+  color: #111 !important;
+  font-weight: 700 !important;
+}
+html.nav-style-safe .nav-tabs {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  gap: 2px !important;
+  background: #e5e5e5 !important;
+  padding: 2px !important;
+  border: 1px solid #999 !important;
+  border-radius: 4px !important;
+  overflow-x: auto !important;
+  min-width: 0 !important;
+}
+html.nav-style-safe .nav-tab {
+  padding: 0.4rem 0.75rem !important;
+  border: none !important;
+  background: transparent !important;
+  font-size: 0.9rem !important;
+  font-weight: 600 !important;
+  color: #333 !important;
+  cursor: pointer !important;
+  flex-shrink: 0 !important;
+  border-radius: 3px !important;
+}
+html.nav-style-safe .nav-tab:hover {
+  background: #ccc !important;
+  color: #000 !important;
+}
+html.nav-style-safe .nav-tab.active,
+html.nav-style-safe .nav-tab[aria-selected="true"] {
+  background: #fff !important;
+  color: #000 !important;
+  box-shadow: 0 0 0 1px #333 !important;
+}
+html.nav-style-safe .style-switch {
+  border-color: #999 !important;
+  background: #e5e5e5 !important;
+}
+html.nav-style-safe .style-switch-btn {
+  color: #333 !important;
+}
+html.nav-style-safe .style-switch-btn.active {
+  background: #fff !important;
+  color: #000 !important;
+  box-shadow: 0 0 0 1px #333 !important;
+}
+
+/* Lang switcher in header */
+.app-header--ninja .lang-switcher button {
+  padding: 0.4rem 0.7rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+}
+.app-header--ninja .lang-switcher button.active {
+  background: var(--color-primary);
+  color: #fff;
+  border-color: var(--color-primary);
+}
+
+/* Main content area */
+.main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  min-height: 70vh;
+}
+
+/* Buttons */
+.btn {
+  border-radius: var(--radius-sm);
+  font-weight: 500;
+  transition: all var(--transition);
+}
+.btn-primary {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+.btn-primary:hover {
+  background: var(--color-primary-hover);
+  border-color: var(--color-primary-hover);
+  transform: translateY(-1px);
+}
+
+/* Cards & surfaces */
+.case-table,
+.form-section,
+.scoring-ref-inline,
+.notes-ref,
+fieldset {
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+.case-table {
+  border: 1px solid var(--color-border);
+}
+
+/* Form inputs - modern */
+.form-group input,
+.form-group select,
+.form-group textarea {
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  transition: border-color var(--transition);
+}
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-light);
+}
+
+/* Path badges */
+.path-badge {
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  padding: 0.3rem 0.65rem;
+}
+.path-green { background: #dcfce7; color: #166534; }
+.path-yellow { background: #fef9c3; color: #854d0e; }
+.path-red { background: #fee2e2; color: #991b1b; }
+
+/* Section headers */
+.form-section-header,
+.form-section-title {
+  color: var(--color-text);
+  font-weight: 600;
+}
+.form-row h4,
+fieldset legend {
+  color: var(--color-primary);
+}
+
+/* Form section tabs - same style as main nav tabs */
+.form-tabs {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 0.25rem;
+  background: var(--color-bg);
+  padding: 0.25rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--color-border);
+  margin-bottom: 1rem;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  box-shadow: var(--shadow-sm);
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  min-width: 0;
+}
+.form-tab {
+  padding: 0.45rem 0.75rem;
+  border: none;
+  background: transparent;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-muted);
+  cursor: pointer;
+  transition: all var(--transition);
+  flex-shrink: 0;
+}
+.form-tab:hover {
+  color: var(--color-text);
+  background: rgba(255, 255, 255, 0.7);
+}
+.form-tab.active {
+  background: var(--color-surface);
+  color: var(--color-primary);
+  box-shadow: var(--shadow-sm);
+}
+.form-tab[aria-selected="true"] {
+  background: var(--color-surface);
+  color: var(--color-primary);
+  box-shadow: var(--shadow-sm);
+}
+/* Single content slot: only the section inside it is visible; pool is hidden. */
+.form-section-content-slot {
+  display: block;
+  padding-top: 0.5rem;
+}
+.form-section-content-slot > .form-tab-panel {
+  display: block;
+  animation: form-section-fade 0.2s ease;
+}
+.form-section-pool {
+  display: none;
+}
+.form-tab-panel {
+  padding-top: 0.5rem;
+  animation: form-section-fade 0.2s ease;
+}
+@keyframes form-section-fade {
+  from { opacity: 0.6; }
+  to { opacity: 1; }
+}
+
+/* Form view toolbar: sticky so "New case" / "Editing …" stays visible when switching sections */
+.view-form .case-list-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--color-surface);
+  padding: 0.5rem 0;
+  margin-bottom: 0.75rem;
+  border-bottom: 1px solid var(--color-border);
+  box-shadow: 0 1px 0 var(--color-border);
+}
+
+/* Case form layout: vertical sidebar + main content */
+.view-form .case-form-layout {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+  margin-top: 0.75rem;
+}
+.case-form-sidebar {
+  flex-shrink: 0;
+  width: 220px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 1rem;
+  box-shadow: var(--shadow-sm);
+  position: sticky;
+  top: 0.5rem;
+}
+.case-form-progress {
+  margin-bottom: 1rem;
+}
+.case-form-progress-text {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-muted);
+  margin-bottom: 0.35rem;
+}
+.case-form-progress-bar {
+  height: 4px;
+  background: var(--color-border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.case-form-progress-fill {
+  display: block;
+  height: 100%;
+  background: var(--color-primary);
+  border-radius: 2px;
+  transition: width 0.25s ease;
+}
+.case-form-main {
+  flex: 1;
+  min-width: 0;
+  overflow: visible;
+}
+/* Form sizes to visible section content (same as first section) - no flex shrink */
+.case-form-main .form-container {
+  overflow: visible;
+}
+.case-form-section-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin: 0 0 1rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* Vertical form tabs in sidebar */
+.form-tabs--vertical {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  overflow-x: visible;
+  overflow-y: auto;
+  max-height: calc(100vh - 12rem);
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: transparent;
+  position: static;
+  box-shadow: none;
+}
+.form-tab-row {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+.form-tabs--vertical .form-tab-row .form-tab {
+  flex: 1;
+  min-width: 0;
+}
+.form-tabs--vertical .form-tab {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.6rem;
+  text-align: start;
+  flex-shrink: 0;
+  border-radius: var(--radius-sm);
+}
+/* Safe theme: show/hide section content toggle next to each section */
+.case-form-section-toggle {
+  display: none;
+  flex-shrink: 0;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-muted);
+  cursor: pointer;
+}
+.case-form-section-toggle:hover {
+  color: var(--color-text);
+  border-color: var(--color-primary);
+}
+html.nav-style-safe .case-form-section-toggle {
+  display: inline-block;
+}
+html.nav-style-safe .case-form-section-toggle:hover {
+  background: #e5e5e5;
+  color: #000;
+  border-color: #333;
+}
+.form-tab-num {
+  flex-shrink: 0;
+  width: 1.5rem;
+  height: 1.5rem;
+  line-height: 1.5rem;
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-muted);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+}
+.form-tab.active .form-tab-num,
+.form-tab[aria-selected="true"] .form-tab-num {
+  background: var(--color-primary);
+  color: var(--color-surface);
+  border-color: var(--color-primary);
+}
+.form-tab-label {
+  flex: 1;
+  min-width: 0;
+}

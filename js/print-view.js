@@ -100,22 +100,41 @@
     html += row(t('formOfEvidence'), ed.formOfEvidence);
     html += row(t('dataCategory'), ed.dataCategory);
     html += row(t('examinationType'), ed.examinationType);
+    html += row(t('evidenceHashValue'), ed.evidenceHashValue);
     html += row(t('chainOfCustody'), ed.chainOfCustody);
+    html += row(t('evidenceItemsList'), ed.evidenceItemsList);
     html += row(t('supportingParty'), ed.supportingParty);
     html += '</table>';
 
     html += '<h3 class="print-section">' + t('sectionImpact') + '</h3><table class="print-table">';
     html += row(t('currentStatus'), statusLabel(im.currentStatus));
-    html += row(t('purpose'), im.purpose);
-    html += row(t('methodology'), im.methodology);
-    html += row(t('facts'), im.facts);
-    html += row(t('conclusions'), im.conclusions);
-    html += row(t('recommendations'), im.recommendations);
+    html += row(t('technicalViolation'), im.technicalViolation);
+    if (im.fiveWhys1 !== undefined || im.fiveWhys2 !== undefined || im.fiveWhys) {
+      if (im.fiveWhys1 !== undefined || im.fiveWhys2 !== undefined) {
+        html += row(t('fiveWhys1'), im.fiveWhys1);
+        html += row(t('fiveWhys2'), im.fiveWhys2);
+        html += row(t('fiveWhys3'), im.fiveWhys3);
+        html += row(t('fiveWhys4'), im.fiveWhys4);
+        html += row(t('fiveWhys5'), im.fiveWhys5);
+      } else {
+        html += row(t('fiveWhys'), im.fiveWhys);
+      }
+    }
+    html += row(t('regulatoryImpact'), im.regulatoryImpact);
+    html += row(t('financialOperationalImpact'), im.financialOperationalImpact);
+    html += row(t('reputationLegalImpact'), im.reputationLegalImpact);
+    html += row(t('recoveryOpportunityValue'), im.recoveryOpportunityValue);
+    html += row(t('recoveryStatus'), im.recoveryStatus);
+    html += row(t('amountRecovered'), im.amountRecovered);
+    html += row(t('correctiveActions'), im.correctiveActions);
+    html += row(t('preventiveActions'), im.preventiveActions);
     html += row(t('recommendationType'), im.recommendationType);
     html += row(t('impactValue'), im.impactValue);
     html += row(t('rcaType'), im.rcaType);
     html += row(t('rcaSubtype'), im.rcaSubtype);
     html += row(t('rootCauses'), im.rootCauses);
+    html += row(t('grievanceDate'), im.grievanceDate);
+    html += row(t('grievanceGrounds'), im.grievanceGrounds);
     html += '</table>';
 
     html += '</div>';

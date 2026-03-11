@@ -7,5 +7,8 @@
   {"id":6,"en":"Third-Party & Anti-Tipping-off","ar":"التواصل مع الأطراف الثالثة ومنع \"التسريب\""},
   {"id":7,"en":"Reporting & Quality Control","ar":"هندسة التقارير، الجودة، والتحفظات"},
   {"id":8,"en":"Root Cause & Impact","ar":"التحليل الجذري والأثر"},
-  {"id":9,"en":"Accountability & Master Closure","ar":"المساءلة، الإقرار الجامع، والإغلاق"}
+  {"id":9,"en":"Accountability & Master Closure","ar":"المساءلة، الإقرار الجامع، والإغلاق"},
+  {"id":10,"en":"Report Quality Review","ar":"مراجعة جودة التقارير"},
+  {"id":11,"en":"Whistleblower Incentives & Integrity","ar":"تحفيز ونزاهة المبلّغين"},
+  {"id":12,"en":"Grievance (Appeal)","ar":"التظلم"}
 ]

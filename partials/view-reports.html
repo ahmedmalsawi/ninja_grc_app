@@ -1,9 +1,11 @@
     <!-- Reports view -->
     <div id="viewReports" class="view-reports">
-      <h2 id="reportsTitle" style="margin:0 0 1rem 0;">Reports</h2>
+      <h2 id="reportsTitle" class="reports-title">Reports</h2>
       <div class="reports-toolbar">
         <input type="text" id="searchCaseId" class="reports-search" placeholder="Search by Case ID" aria-label="Search by Case ID">
+        <label for="filterDateFrom" class="reports-filter-label"><span id="labelDateFrom">From date</span></label>
         <input type="date" id="filterDateFrom" aria-label="From date">
+        <label for="filterDateTo" class="reports-filter-label"><span id="labelDateTo">To date</span></label>
         <input type="date" id="filterDateTo" aria-label="To date">
         <select id="filterPath">
           <option value="">All paths</option>

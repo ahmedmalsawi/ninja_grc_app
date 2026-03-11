@@ -26,7 +26,7 @@
     var ids = {
       appTitle: 'appTitle',
       langAr: 'langAr', langEn: 'langEn',
-      navCases: 'navCases', navReports: 'navReports', navSettings: 'navSettings',
+      navCases: 'navCases', navReports: 'navReports', navSettings: 'navSettings', navNotes: 'navNotes',
       newCase: 'newCase', backToList: 'backToList', save: 'save', cancel: 'cancel', delete: 'delete', edit: 'edit',
       noCases: 'emptyState', caseId: 'labelCaseId', receivedDate: 'labelReceivedDate', complexityDays: 'labelComplexityDays',
       targetCloseDate: 'labelTargetCloseDate', actualCloseDate: 'labelActualCloseDate', phase: 'labelPhase',
@@ -36,9 +36,30 @@
       sectionScope: 'labelSectionScope', sectionProcess: 'labelSectionProcess', sectionInterview: 'labelSectionInterview',
       sectionEvidence: 'labelSectionEvidence', sectionExternalParties: 'labelSectionExternalParties', sectionImpact: 'labelSectionImpact',
       scopeType: 'labelScopeType', subScope: 'labelSubScope', escalationLevel: 'labelEscalationLevel', severity: 'labelSeverity',
+      investigationLimits: 'labelInvestigationLimits', investigationSubject: 'labelInvestigationSubject', scopeDateFrom: 'labelScopeDateFrom', scopeDateTo: 'labelScopeDateTo',
+      scopeEntities: 'labelScopeEntities', scopeConstraints: 'labelScopeConstraints', scopeExclusions: 'labelScopeExclusions', independenceCompliance: 'labelIndependenceCompliance',
+      regulatoryRef: 'labelRegulatoryRef', regulatoryRefArticle: 'labelRegulatoryRefArticle', evidenceHashValue: 'labelEvidenceHashValue', evidenceItemsList: 'labelEvidenceItemsList',
+      formChecklistHint: 'labelFormChecklistHint', qualityReviewHint: 'labelQualityReviewHint', deficiencies: 'labelDeficiencies', technicalViolation: 'labelTechnicalViolation', fiveWhys: 'labelFiveWhys', fiveWhys1: 'labelFiveWhys1', fiveWhys2: 'labelFiveWhys2', fiveWhys3: 'labelFiveWhys3', fiveWhys4: 'labelFiveWhys4', fiveWhys5: 'labelFiveWhys5',
+      rootCauseClass: 'labelRootCauseClass', resultingImpact: 'labelResultingImpact', regulatoryImpact: 'labelRegulatoryImpact',
+      financialOperationalImpact: 'labelFinancialOperationalImpact', reputationLegalImpact: 'labelReputationLegalImpact',
+      assetRecovery: 'labelAssetRecovery', recoveryOpportunityValue: 'labelRecoveryOpportunityValue', recoveryStatus: 'labelRecoveryStatus', recoveryPath: 'labelRecoveryPath',
+      amountRecovered: 'labelAmountRecovered', netSavings: 'labelNetSavings', strategicRecs: 'labelStrategicRecs',
+      correctiveActions: 'labelCorrectiveActions', preventiveActions: 'labelPreventiveActions', closureReasons: 'labelClosureReasons',
+      closureObjectiveReasons: 'labelClosureObjectiveReasons', closureTechnicalReasons: 'labelClosureTechnicalReasons', rcaGapClosed: 'labelRcaGapClosed',
+      accountabilityDetails: 'labelAccountabilityDetails', assetRecoveryAmount: 'labelAssetRecoveryAmount', whistleblowerIncentive: 'labelWhistleblowerIncentive',
+      grievanceDate: 'labelGrievanceDate', grievanceGrounds: 'labelGrievanceGrounds', grievanceAcceptance: 'labelGrievanceAcceptance', grievanceDecisionAmendment: 'labelGrievanceDecisionAmendment',
+      interviewMulti: 'labelInterviewMulti', interview1: 'labelInterview1', interview2: 'labelInterview2', interview3: 'labelInterview3',
+      interviewMinutes: 'labelInterviewMinutes', interviewAdditional: 'labelInterviewAdditional',
       investigatingBody: 'labelInvestigatingBody', escalationJustification: 'labelEscalationJustification',
       precautionaryMeasures: 'labelPrecautionaryMeasures', teamMembers: 'labelTeamMembers',
-      caseAcceptanceStatus: 'labelCaseAcceptanceStatus', legalPrivilege: 'labelLegalPrivilege', clearance: 'labelClearance',
+      caseAcceptanceStatus: 'labelCaseAcceptanceStatus', legalPrivilege: 'labelLegalPrivilege', legalPrivilegeJustification: 'labelLegalPrivilegeJustification', clearance: 'labelClearance',
+      legalRep1: 'labelLegalRep1', legalRep2: 'labelLegalRep2', legalRep3: 'labelLegalRep3', managementRep: 'labelManagementRep',
+      legalPrivilegeHint: 'labelLegalPrivilegeHint', legalPrivilegeParties: 'labelLegalPrivilegeParties', legalPrivilegeRegulatory: 'labelLegalPrivilegeRegulatory',
+      legalPrivilegeSovereign: 'labelLegalPrivilegeSovereign', legalPrivilegeProtection: 'labelLegalPrivilegeProtection',
+      internalDisciplinary: 'labelInternalDisciplinary', externalReferral: 'labelExternalReferral',
+      independenceSigned: 'labelIndependenceSigned', noConflictDisclosed: 'labelNoConflictDisclosed', securityClearanceObtained: 'labelSecurityClearanceObtained',
+      termImmediate: 'labelTermImmediate', deduction: 'labelDeduction', finalWarning: 'labelFinalWarning',
+      referralProsecution: 'labelReferralProsecution', referralNazaha: 'labelReferralNazaha', referralSecurity: 'labelReferralSecurity',
       scopeAmendmentReason: 'labelScopeAmendmentReason', interviewClassification: 'labelInterviewClassification',
       rightsNotified: 'labelRightsNotified',       documentationMethod: 'labelDocumentationMethod', receiptResponseStatus: 'labelReceiptResponseStatus',
       interviewDate: 'labelInterviewDate', interviewDuration: 'labelInterviewDuration', summonsId: 'labelSummonsId', summonsStatus: 'labelSummonsStatus',
@@ -52,7 +73,7 @@
       rcaType: 'labelRcaType', rcaSubtype: 'labelRcaSubtype', rootCauses: 'labelRootCauses',
       filterControlRecs: 'labelFilterControlRecs',
       exportFilteredOnly: 'labelExportFilteredOnly',
-      searchCaseId: 'searchCaseId',
+      searchCaseId: 'searchCaseId', dateFrom: 'labelDateFrom', dateTo: 'labelDateTo', skipToMain: 'skipLink',
       showTip: 'labelShowTip',
       hideTip: 'labelHideTip',
       city: 'labelGeographicCity',
@@ -76,7 +97,7 @@
         var text = t(key);
         if (text !== key) {
           if (el.tagName === 'INPUT' && el.type === 'text' && key === 'searchCaseId') el.placeholder = text;
-          else if (el.tagName === 'LABEL' || el.tagName === 'TH' || el.tagName === 'H2' || el.tagName === 'H3' || el.tagName === 'SPAN') el.textContent = text;
+          else if (el.tagName === 'LABEL' || el.tagName === 'TH' || el.tagName === 'H2' || el.tagName === 'H3' || el.tagName === 'H4' || el.tagName === 'SPAN' || el.tagName === 'LEGEND' || el.tagName === 'STRONG' || el.tagName === 'P') el.textContent = text;
           else if (el.tagName === 'BUTTON' || el.tagName === 'A') el.textContent = text;
           else if (el.tagName === 'OPTION') el.textContent = text;
         }
@@ -92,6 +113,7 @@
     if (emptyEl) emptyEl.textContent = t('noCases');
     var titleEl = $('appTitle');
     if (titleEl) titleEl.textContent = t('appTitle');
+    if (typeof document !== 'undefined' && document.title !== undefined) document.title = t('appTitle');
     var listTitle = $('listTitle');
     if (listTitle) listTitle.textContent = t('navCases');
     var reportsTitle = $('reportsTitle');
@@ -126,16 +148,36 @@
     if (chainNote) chainNote.textContent = t('chainOfCustodyNote');
     var obstAlert = $('obstructionAlert');
     if (obstAlert) obstAlert.textContent = t('obstructionAlert');
+    document.querySelectorAll('[data-placeholder-key]').forEach(function (el) {
+      var key = el.getAttribute('data-placeholder-key');
+      if (key) el.placeholder = t(key);
+    });
+    document.querySelectorAll('option[data-i18n-option]').forEach(function (el) {
+      var key = el.getAttribute('data-i18n-option');
+      if (key) el.textContent = t(key);
+    });
     if (window.NinjaSettings && NinjaSettings.populateAllSelects) NinjaSettings.populateAllSelects();
     else fillPhaseOptions();
-    var formNavLinks = document.querySelectorAll('.form-section-nav-link');
+    var formNavLinks = document.querySelectorAll('.form-tab[role="tab"]');
     var sectionKeys = ['sectionCaseInfo','sectionScoring','sectionReporter','sectionClassification','sectionScope','sectionProcess','sectionInterview','sectionEvidence','sectionExternalParties','sectionImpact'];
-    formNavLinks.forEach(function (link, i) { if (sectionKeys[i]) link.textContent = t(sectionKeys[i]); });
+    formNavLinks.forEach(function (link, i) {
+      if (!sectionKeys[i]) return;
+      var labelEl = link.querySelector('.form-tab-label');
+      if (labelEl) labelEl.textContent = t(sectionKeys[i]);
+      else link.textContent = t(sectionKeys[i]);
+    });
+    var formSectionTitleEl = $('formSectionTitle');
+    if (formSectionTitleEl) {
+      var activeTab = document.querySelector('.form-tab[role="tab"][aria-selected="true"]');
+      var activeSection = activeTab && activeTab.getAttribute('data-section');
+      var idx = activeSection ? sectionKeys.indexOf(activeSection) : 0;
+      if (idx >= 0 && sectionKeys[idx]) formSectionTitleEl.textContent = t(sectionKeys[idx]);
+    }
     var formView = $('viewForm');
-    if (formView && formView.style.display === 'block') {
-      var ctx = $('formContext');
-      var caseIdVal = $('caseId') && $('caseId').value ? $('caseId').value.trim() : '';
-      if (ctx) ctx.textContent = caseIdVal ? (t('editingCase') + ' ' + caseIdVal) : t('newCase');
+    var main = document.getElementById('main');
+    var isFormView = formView && main && main.getAttribute('data-current-view') === 'form';
+    if (formView && isFormView && window.NinjaApp && typeof window.NinjaApp.updateFormContextDisplay === 'function') {
+      window.NinjaApp.updateFormContextDisplay();
     }
     var saveEditorBtn = $('settingsEditorSave');
     if (saveEditorBtn) saveEditorBtn.textContent = t('save');
@@ -217,20 +259,48 @@
         if (isObstruction && typeof NinjaI18n !== 'undefined' && NinjaI18n.t) obstAlert.textContent = NinjaI18n.t('obstructionAlert');
       });
     }
+    var legalPriv = form.querySelector('#legalPrivilege');
+    var legalPrivJust = form.querySelector('#legalPrivilegeJustificationGroup');
+    if (legalPriv && legalPrivJust) {
+      function toggleLegalPrivJust() { legalPrivJust.style.display = (legalPriv.value || '').trim() === 'Yes' ? 'block' : 'none'; }
+      legalPriv.addEventListener('change', toggleLegalPrivJust);
+      toggleLegalPrivJust();
+    }
+    var recType = form.querySelector('#recommendationType');
+    var closureSec = form.querySelector('#impactClosureSection');
+    var accountSec = form.querySelector('#impactAccountabilitySection');
+    if (recType && closureSec && accountSec) {
+      function toggleRecSections() {
+        var v = (recType.value || '').trim();
+        closureSec.style.display = v === 'Closure' ? 'block' : 'none';
+        accountSec.style.display = v === 'Referral' ? 'block' : 'none';
+      }
+      recType.addEventListener('change', toggleRecSections);
+      toggleRecSections();
+    }
   }
   window.NinjaApp = window.NinjaApp || {};
   window.NinjaApp.updateInterviewDuration = updateInterviewDuration;
 
   function init() {
     function setNavActiveFromPage() {
+      var hash = (window.location.hash || '').replace(/^#/, '');
+      if (hash === 'scoring-reference') hash = 'notes';
       var pathname = (window.location.pathname || '').toLowerCase();
-      var active = 'cases';
-      if (pathname.indexOf('reports') !== -1) active = 'reports';
-      else if (pathname.indexOf('settings') !== -1) active = 'settings';
+      var active = 'list';
+      if (hash === 'reports' || pathname.indexOf('reports') !== -1) active = 'reports';
+      else if (hash === 'settings' || pathname.indexOf('settings') !== -1) active = 'settings';
+      else if (hash === 'notes' || pathname.indexOf('notes') !== -1) active = 'notes';
+      else if (hash === 'list' || hash === '') active = 'list';
       document.querySelectorAll('.nav-links a').forEach(function (a) {
         a.classList.remove('active');
         var href = (a.getAttribute('href') || '');
         if (href.indexOf(active) !== -1) a.classList.add('active');
+      });
+      document.querySelectorAll('.nav-tab[role="tab"]').forEach(function (t) {
+        var v = t.getAttribute('data-view');
+        t.classList.toggle('active', v === active);
+        t.setAttribute('aria-selected', v === active ? 'true' : 'false');
       });
     }
 
@@ -238,10 +308,28 @@
       var viewListEl = document.getElementById('viewList');
       if (!viewListEl) return;
       if (loadList) loadList();
-      var initialView = (window.location.hash || '').replace(/^#/, '') || 'list';
-      if (initialView !== 'list' && initialView !== 'form') initialView = 'list';
+      var hash = (window.location.hash || '').replace(/^#/, '');
+      if (hash === 'scoring-reference') hash = 'notes';
+      var initialView = hash || 'list';
+      if (!document.getElementById('viewReports') && initialView === 'reports') initialView = 'list';
+      if (!document.getElementById('viewSettings') && initialView === 'settings') initialView = 'list';
+      if (!document.getElementById('viewNotes') && initialView === 'notes') initialView = 'list';
       var setViewFn = window.NinjaApp && window.NinjaApp.setView;
       if (setViewFn) setViewFn(initialView);
+    }
+
+    function bindTabClicks() {
+      document.querySelectorAll('.nav-tab[role="tab"]').forEach(function (tab) {
+        tab.addEventListener('click', function () {
+          var v = tab.getAttribute('data-view');
+          if (v && window.NinjaApp && window.NinjaApp.setView) window.NinjaApp.setView(v);
+        });
+      });
+      var logo = document.getElementById('appLogo');
+      if (logo) logo.addEventListener('click', function (e) {
+        e.preventDefault();
+        if (window.NinjaApp && window.NinjaApp.setView) window.NinjaApp.setView('list');
+      });
     }
 
     function onReady() {
@@ -274,9 +362,9 @@
           if ($('langEn')) $('langEn').classList.toggle('active', lang === 'en');
         }
         if ($('btnNewCase')) $('btnNewCase').addEventListener('click', function () { if (openCase) openCase(null); });
-        if ($('btnBackToList')) $('btnBackToList').addEventListener('click', function () { if (setView) setView('list'); });
+        if ($('btnBackToList')) $('btnBackToList').addEventListener('click', function () { var goBack = window.NinjaApp && window.NinjaApp.goBackToList; if (goBack) goBack(); else if (setView) setView('list'); });
         if ($('btnSave')) $('btnSave').addEventListener('click', function (e) { e.preventDefault(); if (saveCase) saveCase(); });
-        if ($('btnCancel')) $('btnCancel').addEventListener('click', function () { if (setView) setView('list'); });
+        if ($('btnCancel')) $('btnCancel').addEventListener('click', function () { var goBack = window.NinjaApp && window.NinjaApp.goBackToList; if (goBack) goBack(); else if (setView) setView('list'); });
         if ($('btnDelete')) $('btnDelete').addEventListener('click', function () { if (deleteCase) deleteCase(); });
         if ($('btnPrintReport')) $('btnPrintReport').addEventListener('click', function () {
           var form = $('caseForm');
@@ -441,44 +529,33 @@
         setupScoreListeners();
         setupInterviewWorkflow();
         if (window.NinjaSections && $('caseForm')) NinjaSections.init($('caseForm'));
+        if (window.NinjaApp && NinjaApp.bindFormDirty && $('caseForm')) NinjaApp.bindFormDirty($('caseForm'));
       });
     }
 
     if (typeof NinjaI18n === 'undefined' || !NinjaI18n.init) {
       setNavActiveFromPage();
+      bindTabClicks();
       bindNavAndShowList();
       if (document.getElementById('viewReports') && window.NinjaApp && window.NinjaApp.renderReports) window.NinjaApp.renderReports();
       if (document.getElementById('viewSettings') && window.NinjaApp && window.NinjaApp.renderSettingsDropdownList) window.NinjaApp.renderSettingsDropdownList();
-      var setViewFn = window.NinjaApp && window.NinjaApp.setView;
-      if (setViewFn) {
-        if (document.getElementById('viewReports')) setViewFn('reports');
-        else if (document.getElementById('viewSettings')) setViewFn('settings');
-      }
       return;
     }
     NinjaI18n.init()
       .then(function () { return onReady(); })
       .then(function () {
+        bindTabClicks();
         bindNavAndShowList();
         if (document.getElementById('viewReports') && window.NinjaApp && window.NinjaApp.renderReports) window.NinjaApp.renderReports();
         if (document.getElementById('viewSettings') && window.NinjaApp && window.NinjaApp.renderSettingsDropdownList) window.NinjaApp.renderSettingsDropdownList();
-        var setViewFn = window.NinjaApp && window.NinjaApp.setView;
-        if (setViewFn) {
-          if (document.getElementById('viewReports')) setViewFn('reports');
-          else if (document.getElementById('viewSettings')) setViewFn('settings');
-        }
       })
       .catch(function (err) {
-        document.documentElement.setAttribute('dir', 'ltr');
+        if (typeof NinjaI18n !== 'undefined' && NinjaI18n.applyDirLang) NinjaI18n.applyDirLang();
         setNavActiveFromPage();
+        bindTabClicks();
         bindNavAndShowList();
         if (document.getElementById('viewReports') && window.NinjaApp && window.NinjaApp.renderReports) window.NinjaApp.renderReports();
         if (document.getElementById('viewSettings') && window.NinjaApp && window.NinjaApp.renderSettingsDropdownList) window.NinjaApp.renderSettingsDropdownList();
-        var setViewFn = window.NinjaApp && window.NinjaApp.setView;
-        if (setViewFn) {
-          if (document.getElementById('viewReports')) setViewFn('reports');
-          else if (document.getElementById('viewSettings')) setViewFn('settings');
-        }
       });
   }
 

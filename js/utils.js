@@ -72,6 +72,20 @@
     requestAnimationFrame(function () { toast.classList.add('toast--visible'); });
   }
 
+  function bindLogoFallback() {
+    document.querySelectorAll('.app-logo img').forEach(function (img) {
+      img.addEventListener('error', function () {
+        this.style.display = 'none';
+        if (this.nextElementSibling) this.nextElementSibling.style.display = 'inline';
+      });
+    });
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bindLogoFallback);
+  } else {
+    bindLogoFallback();
+  }
+
   window.NinjaApp = window.NinjaApp || {};
   window.NinjaApp.$ = $;
   window.NinjaApp.showMessage = showMessage;

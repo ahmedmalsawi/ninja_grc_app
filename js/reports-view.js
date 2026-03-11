@@ -71,6 +71,11 @@
       if (thReporter) thReporter.style.display = showReporter ? '' : 'none';
       if (thSubScope) thSubScope.style.display = showSubScope ? '' : 'none';
 
+      if (filtered.length === 0) {
+        var t = NinjaI18n ? NinjaI18n.t.bind(NinjaI18n) : function (k) { return k; };
+        tbody.innerHTML = '<tr><td colspan="8" class="reports-empty-cell"><div class="reports-empty">' + (t('reportsEmpty') || 'No cases match your filters.') + '</div></td></tr>';
+        return;
+      }
       tbody.innerHTML = filtered
         .sort(function (a, b) { return (b.seq || 0) - (a.seq || 0); })
         .map(function (c) {
