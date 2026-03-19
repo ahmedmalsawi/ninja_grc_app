@@ -38,26 +38,28 @@
       scopeType: 'labelScopeType', subScope: 'labelSubScope', escalationLevel: 'labelEscalationLevel', severity: 'labelSeverity',
       investigationLimits: 'labelInvestigationLimits', investigationSubject: 'labelInvestigationSubject', scopeDateFrom: 'labelScopeDateFrom', scopeDateTo: 'labelScopeDateTo',
       scopeEntities: 'labelScopeEntities', scopeConstraints: 'labelScopeConstraints', scopeExclusions: 'labelScopeExclusions', independenceCompliance: 'labelIndependenceCompliance',
-      regulatoryRef: 'labelRegulatoryRef', regulatoryRefArticle: 'labelRegulatoryRefArticle', evidenceHashValue: 'labelEvidenceHashValue', evidenceItemsList: 'labelEvidenceItemsList',
+      regulatoryRef: 'labelRegulatoryRef', regulatoryRefArticle: 'labelRegulatoryRefArticle', evidenceHashValue: 'labelEvidenceHashValue',
       formChecklistHint: 'labelFormChecklistHint', qualityReviewHint: 'labelQualityReviewHint', deficiencies: 'labelDeficiencies', technicalViolation: 'labelTechnicalViolation', fiveWhys: 'labelFiveWhys', fiveWhys1: 'labelFiveWhys1', fiveWhys2: 'labelFiveWhys2', fiveWhys3: 'labelFiveWhys3', fiveWhys4: 'labelFiveWhys4', fiveWhys5: 'labelFiveWhys5',
       rootCauseClass: 'labelRootCauseClass', resultingImpact: 'labelResultingImpact', regulatoryImpact: 'labelRegulatoryImpact',
       financialOperationalImpact: 'labelFinancialOperationalImpact', reputationLegalImpact: 'labelReputationLegalImpact',
       assetRecovery: 'labelAssetRecovery', recoveryOpportunityValue: 'labelRecoveryOpportunityValue', recoveryStatus: 'labelRecoveryStatus', recoveryPath: 'labelRecoveryPath',
-      amountRecovered: 'labelAmountRecovered', netSavings: 'labelNetSavings', strategicRecs: 'labelStrategicRecs',
-      correctiveActions: 'labelCorrectiveActions', preventiveActions: 'labelPreventiveActions', closureReasons: 'labelClosureReasons',
+      amountRecovered: 'labelAmountRecovered', netSavings: 'labelNetSavings', assetRecoveryNotes: 'labelAssetRecoveryNotes', strategicRecs: 'labelStrategicRecs',
+      strategicRecsIntro: 'strategicRecsIntro', correctiveActions: 'labelCorrectiveActions', preventiveActions: 'labelPreventiveActions', closureReasons: 'labelClosureReasons',
       closureObjectiveReasons: 'labelClosureObjectiveReasons', closureTechnicalReasons: 'labelClosureTechnicalReasons', rcaGapClosed: 'labelRcaGapClosed',
       accountabilityDetails: 'labelAccountabilityDetails', assetRecoveryAmount: 'labelAssetRecoveryAmount', whistleblowerIncentive: 'labelWhistleblowerIncentive',
       grievanceDate: 'labelGrievanceDate', grievanceGrounds: 'labelGrievanceGrounds', grievanceAcceptance: 'labelGrievanceAcceptance', grievanceDecisionAmendment: 'labelGrievanceDecisionAmendment',
       interviewMulti: 'labelInterviewMulti', interview1: 'labelInterview1', interview2: 'labelInterview2', interview3: 'labelInterview3',
-      interviewMinutes: 'labelInterviewMinutes', interviewAdditional: 'labelInterviewAdditional',
+      interviewMinutes: 'labelInterviewMinutes',
       investigatingBody: 'labelInvestigatingBody', escalationJustification: 'labelEscalationJustification',
       precautionaryMeasures: 'labelPrecautionaryMeasures', teamMembers: 'labelTeamMembers',
       caseAcceptanceStatus: 'labelCaseAcceptanceStatus', legalPrivilege: 'labelLegalPrivilege', legalPrivilegeJustification: 'labelLegalPrivilegeJustification', clearance: 'labelClearance',
-      legalRep1: 'labelLegalRep1', legalRep2: 'labelLegalRep2', legalRep3: 'labelLegalRep3', managementRep: 'labelManagementRep',
+      precautionaryMeasuresOther: 'labelPrecautionaryMeasuresOther',
       legalPrivilegeHint: 'labelLegalPrivilegeHint', legalPrivilegeParties: 'labelLegalPrivilegeParties', legalPrivilegeRegulatory: 'labelLegalPrivilegeRegulatory',
       legalPrivilegeSovereign: 'labelLegalPrivilegeSovereign', legalPrivilegeProtection: 'labelLegalPrivilegeProtection',
       internalDisciplinary: 'labelInternalDisciplinary', externalReferral: 'labelExternalReferral',
       independenceSigned: 'labelIndependenceSigned', noConflictDisclosed: 'labelNoConflictDisclosed', securityClearanceObtained: 'labelSecurityClearanceObtained',
+      rootCauseHumanCb: 'labelRootCauseHumanCb', rootCauseOrgCb: 'labelRootCauseOrgCb', rootCauseTechCb: 'labelRootCauseTechCb',
+      closureNoViolationCb: 'labelClosureNoViolationCb', closureMaliciousCb: 'labelClosureMaliciousCb', closurePartialCb: 'labelClosurePartialCb', closureFileClosedCb: 'labelClosureFileClosedCb',
       termImmediate: 'labelTermImmediate', deduction: 'labelDeduction', finalWarning: 'labelFinalWarning',
       referralProsecution: 'labelReferralProsecution', referralNazaha: 'labelReferralNazaha', referralSecurity: 'labelReferralSecurity',
       scopeAmendmentReason: 'labelScopeAmendmentReason', interviewClassification: 'labelInterviewClassification',
@@ -122,8 +124,6 @@
     if (notesTitle) notesTitle.textContent = t('navNotes');
     var notesIntroEl = $('notesIntro');
     if (notesIntroEl) notesIntroEl.textContent = t('notesIntro');
-    var scoringRefSummary = $('scoringRefInlineSummary');
-    if (scoringRefSummary) scoringRefSummary.textContent = t('navNotes');
     var settingsTitleEl = $('settingsTitle');
     if (settingsTitleEl) settingsTitleEl.textContent = t('settingsTitle');
     var settingsIntroEl = $('settingsIntro');
@@ -152,14 +152,21 @@
       var key = el.getAttribute('data-placeholder-key');
       if (key) el.placeholder = t(key);
     });
+    var hintNetSavings = $('hintNetSavings');
+    if (hintNetSavings) hintNetSavings.textContent = t('placeholderAssetRecoveryNotes') || '';
+    var strategicIntro = $('strategicRecsIntro');
+    if (strategicIntro) strategicIntro.textContent = t('strategicRecsIntro') || '';
     document.querySelectorAll('option[data-i18n-option]').forEach(function (el) {
       var key = el.getAttribute('data-i18n-option');
       if (key) el.textContent = t(key);
     });
     if (window.NinjaSettings && NinjaSettings.populateAllSelects) NinjaSettings.populateAllSelects();
     else fillPhaseOptions();
+    if (window.NinjaForms && NinjaForms.refreshAllEvidenceRowSelects) NinjaForms.refreshAllEvidenceRowSelects();
+    if (window.NinjaForms && NinjaForms.refreshAllInterviewSessionLabels) NinjaForms.refreshAllInterviewSessionLabels();
+    if (window.NinjaForms && NinjaForms.refreshAllScopeDynamicLabels) NinjaForms.refreshAllScopeDynamicLabels();
     var formNavLinks = document.querySelectorAll('.form-tab[role="tab"]');
-    var sectionKeys = ['sectionCaseInfo','sectionScoring','sectionReporter','sectionClassification','sectionScope','sectionProcess','sectionInterview','sectionEvidence','sectionExternalParties','sectionImpact'];
+    var sectionKeys = ['sectionCaseInfo','sectionScoring','sectionReporter','sectionClassification','sectionScope','sectionProcess','sectionInterview','sectionEvidence','sectionExternalParties','sectionImpact','sectionReview','sectionGrievance'];
     formNavLinks.forEach(function (link, i) {
       if (!sectionKeys[i]) return;
       var labelEl = link.querySelector('.form-tab-label');
@@ -230,10 +237,17 @@
   function updateInterviewDuration() {
     var received = $('receivedDate');
     var interview = $('interviewDate');
+    if (!interview) {
+      var container = document.getElementById('interviewSessionsContainer');
+      if (container) {
+        var firstRow = container.querySelector('[data-interview-session]');
+        if (firstRow) interview = firstRow.querySelector('input[data-int-k="interviewDate"]');
+      }
+    }
     var out = $('interviewDurationDays');
-    if (!received || !interview || !out) return;
+    if (!received || !out) return;
     var r = received.value ? new Date(received.value) : null;
-    var i = interview.value ? new Date(interview.value) : null;
+    var i = interview && interview.value ? new Date(interview.value) : null;
     if (r && i && !isNaN(r.getTime()) && !isNaN(i.getTime())) {
       var days = Math.round((i - r) / (24 * 60 * 60 * 1000));
       out.textContent = days >= 0 ? String(days) : '—';
@@ -242,15 +256,38 @@
     }
   }
 
+  function toggleScopeAmendmentReason() {
+    var sel = document.getElementById('caseAcceptanceStatus');
+    var wrap = document.getElementById('scopeAmendmentReasonWrap');
+    if (!sel || !wrap) return;
+    wrap.style.display = (sel.value === 'Scope amended') ? '' : 'none';
+  }
+
+  function togglePrecautionaryOther() {
+    var sel = document.getElementById('precautionaryMeasures');
+    var wrap = document.getElementById('precautionaryMeasuresOtherWrap');
+    if (!sel || !wrap) return;
+    wrap.style.display = (sel.value === 'OtherPrecautionary') ? 'block' : 'none';
+  }
+
   function setupInterviewWorkflow() {
     var form = $('caseForm');
     if (!form) return;
+    var prec = form.querySelector('#precautionaryMeasures');
+    if (prec) {
+      prec.addEventListener('change', togglePrecautionaryOther);
+      togglePrecautionaryOther();
+    }
     var received = form.querySelector('#receivedDate');
     var interview = form.querySelector('#interviewDate');
-    var receipt = form.querySelector('#receiptResponseStatus');
-    var obstAlert = form.querySelector('#obstructionAlert');
+    var sessionsContainer = form.querySelector('#interviewSessionsContainer');
     if (received) received.addEventListener('change', updateInterviewDuration);
     if (interview) interview.addEventListener('change', updateInterviewDuration);
+    if (sessionsContainer) sessionsContainer.addEventListener('change', function (e) {
+      if (e.target && e.target.getAttribute && e.target.getAttribute('data-int-k') === 'interviewDate') updateInterviewDuration();
+    });
+    var receipt = form.querySelector('#receiptResponseStatus');
+    var obstAlert = form.querySelector('#obstructionAlert');
     if (receipt && obstAlert) {
       receipt.addEventListener('change', function () {
         var v = (receipt.value || '').trim();
@@ -258,6 +295,11 @@
         obstAlert.style.display = isObstruction ? 'block' : 'none';
         if (isObstruction && typeof NinjaI18n !== 'undefined' && NinjaI18n.t) obstAlert.textContent = NinjaI18n.t('obstructionAlert');
       });
+    }
+    var caseAccept = form.querySelector('#caseAcceptanceStatus');
+    if (caseAccept) {
+      caseAccept.addEventListener('change', toggleScopeAmendmentReason);
+      toggleScopeAmendmentReason();
     }
     var legalPriv = form.querySelector('#legalPrivilege');
     var legalPrivJust = form.querySelector('#legalPrivilegeJustificationGroup');
@@ -281,6 +323,8 @@
   }
   window.NinjaApp = window.NinjaApp || {};
   window.NinjaApp.updateInterviewDuration = updateInterviewDuration;
+  window.NinjaApp.togglePrecautionaryOther = togglePrecautionaryOther;
+  window.NinjaApp.toggleScopeAmendmentReason = toggleScopeAmendmentReason;
 
   function init() {
     function setNavActiveFromPage() {
@@ -345,6 +389,9 @@
           applyTranslations();
           if (window.NinjaTips && NinjaTips.refreshTips) NinjaTips.refreshTips();
           if (window.NinjaSettings && NinjaSettings.populateAllSelects) NinjaSettings.populateAllSelects();
+          if (window.NinjaForms && NinjaForms.refreshAllEvidenceRowSelects) NinjaForms.refreshAllEvidenceRowSelects();
+    if (window.NinjaForms && NinjaForms.refreshAllInterviewSessionLabels) NinjaForms.refreshAllInterviewSessionLabels();
+    if (window.NinjaForms && NinjaForms.refreshAllScopeDynamicLabels) NinjaForms.refreshAllScopeDynamicLabels();
           if (loadList && document.getElementById('viewList')) loadList();
         });
         if ($('langEn')) $('langEn').addEventListener('click', function () {
@@ -354,6 +401,9 @@
           applyTranslations();
           if (window.NinjaTips && NinjaTips.refreshTips) NinjaTips.refreshTips();
           if (window.NinjaSettings && NinjaSettings.populateAllSelects) NinjaSettings.populateAllSelects();
+          if (window.NinjaForms && NinjaForms.refreshAllEvidenceRowSelects) NinjaForms.refreshAllEvidenceRowSelects();
+    if (window.NinjaForms && NinjaForms.refreshAllInterviewSessionLabels) NinjaForms.refreshAllInterviewSessionLabels();
+    if (window.NinjaForms && NinjaForms.refreshAllScopeDynamicLabels) NinjaForms.refreshAllScopeDynamicLabels();
           if (loadList && document.getElementById('viewList')) loadList();
         });
         if (NinjaI18n) {

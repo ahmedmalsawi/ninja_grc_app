@@ -74,28 +74,30 @@
         escalationJustification: '',
         severity: '',
         precautionaryMeasures: '',
+        precautionaryMeasuresOther: '',
         investigatingBody: [],
-        teamMembers: []
+        teamMembers: [],
+        teamMemberRoster: [],
+        scopeEntityRows: [emptyScopeEntityRow()],
+        constraintItems: [emptyConstraintRow()]
       },
       process: {
         caseAcceptanceStatus: '',
         legalPrivilege: '',
-        legalRep1: '',
-        legalRep2: '',
-        legalRep3: '',
-        managementRep: '',
         legalPrivilegeJustification: [],
         clearance: '',
         scopeAmendmentReason: ''
       },
-      interview: {},
+      interview: { sessions: [emptyInterviewSession()] },
       evidenceDetails: {
         formOfEvidence: '',
         dataCategory: '',
         examinationType: '',
         chainOfCustody: '',
-        supportingParty: ''
+        supportingParty: '',
+        evidenceLinkUrl: ''
       },
+      evidenceRecords: [],
       externalParties: {},
       impact: {
         currentStatus: 'Open',
@@ -106,15 +108,503 @@
         conclusions: '',
         recommendations: '',
         disciplinaryAction: '',
-        impactValue: '',
-        impactCurrency: '',
-        recoveryValue: '',
-        rcaType: '',
-        rcaSubtype: '',
-        rootCauses: '',
         mandatoryLevel: ''
       }
     };
+  }
+
+  var EVIDENCE_ROW_KEYS = ['formOfEvidence', 'dataCategory', 'examinationType', 'evidenceHashValue', 'chainOfCustody', 'supportingParty', 'evidenceLinkUrl'];
+
+  var SCOPE_ENTITY_KEYS = ['relatedEntity', 'jobNumber', 'personName'];
+  var SCOPE_CONSTRAINT_KEY = 'constraintText';
+
+  function emptyScopeEntityRow() {
+    var o = {};
+    SCOPE_ENTITY_KEYS.forEach(function (k) { o[k] = ''; });
+    return o;
+  }
+
+  function emptyConstraintRow() {
+    return { constraintText: '' };
+  }
+
+  var INTERVIEW_SESSION_KEYS = ['intervieweeName', 'intervieweeJobNumber', 'classification', 'interviewDate', 'rightsNotified', 'documentationMethod', 'receiptResponseStatus', 'summonsId', 'summonsStatus', 'minutes'];
+
+  function emptyInterviewSession() {
+    var o = {};
+    INTERVIEW_SESSION_KEYS.forEach(function (k) { o[k] = ''; });
+    return o;
+  }
+
+  function emptyEvidenceRecord() {
+    var o = {};
+    EVIDENCE_ROW_KEYS.forEach(function (k) { o[k] = ''; });
+    return o;
+  }
+
+  function collectEvidenceRecordsFromForm(formEl) {
+    var c = formEl.querySelector('#evidenceRecordsContainer');
+    if (!c) {
+      var g = function (id) {
+        var el = formEl.querySelector('#' + id);
+        return el ? (el.value || '').trim() : '';
+      };
+      return [{
+        formOfEvidence: g('formOfEvidence'),
+        dataCategory: g('dataCategory'),
+        examinationType: g('examinationType'),
+        evidenceHashValue: g('evidenceHashValue'),
+        chainOfCustody: g('chainOfCustody'),
+        supportingParty: g('supportingParty'),
+        evidenceLinkUrl: g('evidenceLinkUrl')
+      }];
+    }
+    var rows = c.querySelectorAll('[data-evidence-record]');
+    var out = [];
+    rows.forEach(function (row) {
+      var o = {};
+      EVIDENCE_ROW_KEYS.forEach(function (k) {
+        var el = row.querySelector('[data-ev-k="' + k + '"]');
+        o[k] = el ? (el.value || '').trim() : '';
+      });
+      out.push(o);
+    });
+    return out.length ? out : [emptyEvidenceRecord()];
+  }
+
+  function populateEvidenceRecordRow(row) {
+    var lang = (typeof NinjaI18n !== 'undefined' && NinjaI18n.getLang) ? NinjaI18n.getLang() : 'en';
+    var t = (typeof NinjaI18n !== 'undefined' && NinjaI18n.t) ? NinjaI18n.t.bind(NinjaI18n) : function (k) { return k; };
+    if (window.NinjaSettings && NinjaSettings.populateSelect) {
+      [['formOfEvidence', 'formOfEvidence'], ['dataCategory', 'dataCategory'], ['examinationType', 'examinationType'], ['supportingParty', 'supportingParty']].forEach(function (pair) {
+        var sel = row.querySelector('select[data-ev-k="' + pair[0] + '"]');
+        if (sel) NinjaSettings.populateSelect(sel, pair[1], { lang: lang });
+      });
+    }
+    [['label-formOfEvidence', 'formOfEvidence'], ['label-dataCategory', 'dataCategory'], ['label-examinationType', 'examinationType'], ['label-evidenceHashValue', 'evidenceHashValue'], ['label-chainOfCustody', 'chainOfCustody'], ['label-evidenceLinkUrl', 'evidenceLinkUrl'], ['label-supportingParty', 'supportingParty']].forEach(function (pair) {
+      var el = row.querySelector('.' + pair[0]);
+      if (el) el.textContent = t(pair[1]);
+    });
+  }
+
+  function refreshAllEvidenceRowSelects() {
+    var c = document.getElementById('evidenceRecordsContainer');
+    if (!c) return;
+    c.querySelectorAll('[data-evidence-record]').forEach(function (row) {
+      var vals = {};
+      EVIDENCE_ROW_KEYS.forEach(function (k) {
+        var el = row.querySelector('[data-ev-k="' + k + '"]');
+        if (el) vals[k] = el.value;
+      });
+      populateEvidenceRecordRow(row);
+      EVIDENCE_ROW_KEYS.forEach(function (k) {
+        var el = row.querySelector('[data-ev-k="' + k + '"]');
+        if (el && vals[k] != null) el.value = vals[k];
+      });
+    });
+  }
+
+  function updateEvidenceRecordHeadings(container) {
+    if (!container) return;
+    var t = (typeof NinjaI18n !== 'undefined' && NinjaI18n.t) ? NinjaI18n.t.bind(NinjaI18n) : function (k) { return k; };
+    var rows = container.querySelectorAll('[data-evidence-record]');
+    rows.forEach(function (row, i) {
+      var h = row.querySelector('.evidence-record-heading');
+      if (h) h.textContent = (t('evidenceRecordTitle') || 'Evidence') + ' ' + (i + 1);
+      var rm = row.querySelector('.btn-remove-evidence-record');
+      if (rm) rm.style.display = rows.length > 1 ? 'inline-block' : 'none';
+      var rb = row.querySelector('.btn-remove-evidence-record');
+      if (rb) rb.textContent = t('removeEvidenceRecord') || 'Remove';
+    });
+    var addBtn = document.getElementById('btnAddEvidenceRecord');
+    if (addBtn && t) addBtn.textContent = t('addEvidenceRecord') || addBtn.textContent;
+  }
+
+  function fillEvidenceRecordsInForm(formEl, caseObj) {
+    var c = formEl.querySelector('#evidenceRecordsContainer');
+    var tpl = document.getElementById('evidenceRecordTpl');
+    if (!c || !tpl || !tpl.content) {
+      var evidenceSection = caseObj.evidenceDetails || (typeof caseObj.evidence === 'object' && caseObj.evidence && !Array.isArray(caseObj.evidence) ? caseObj.evidence : null);
+      setFormValue(formEl, 'formOfEvidence', evidenceSection && evidenceSection.formOfEvidence != null ? evidenceSection.formOfEvidence : '');
+      setFormValue(formEl, 'dataCategory', evidenceSection && evidenceSection.dataCategory != null ? evidenceSection.dataCategory : '');
+      setFormValue(formEl, 'examinationType', evidenceSection && evidenceSection.examinationType != null ? evidenceSection.examinationType : '');
+      setFormValue(formEl, 'evidenceHashValue', evidenceSection && evidenceSection.evidenceHashValue != null ? evidenceSection.evidenceHashValue : '');
+      setFormValue(formEl, 'chainOfCustody', evidenceSection && evidenceSection.chainOfCustody != null ? evidenceSection.chainOfCustody : '');
+      setFormValue(formEl, 'evidenceLinkUrl', evidenceSection && evidenceSection.evidenceLinkUrl != null ? evidenceSection.evidenceLinkUrl : '');
+      setFormValue(formEl, 'supportingParty', evidenceSection && evidenceSection.supportingParty != null ? evidenceSection.supportingParty : '');
+      return;
+    }
+    var records = (caseObj.evidenceRecords && Array.isArray(caseObj.evidenceRecords) && caseObj.evidenceRecords.length)
+      ? caseObj.evidenceRecords.slice()
+      : null;
+    if (!records || !records.length) {
+      var leg = caseObj.evidenceDetails || (typeof caseObj.evidence === 'object' && caseObj.evidence && !Array.isArray(caseObj.evidence) ? caseObj.evidence : null);
+      var hasLeg = leg && EVIDENCE_ROW_KEYS.some(function (k) { return leg[k] && String(leg[k]).trim(); });
+      records = hasLeg ? [Object.assign(emptyEvidenceRecord(), leg)] : [emptyEvidenceRecord()];
+    }
+    c.innerHTML = '';
+    records.forEach(function (rec) {
+      var row = tpl.content.firstElementChild.cloneNode(true);
+      c.appendChild(row);
+      populateEvidenceRecordRow(row);
+      EVIDENCE_ROW_KEYS.forEach(function (k) {
+        var el = row.querySelector('[data-ev-k="' + k + '"]');
+        if (el) el.value = rec[k] != null ? rec[k] : '';
+      });
+    });
+    updateEvidenceRecordHeadings(c);
+  }
+
+  function bindEvidenceRecordsUI(formEl) {
+    var c = formEl.querySelector('#evidenceRecordsContainer');
+    var tpl = document.getElementById('evidenceRecordTpl');
+    var addBtn = document.getElementById('btnAddEvidenceRecord');
+    if (!c || !tpl || !addBtn) return;
+    if (addBtn.dataset.evidenceBound) return;
+    addBtn.dataset.evidenceBound = '1';
+    addBtn.addEventListener('click', function () {
+      var row = tpl.content.firstElementChild.cloneNode(true);
+      c.appendChild(row);
+      populateEvidenceRecordRow(row);
+      updateEvidenceRecordHeadings(c);
+    });
+    c.addEventListener('click', function (e) {
+      var btn = e.target && e.target.closest && e.target.closest('.btn-remove-evidence-record');
+      if (!btn || !c.contains(btn)) return;
+      var row = btn.closest('[data-evidence-record]');
+      if (!row || c.querySelectorAll('[data-evidence-record]').length <= 1) return;
+      row.remove();
+      updateEvidenceRecordHeadings(c);
+    });
+  }
+
+  function collectScopeEntityRows(formEl) {
+    var c = formEl.querySelector('#scopeEntitiesContainer');
+    if (!c) return null;
+    var rows = c.querySelectorAll('[data-scope-entity]');
+    var out = [];
+    rows.forEach(function (row) {
+      var o = {};
+      SCOPE_ENTITY_KEYS.forEach(function (k) {
+        var el = row.querySelector('[data-se-k="' + k + '"]');
+        o[k] = el ? (el.value || '').trim() : '';
+      });
+      out.push(o);
+    });
+    return out.length ? out : [emptyScopeEntityRow()];
+  }
+
+  function collectConstraintItems(formEl) {
+    var c = formEl.querySelector('#scopeConstraintsContainer');
+    if (!c) return null;
+    var rows = c.querySelectorAll('[data-scope-constraint]');
+    var out = [];
+    rows.forEach(function (row) {
+      var el = row.querySelector('[data-sc-k="' + SCOPE_CONSTRAINT_KEY + '"]');
+      out.push({ constraintText: el ? (el.value || '').trim() : '' });
+    });
+    return out.length ? out : [emptyConstraintRow()];
+  }
+
+  function populateScopeEntityRow(row) {
+    var t = (typeof NinjaI18n !== 'undefined' && NinjaI18n.t) ? NinjaI18n.t.bind(NinjaI18n) : function (k) { return k; };
+    [['relatedEntity', 'relatedEntityLabel'], ['jobNumber', 'teamMemberJobNumber'], ['personName', 'name']].forEach(function (pair) {
+      var el = row.querySelector('.label-' + pair[0]);
+      if (el) el.textContent = t(pair[1]);
+    });
+  }
+
+  function updateScopeEntityHeadings(container) {
+    if (!container) return;
+    var t = (typeof NinjaI18n !== 'undefined' && NinjaI18n.t) ? NinjaI18n.t.bind(NinjaI18n) : function (k) { return k; };
+    var rows = container.querySelectorAll('[data-scope-entity]');
+    rows.forEach(function (row, i) {
+      var h = row.querySelector('.scope-entity-heading');
+      if (h) h.textContent = (t('scopeEntityRowTitle') || 'Related party') + ' ' + (i + 1);
+      var rm = row.querySelector('.btn-remove-scope-entity');
+      if (rm) {
+        rm.style.display = rows.length > 1 ? 'inline-block' : 'none';
+        rm.textContent = t('removeScopeEntityRow') || 'Remove';
+      }
+    });
+    var addBtn = document.getElementById('btnAddScopeEntity');
+    if (addBtn && t) addBtn.textContent = t('addScopeEntity') || addBtn.textContent;
+  }
+
+  function fillScopeEntityRowsInForm(formEl, caseObj) {
+    var c = formEl.querySelector('#scopeEntitiesContainer');
+    var tpl = document.getElementById('scopeEntityRowTpl');
+    if (!c || !tpl || !tpl.content) return;
+    var sc = caseObj.scope || {};
+    var rows = (sc.scopeEntityRows && Array.isArray(sc.scopeEntityRows) && sc.scopeEntityRows.length) ? sc.scopeEntityRows.slice() : null;
+    if (!rows || !rows.length) {
+      var leg = (sc.scopeEntities && String(sc.scopeEntities).trim()) ? String(sc.scopeEntities).trim() : '';
+      rows = leg ? [{ relatedEntity: leg, jobNumber: '', personName: '' }] : [emptyScopeEntityRow()];
+    }
+    c.innerHTML = '';
+    rows.forEach(function (rec) {
+      var row = tpl.content.firstElementChild.cloneNode(true);
+      c.appendChild(row);
+      populateScopeEntityRow(row);
+      SCOPE_ENTITY_KEYS.forEach(function (k) {
+        var el = row.querySelector('[data-se-k="' + k + '"]');
+        if (el) el.value = rec[k] != null ? rec[k] : '';
+      });
+    });
+    updateScopeEntityHeadings(c);
+  }
+
+  function populateConstraintRow(row) {
+    var t = (typeof NinjaI18n !== 'undefined' && NinjaI18n.t) ? NinjaI18n.t.bind(NinjaI18n) : function (k) { return k; };
+    var el = row.querySelector('.label-constraintText');
+    if (el) el.textContent = t('constraintItemLabel') || 'Constraint';
+  }
+
+  function updateConstraintHeadings(container) {
+    if (!container) return;
+    var t = (typeof NinjaI18n !== 'undefined' && NinjaI18n.t) ? NinjaI18n.t.bind(NinjaI18n) : function (k) { return k; };
+    var rows = container.querySelectorAll('[data-scope-constraint]');
+    rows.forEach(function (row) {
+      var rm = row.querySelector('.btn-remove-scope-constraint');
+      if (rm) {
+        rm.style.display = rows.length > 1 ? 'inline-block' : 'none';
+        rm.textContent = t('removeConstraintRow') || 'Remove';
+      }
+    });
+    var addBtn = document.getElementById('btnAddScopeConstraint');
+    if (addBtn && t) addBtn.textContent = t('addScopeConstraint') || addBtn.textContent;
+  }
+
+  function fillConstraintItemsInForm(formEl, caseObj) {
+    var c = formEl.querySelector('#scopeConstraintsContainer');
+    var tpl = document.getElementById('scopeConstraintRowTpl');
+    if (!c || !tpl || !tpl.content) return;
+    var sc = caseObj.scope || {};
+    var items = (sc.constraintItems && Array.isArray(sc.constraintItems) && sc.constraintItems.length) ? sc.constraintItems.slice() : null;
+    if (!items || !items.length) {
+      var leg = (sc.scopeConstraints && String(sc.scopeConstraints).trim()) ? String(sc.scopeConstraints).trim() : '';
+      if (leg) {
+        items = leg.split(/\r?\n/).map(function (line) { return { constraintText: line.trim() }; }).filter(function (x) { return x.constraintText; });
+      }
+      if (!items || !items.length) items = [emptyConstraintRow()];
+    }
+    c.innerHTML = '';
+    items.forEach(function (rec) {
+      var row = tpl.content.firstElementChild.cloneNode(true);
+      c.appendChild(row);
+      populateConstraintRow(row);
+      var el = row.querySelector('[data-sc-k="constraintText"]');
+      if (el) el.value = rec.constraintText != null ? rec.constraintText : '';
+    });
+    updateConstraintHeadings(c);
+  }
+
+  function bindScopeEntityRowsUI(formEl) {
+    var c = formEl.querySelector('#scopeEntitiesContainer');
+    var tpl = document.getElementById('scopeEntityRowTpl');
+    var addBtn = document.getElementById('btnAddScopeEntity');
+    if (!c || !tpl || !addBtn) return;
+    if (addBtn.dataset.scopeEntityBound) return;
+    addBtn.dataset.scopeEntityBound = '1';
+    addBtn.addEventListener('click', function () {
+      var row = tpl.content.firstElementChild.cloneNode(true);
+      c.appendChild(row);
+      populateScopeEntityRow(row);
+      updateScopeEntityHeadings(c);
+    });
+    c.addEventListener('click', function (e) {
+      var btn = e.target && e.target.closest && e.target.closest('.btn-remove-scope-entity');
+      if (!btn || !c.contains(btn)) return;
+      var row = btn.closest('[data-scope-entity]');
+      if (!row || c.querySelectorAll('[data-scope-entity]').length <= 1) return;
+      row.remove();
+      updateScopeEntityHeadings(c);
+    });
+  }
+
+  function bindScopeConstraintsUI(formEl) {
+    var c = formEl.querySelector('#scopeConstraintsContainer');
+    var tpl = document.getElementById('scopeConstraintRowTpl');
+    var addBtn = document.getElementById('btnAddScopeConstraint');
+    if (!c || !tpl || !addBtn) return;
+    if (addBtn.dataset.scopeConstraintBound) return;
+    addBtn.dataset.scopeConstraintBound = '1';
+    addBtn.addEventListener('click', function () {
+      var row = tpl.content.firstElementChild.cloneNode(true);
+      c.appendChild(row);
+      populateConstraintRow(row);
+      updateConstraintHeadings(c);
+    });
+    c.addEventListener('click', function (e) {
+      var btn = e.target && e.target.closest && e.target.closest('.btn-remove-scope-constraint');
+      if (!btn || !c.contains(btn)) return;
+      var row = btn.closest('[data-scope-constraint]');
+      if (!row || c.querySelectorAll('[data-scope-constraint]').length <= 1) return;
+      row.remove();
+      updateConstraintHeadings(c);
+    });
+  }
+
+  function refreshAllScopeDynamicLabels() {
+    var ce = document.getElementById('scopeEntitiesContainer');
+    if (ce) {
+      ce.querySelectorAll('[data-scope-entity]').forEach(function (row) { populateScopeEntityRow(row); });
+      updateScopeEntityHeadings(ce);
+    }
+    var cc = document.getElementById('scopeConstraintsContainer');
+    if (cc) {
+      cc.querySelectorAll('[data-scope-constraint]').forEach(function (row) { populateConstraintRow(row); });
+      updateConstraintHeadings(cc);
+    }
+  }
+
+  function collectInterviewSessions(formEl) {
+    var c = formEl.querySelector('#interviewSessionsContainer');
+    if (!c) return null;
+    var rows = c.querySelectorAll('[data-interview-session]');
+    var out = [];
+    rows.forEach(function (row) {
+      var o = {};
+      INTERVIEW_SESSION_KEYS.forEach(function (k) {
+        var el = row.querySelector('[data-int-k="' + k + '"]');
+        o[k] = el ? (el.value || '').trim() : '';
+      });
+      out.push(o);
+    });
+    return out.length ? out : [emptyInterviewSession()];
+  }
+
+  function populateInterviewSessionRow(row) {
+    var lang = (typeof NinjaI18n !== 'undefined' && NinjaI18n.getLang) ? NinjaI18n.getLang() : 'en';
+    var t = (typeof NinjaI18n !== 'undefined' && NinjaI18n.t) ? NinjaI18n.t.bind(NinjaI18n) : function (k) { return k; };
+    if (window.NinjaSettings && NinjaSettings.populateSelect) {
+      var receiptSel = row.querySelector('select.interview-session-receipt');
+      var summonsSel = row.querySelector('select.interview-session-summons');
+      if (receiptSel) NinjaSettings.populateSelect(receiptSel, 'receiptResponseStatus', { lang: lang });
+      if (summonsSel) NinjaSettings.populateSelect(summonsSel, 'summonsStatus', { lang: lang });
+    }
+    [['intervieweeName', 'intervieweeName'], ['intervieweeJobNumber', 'intervieweeJobNumber'], ['interviewClassification', 'interviewClassification'], ['interviewDate', 'interviewDate'], ['rightsNotified', 'rightsNotified'], ['documentationMethod', 'documentationMethod'], ['receiptResponseStatus', 'receiptResponseStatus'], ['summonsId', 'summonsId'], ['summonsStatus', 'summonsStatus'], ['interviewMinutes', 'interviewMinutes']].forEach(function (pair) {
+      var el = row.querySelector('.label-' + pair[0]);
+      if (el) el.textContent = t(pair[1]);
+    });
+  }
+
+  function updateInterviewSessionHeadings(container) {
+    if (!container) return;
+    var t = (typeof NinjaI18n !== 'undefined' && NinjaI18n.t) ? NinjaI18n.t.bind(NinjaI18n) : function (k) { return k; };
+    var rows = container.querySelectorAll('[data-interview-session]');
+    rows.forEach(function (row, i) {
+      var h = row.querySelector('.interview-session-heading');
+      if (h) h.textContent = (t('interviewSessionTitle') || 'Interview') + ' ' + (i + 1);
+      var rm = row.querySelector('.btn-remove-interview-session');
+      if (rm) rm.style.display = rows.length > 1 ? 'inline-block' : 'none';
+      if (rm) rm.textContent = t('removeInterviewRecord') || 'Remove';
+    });
+    var addBtn = document.getElementById('btnAddInterviewRecord');
+    if (addBtn && t) addBtn.textContent = t('addInterviewRecord') || addBtn.textContent;
+  }
+
+  function fillInterviewSessions(formEl, caseObj) {
+    var c = formEl.querySelector('#interviewSessionsContainer');
+    var tpl = document.getElementById('interviewSessionTpl');
+    if (!c || !tpl || !tpl.content) return;
+    var iv = caseObj.interview || {};
+    var sessions = (iv.sessions && Array.isArray(iv.sessions) && iv.sessions.length) ? iv.sessions.slice() : null;
+    if (!sessions || !sessions.length) {
+      var hasLegacy = iv.classification || iv.interviewDate || (iv.interview2Classification || iv.interview2Date) || (iv.interview3Classification || iv.interview3Date);
+      if (hasLegacy) {
+        sessions = [];
+        sessions.push({
+          intervieweeName: '',
+          intervieweeJobNumber: '',
+          classification: iv.classification || '',
+          interviewDate: iv.interviewDate || '',
+          rightsNotified: iv.rightsNotified || '',
+          documentationMethod: iv.documentationMethod || '',
+          receiptResponseStatus: iv.receiptResponseStatus || '',
+          summonsId: iv.summonsId || '',
+          summonsStatus: iv.summonsStatus || '',
+          minutes: ''
+        });
+        if (iv.interview2Classification || iv.interview2Date || iv.interview2RightsNotified || iv.interview2Minutes) {
+          sessions.push({
+            intervieweeName: '',
+            intervieweeJobNumber: '',
+            classification: iv.interview2Classification || '',
+            interviewDate: iv.interview2Date || '',
+            rightsNotified: iv.interview2RightsNotified || '',
+            documentationMethod: '',
+            receiptResponseStatus: '',
+            summonsId: '',
+            summonsStatus: '',
+            minutes: iv.interview2Minutes || ''
+          });
+        }
+        if (iv.interview3Classification || iv.interview3Date || iv.interview3RightsNotified || iv.interview3Minutes) {
+          sessions.push({
+            intervieweeName: '',
+            intervieweeJobNumber: '',
+            classification: iv.interview3Classification || '',
+            interviewDate: iv.interview3Date || '',
+            rightsNotified: iv.interview3RightsNotified || '',
+            documentationMethod: '',
+            receiptResponseStatus: '',
+            summonsId: '',
+            summonsStatus: '',
+            minutes: iv.interview3Minutes || ''
+          });
+        }
+      }
+      if (!sessions || !sessions.length) sessions = [emptyInterviewSession()];
+    }
+    c.innerHTML = '';
+    sessions.forEach(function (sess) {
+      var row = tpl.content.firstElementChild.cloneNode(true);
+      c.appendChild(row);
+      populateInterviewSessionRow(row);
+      INTERVIEW_SESSION_KEYS.forEach(function (k) {
+        var el = row.querySelector('[data-int-k="' + k + '"]');
+        if (el) el.value = sess[k] != null ? sess[k] : '';
+      });
+    });
+    updateInterviewSessionHeadings(c);
+  }
+
+  function refreshAllInterviewSessionLabels() {
+    var c = document.getElementById('interviewSessionsContainer');
+    if (!c) return;
+    c.querySelectorAll('[data-interview-session]').forEach(function (row) {
+      populateInterviewSessionRow(row);
+    });
+    updateInterviewSessionHeadings(c);
+  }
+
+  function bindInterviewSessionsUI(formEl) {
+    var c = formEl.querySelector('#interviewSessionsContainer');
+    var tpl = document.getElementById('interviewSessionTpl');
+    var addBtn = document.getElementById('btnAddInterviewRecord');
+    if (!c || !tpl || !addBtn) return;
+    if (addBtn.dataset.interviewBound) return;
+    addBtn.dataset.interviewBound = '1';
+    addBtn.addEventListener('click', function () {
+      var row = tpl.content.firstElementChild.cloneNode(true);
+      c.appendChild(row);
+      populateInterviewSessionRow(row);
+      updateInterviewSessionHeadings(c);
+      if (window.NinjaApp && window.NinjaApp.updateInterviewDuration) window.NinjaApp.updateInterviewDuration();
+    });
+    c.addEventListener('click', function (e) {
+      var btn = e.target && e.target.closest && e.target.closest('.btn-remove-interview-session');
+      if (!btn || !c.contains(btn)) return;
+      var row = btn.closest('[data-interview-session]');
+      if (!row || c.querySelectorAll('[data-interview-session]').length <= 1) return;
+      row.remove();
+      updateInterviewSessionHeadings(c);
+      if (window.NinjaApp && window.NinjaApp.updateInterviewDuration) window.NinjaApp.updateInterviewDuration();
+    });
+    c.addEventListener('change', function () {
+      if (window.NinjaApp && window.NinjaApp.updateInterviewDuration) window.NinjaApp.updateInterviewDuration();
+    });
   }
 
   function getFormValue(formEl, id, isNumber) {
@@ -174,6 +664,9 @@
     var indSigned = formEl.querySelector('[name="scope.independenceSigned"]');
     var noConflict = formEl.querySelector('[name="scope.noConflictDisclosed"]');
     var secClear = formEl.querySelector('[name="scope.securityClearanceObtained"]');
+    var tmRoster = (window.NinjaSettings && NinjaSettings.collectTeamMemberRoster) ? NinjaSettings.collectTeamMemberRoster() : { roles: [], roster: [] };
+    var scopeEntityRowsCollected = collectScopeEntityRows(formEl);
+    var constraintItemsCollected = collectConstraintItems(formEl);
     caseObj.scope = {
       scope: get('scopeType'),
       subScope: get('subScope'),
@@ -181,57 +674,69 @@
       escalationJustification: get('escalationJustification'),
       severity: get('severity'),
       precautionaryMeasures: get('precautionaryMeasures'),
+      precautionaryMeasuresOther: get('precautionaryMeasuresOther'),
       investigatingBody: (window.NinjaSettings && NinjaSettings.getCheckboxGroupValues) ? NinjaSettings.getCheckboxGroupValues('investigatingBodyGroup') : [],
-      teamMembers: (window.NinjaSettings && NinjaSettings.getCheckboxGroupValues) ? NinjaSettings.getCheckboxGroupValues('teamMembersGroup') : [],
+      teamMembers: tmRoster.roles,
+      teamMemberRoster: tmRoster.roster,
       investigationSubject: get('investigationSubject'),
       scopeDateFrom: get('scopeDateFrom'),
       scopeDateTo: get('scopeDateTo'),
-      scopeEntities: get('scopeEntities'),
-      scopeConstraints: get('scopeConstraints'),
       scopeExclusions: get('scopeExclusions'),
       independenceSigned: indSigned && indSigned.checked,
       noConflictDisclosed: noConflict && noConflict.checked,
       securityClearanceObtained: secClear && secClear.checked
     };
+    if (scopeEntityRowsCollected !== null) {
+      caseObj.scope.scopeEntityRows = scopeEntityRowsCollected;
+    } else {
+      caseObj.scope.scopeEntities = get('scopeEntities');
+    }
+    if (constraintItemsCollected !== null) {
+      caseObj.scope.constraintItems = constraintItemsCollected;
+    } else {
+      caseObj.scope.scopeConstraints = get('scopeConstraints');
+    }
     var legalPrivJust = [];
     formEl.querySelectorAll('[name="process.legalPrivilegeJustification"]:checked').forEach(function (cb) { legalPrivJust.push(cb.value); });
     caseObj.process = {
       caseAcceptanceStatus: get('caseAcceptanceStatus'),
       legalPrivilege: get('legalPrivilege'),
       legalPrivilegeJustification: legalPrivJust,
-      legalRep1: get('legalRep1'),
-      legalRep2: get('legalRep2'),
-      legalRep3: get('legalRep3'),
-      managementRep: get('managementRep'),
       clearance: get('clearance'),
       scopeAmendmentReason: get('scopeAmendmentReason')
     };
-    caseObj.interview = {
-      classification: get('interviewClassification'),
-      rightsNotified: get('rightsNotified'),
-      documentationMethod: get('documentationMethod'),
-      receiptResponseStatus: get('receiptResponseStatus'),
-      interviewDate: get('interviewDate'),
-      summonsId: get('summonsId'),
-      summonsStatus: get('summonsStatus'),
-      interview2Classification: get('interview2Classification'),
-      interview2Date: get('interview2Date'),
-      interview2RightsNotified: get('interview2RightsNotified'),
-      interview2Minutes: get('interview2Minutes'),
-      interview3Classification: get('interview3Classification'),
-      interview3Date: get('interview3Date'),
-      interview3RightsNotified: get('interview3RightsNotified'),
-      interview3Minutes: get('interview3Minutes'),
-      interviewAdditional: get('interviewAdditional')
-    };
-    caseObj.evidenceDetails = {
-      formOfEvidence: get('formOfEvidence'),
-      dataCategory: get('dataCategory'),
-      examinationType: get('examinationType'),
-      evidenceHashValue: get('evidenceHashValue'),
-      chainOfCustody: get('chainOfCustody'),
-      evidenceItemsList: get('evidenceItemsList'),
-      supportingParty: get('supportingParty')
+    var interviewSessions = collectInterviewSessions(formEl);
+    if (interviewSessions !== null) {
+      caseObj.interview = { sessions: interviewSessions };
+    } else {
+      caseObj.interview = {
+        classification: get('interviewClassification'),
+        rightsNotified: get('rightsNotified'),
+        documentationMethod: get('documentationMethod'),
+        receiptResponseStatus: get('receiptResponseStatus'),
+        interviewDate: get('interviewDate'),
+        summonsId: get('summonsId'),
+        summonsStatus: get('summonsStatus'),
+        interview2Classification: get('interview2Classification'),
+        interview2Date: get('interview2Date'),
+        interview2RightsNotified: get('interview2RightsNotified'),
+        interview2Minutes: get('interview2Minutes'),
+        interview3Classification: get('interview3Classification'),
+        interview3Date: get('interview3Date'),
+        interview3RightsNotified: get('interview3RightsNotified'),
+        interview3Minutes: get('interview3Minutes')
+      };
+    }
+    var evRows = collectEvidenceRecordsFromForm(formEl);
+    caseObj.evidenceRecords = evRows;
+    caseObj.evidenceDetails = evRows && evRows.length ? evRows[0] : {
+      formOfEvidence: '',
+      dataCategory: '',
+      examinationType: '',
+      evidenceHashValue: '',
+      chainOfCustody: '',
+      supportingParty: '',
+      evidenceLinkUrl: ''
     };
     caseObj.externalParties = {
       partyType: get('partyType'),
@@ -262,7 +767,15 @@
     var wbProt = formEl.querySelector('[name="impact.whistleblowerProtection"]');
     caseObj.impact = caseObj.impact || {};
     caseObj.impact.regulatoryRef = (window.NinjaSettings && NinjaSettings.getCheckboxGroupValues) ? NinjaSettings.getCheckboxGroupValues('regulatoryRefGroup') : [];
-    caseObj.impact.regulatoryRefArticle = get('regulatoryRefArticle');
+    var regRefDetails = {};
+    var regRefContainer = formEl.querySelector('#regulatoryRefGroup');
+    if (regRefContainer) {
+      regRefContainer.querySelectorAll('input[data-regulatory-ref]').forEach(function (inp) {
+        var ref = inp.getAttribute('data-regulatory-ref');
+        if (ref) regRefDetails[ref] = (inp.value || '').trim();
+      });
+    }
+    caseObj.impact.regulatoryRefDetails = regRefDetails;
     caseObj.impact.currentStatus = get('currentStatus') || 'Open';
     caseObj.impact.technicalViolation = get('technicalViolation');
     caseObj.impact.fiveWhys1 = get('fiveWhys1');
@@ -287,6 +800,7 @@
     caseObj.impact.recoveryPath = get('recoveryPath');
     caseObj.impact.amountRecovered = get('amountRecovered');
     caseObj.impact.netSavings = get('netSavings');
+    caseObj.impact.assetRecoveryNotes = get('assetRecoveryNotes');
     caseObj.impact.correctiveActions = get('correctiveActions');
     caseObj.impact.preventiveActions = get('preventiveActions');
     caseObj.impact.closureNoViolation = closureNoV && closureNoV.checked;
@@ -317,12 +831,6 @@
     caseObj.impact.qualityReview = (window.NinjaSettings && NinjaSettings.getCheckboxGroupValues) ? NinjaSettings.getCheckboxGroupValues('qualityReviewGroup') : [];
     caseObj.impact.recommendationType = get('recommendationType');
     caseObj.impact.disciplinaryAction = get('disciplinaryAction');
-    caseObj.impact.impactValue = get('impactValue');
-    caseObj.impact.impactCurrency = get('impactCurrency');
-    caseObj.impact.recoveryValue = get('recoveryValue');
-    caseObj.impact.rcaType = get('rcaType');
-    caseObj.impact.rcaSubtype = get('rcaSubtype');
-    caseObj.impact.rootCauses = get('rootCauses');
     caseObj.impact.mandatoryLevel = get('mandatoryLevel');
 
     return caseObj;
@@ -365,15 +873,29 @@
       set('escalationJustification', caseObj.scope.escalationJustification);
       set('severity', caseObj.scope.severity);
       set('precautionaryMeasures', caseObj.scope.precautionaryMeasures);
+      set('precautionaryMeasuresOther', caseObj.scope.precautionaryMeasuresOther || '');
       if (window.NinjaSettings && NinjaSettings.setCheckboxGroupValues) {
         NinjaSettings.setCheckboxGroupValues('investigatingBodyGroup', caseObj.scope.investigatingBody || []);
-        NinjaSettings.setCheckboxGroupValues('teamMembersGroup', caseObj.scope.teamMembers || []);
+      }
+      if (window.NinjaSettings && NinjaSettings.applyTeamMemberRoster) {
+        NinjaSettings.applyTeamMemberRoster(
+          (caseObj.scope.teamMemberRoster && caseObj.scope.teamMemberRoster.length) ? caseObj.scope.teamMemberRoster : null,
+          caseObj.scope.teamMembers || []
+        );
       }
       set('investigationSubject', caseObj.scope.investigationSubject);
       set('scopeDateFrom', caseObj.scope.scopeDateFrom);
       set('scopeDateTo', caseObj.scope.scopeDateTo);
-      set('scopeEntities', caseObj.scope.scopeEntities);
-      set('scopeConstraints', caseObj.scope.scopeConstraints);
+      if (formEl.querySelector('#scopeEntitiesContainer')) {
+        fillScopeEntityRowsInForm(formEl, caseObj);
+      } else {
+        set('scopeEntities', caseObj.scope.scopeEntities);
+      }
+      if (formEl.querySelector('#scopeConstraintsContainer')) {
+        fillConstraintItemsInForm(formEl, caseObj);
+      } else {
+        set('scopeConstraints', caseObj.scope.scopeConstraints);
+      }
       set('scopeExclusions', caseObj.scope.scopeExclusions);
       var is = formEl.querySelector('[name="scope.independenceSigned"]');
       var nc = formEl.querySelector('[name="scope.noConflictDisclosed"]');
@@ -390,39 +912,31 @@
         var arr = caseObj.process.legalPrivilegeJustification || [];
         jg.querySelectorAll('[name="process.legalPrivilegeJustification"]').forEach(function (cb) { cb.checked = arr.indexOf(cb.value) !== -1; });
       }
-      set('legalRep1', caseObj.process.legalRep1);
-      set('legalRep2', caseObj.process.legalRep2);
-      set('legalRep3', caseObj.process.legalRep3);
-      set('managementRep', caseObj.process.managementRep);
       set('clearance', caseObj.process.clearance);
       set('scopeAmendmentReason', caseObj.process.scopeAmendmentReason);
     }
     if (caseObj.interview) {
-      set('interviewClassification', caseObj.interview.classification);
-      set('rightsNotified', caseObj.interview.rightsNotified);
-      set('documentationMethod', caseObj.interview.documentationMethod);
-      set('receiptResponseStatus', caseObj.interview.receiptResponseStatus);
-      set('interviewDate', caseObj.interview.interviewDate || '');
-      set('summonsId', caseObj.interview.summonsId || '');
-      set('summonsStatus', caseObj.interview.summonsStatus || '');
-      set('interview2Classification', caseObj.interview.interview2Classification);
-      set('interview2Date', caseObj.interview.interview2Date);
-      set('interview2RightsNotified', caseObj.interview.interview2RightsNotified);
-      set('interview2Minutes', caseObj.interview.interview2Minutes);
-      set('interview3Classification', caseObj.interview.interview3Classification);
-      set('interview3Date', caseObj.interview.interview3Date);
-      set('interview3RightsNotified', caseObj.interview.interview3RightsNotified);
-      set('interview3Minutes', caseObj.interview.interview3Minutes);
-      set('interviewAdditional', caseObj.interview.interviewAdditional);
+      if (formEl.querySelector('#interviewSessionsContainer')) {
+        fillInterviewSessions(formEl, caseObj);
+      } else {
+        set('interviewClassification', caseObj.interview.classification);
+        set('rightsNotified', caseObj.interview.rightsNotified);
+        set('documentationMethod', caseObj.interview.documentationMethod);
+        set('receiptResponseStatus', caseObj.interview.receiptResponseStatus);
+        set('interviewDate', caseObj.interview.interviewDate || '');
+        set('summonsId', caseObj.interview.summonsId || '');
+        set('summonsStatus', caseObj.interview.summonsStatus || '');
+        set('interview2Classification', caseObj.interview.interview2Classification);
+        set('interview2Date', caseObj.interview.interview2Date);
+        set('interview2RightsNotified', caseObj.interview.interview2RightsNotified);
+        set('interview2Minutes', caseObj.interview.interview2Minutes);
+        set('interview3Classification', caseObj.interview.interview3Classification);
+        set('interview3Date', caseObj.interview.interview3Date);
+        set('interview3RightsNotified', caseObj.interview.interview3RightsNotified);
+        set('interview3Minutes', caseObj.interview.interview3Minutes);
+      }
     }
-    var evidenceSection = caseObj.evidenceDetails || (typeof caseObj.evidence === 'object' && caseObj.evidence && !Array.isArray(caseObj.evidence) ? caseObj.evidence : null);
-    set('formOfEvidence', evidenceSection && evidenceSection.formOfEvidence != null ? evidenceSection.formOfEvidence : '');
-    set('dataCategory', evidenceSection && evidenceSection.dataCategory != null ? evidenceSection.dataCategory : '');
-    set('examinationType', evidenceSection && evidenceSection.examinationType != null ? evidenceSection.examinationType : '');
-    set('evidenceHashValue', evidenceSection && evidenceSection.evidenceHashValue != null ? evidenceSection.evidenceHashValue : '');
-    set('chainOfCustody', evidenceSection && evidenceSection.chainOfCustody != null ? evidenceSection.chainOfCustody : '');
-    set('evidenceItemsList', evidenceSection && evidenceSection.evidenceItemsList != null ? evidenceSection.evidenceItemsList : '');
-    set('supportingParty', evidenceSection && evidenceSection.supportingParty != null ? evidenceSection.supportingParty : '');
+    fillEvidenceRecordsInForm(formEl, caseObj);
     if (caseObj.externalParties) {
       set('partyType', caseObj.externalParties.partyType);
       set('natureOfCommunication', caseObj.externalParties.natureOfCommunication);
@@ -433,10 +947,14 @@
     if (caseObj.impact) {
       if (window.NinjaSettings && NinjaSettings.setCheckboxGroupValues) {
         NinjaSettings.setCheckboxGroupValues('regulatoryRefGroup', caseObj.impact.regulatoryRef || []);
+        if (caseObj.impact.regulatoryRefDetails && typeof caseObj.impact.regulatoryRefDetails === 'object') {
+          Object.keys(caseObj.impact.regulatoryRefDetails).forEach(function (ref) {
+            setFormValue(formEl, 'regulatoryRefArticle_' + ref, caseObj.impact.regulatoryRefDetails[ref] || '');
+          });
+        }
         NinjaSettings.setCheckboxGroupValues('formChecklistGroup', caseObj.impact.formChecklist || []);
         NinjaSettings.setCheckboxGroupValues('qualityReviewGroup', caseObj.impact.qualityReview || []);
       }
-      set('regulatoryRefArticle', caseObj.impact.regulatoryRefArticle);
       set('currentStatus', caseObj.impact.currentStatus || 'Open');
       set('technicalViolation', caseObj.impact.technicalViolation);
       if (caseObj.impact.fiveWhys1 !== undefined || caseObj.impact.fiveWhys2 !== undefined) {
@@ -467,6 +985,7 @@
       set('recoveryPath', caseObj.impact.recoveryPath);
       set('amountRecovered', caseObj.impact.amountRecovered);
       set('netSavings', caseObj.impact.netSavings);
+      set('assetRecoveryNotes', caseObj.impact.assetRecoveryNotes);
       set('correctiveActions', caseObj.impact.correctiveActions);
       set('preventiveActions', caseObj.impact.preventiveActions);
       var cNoV = formEl.querySelector('[name="impact.closureNoViolation"]');
@@ -509,12 +1028,6 @@
       set('grievanceDecisionAmendment', caseObj.impact.grievanceDecisionAmendment);
       set('recommendationType', caseObj.impact.recommendationType);
       set('disciplinaryAction', caseObj.impact.disciplinaryAction);
-      set('impactValue', caseObj.impact.impactValue);
-      set('impactCurrency', caseObj.impact.impactCurrency);
-      set('recoveryValue', caseObj.impact.recoveryValue);
-      set('rcaType', caseObj.impact.rcaType);
-      set('rcaSubtype', caseObj.impact.rcaSubtype);
-      set('rootCauses', caseObj.impact.rootCauses);
       set('mandatoryLevel', caseObj.impact.mandatoryLevel);
     }
     updateScoreDisplay(formEl, caseObj.totalScore, caseObj.path);
@@ -569,32 +1082,41 @@
   }
 
   function validateForm(formEl) {
+    const errors = [];
     const id = formEl.querySelector('#caseId');
-    if (!id || !id.value.trim()) return { ok: false, msg: 'caseId' };
+    if (!id || !id.value.trim()) errors.push({ msg: 'caseId', fieldId: 'caseId' });
     const reporterType = (formEl.querySelector('#reporterType') || {}).value || '';
     if (reporterType && reporterType !== 'Anonymous') {
       const name = formEl.querySelector('#reporterName');
       const phone = formEl.querySelector('#reporterPhone');
       const email = formEl.querySelector('#reporterEmail');
-      if (!name || !name.value.trim()) return { ok: false, msg: 'reporterName' };
-      if (!phone || !phone.value.trim()) return { ok: false, msg: 'reporterPhone' };
-      if (!email || !email.value.trim()) return { ok: false, msg: 'reporterEmail' };
+      if (!name || !name.value.trim()) errors.push({ msg: 'reporterName', fieldId: 'reporterName' });
+      if (!phone || !phone.value.trim()) errors.push({ msg: 'reporterPhone', fieldId: 'reporterPhone' });
+      if (!email || !email.value.trim()) errors.push({ msg: 'reporterEmail', fieldId: 'reporterEmail' });
       if (reporterType === 'Employee') {
         const dept = formEl.querySelector('#reporterDept');
-        if (!dept || !dept.value.trim()) return { ok: false, msg: 'reporterDept' };
+        if (!dept || !dept.value.trim()) errors.push({ msg: 'reporterDept', fieldId: 'reporterDept' });
       }
     }
+    const geographic = formEl.querySelector('#geographic');
+    if (!geographic || !geographic.value.trim()) errors.push({ msg: 'geographic', fieldId: 'geographic' });
     const s = formEl.querySelector('#sovereignty');
     const f = formEl.querySelector('#financial');
     const e = formEl.querySelector('#evidence');
     const r = formEl.querySelector('#reputation');
-    for (const el of [s, f, e, r]) {
+    const scoreFields = [
+      { el: s, id: 'sovereignty' },
+      { el: f, id: 'financial' },
+      { el: e, id: 'evidence' },
+      { el: r, id: 'reputation' }
+    ];
+    for (const { el, id: fieldId } of scoreFields) {
       if (el) {
         const v = parseInt(el.value, 10);
-        if (isNaN(v) || v < 1 || v > 5) return { ok: false, msg: 'score' };
+        if (isNaN(v) || v < 1 || v > 5) errors.push({ msg: 'score', fieldId: fieldId });
       }
     }
-    return { ok: true };
+    return errors.length ? { ok: false, errors: errors } : { ok: true, errors: [] };
   }
 
   global.NinjaForms = {
@@ -606,6 +1128,16 @@
     fillForm,
     updateScoreDisplay,
     updateReporterRequired,
-    validateForm
+    validateForm,
+    bindEvidenceRecordsUI: bindEvidenceRecordsUI,
+    fillEvidenceRecordsInForm: fillEvidenceRecordsInForm,
+    updateEvidenceRecordHeadings: updateEvidenceRecordHeadings,
+    refreshAllEvidenceRowSelects: refreshAllEvidenceRowSelects,
+    bindInterviewSessionsUI: bindInterviewSessionsUI,
+    fillInterviewSessions: fillInterviewSessions,
+    refreshAllInterviewSessionLabels: refreshAllInterviewSessionLabels,
+    bindScopeEntityRowsUI: bindScopeEntityRowsUI,
+    bindScopeConstraintsUI: bindScopeConstraintsUI,
+    refreshAllScopeDynamicLabels: refreshAllScopeDynamicLabels
   };
 })(typeof window !== 'undefined' ? window : this);

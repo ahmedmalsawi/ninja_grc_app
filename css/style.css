@@ -1,4 +1,7 @@
 /* Ninja GRC - Bilingual, RTL-aware */
+html[lang="en"] .i18n-ar-only { display: none !important; }
+html[lang="ar"] .i18n-en-only { display: none !important; }
+
 :root {
   --color-primary: #1e3a5f;
   --color-primary-hover: #2d4a6f;
@@ -272,6 +275,21 @@ body {
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 1rem;
   margin-bottom: 1rem;
+}
+
+/* Interview session & scope entity rows: explicit multi-column grid */
+.form-row.interview-session-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+@media (max-width: 900px) {
+  .form-row.interview-session-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 520px) {
+  .form-row.interview-session-grid {
+    grid-template-columns: 1fr;
+  }
 }
 .form-row:last-child { margin-bottom: 0; }
 

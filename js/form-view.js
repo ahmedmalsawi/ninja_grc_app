@@ -37,16 +37,26 @@
       if (showMessage) showMessage('Storage not available.', 'error');
       return;
     }
+    if (typeof window.NinjaForms === 'undefined' || !window.NinjaForms.createEmptyCase) {
+      if (showMessage) showMessage('Forms module not loaded. Check that js/forms.js is included before form-view.js.', 'error');
+      return;
+    }
+    var NF = window.NinjaForms;
     var form = $('caseForm');
     if (!id) {
         NinjaStorage.nextSeq().then(function (seq) {
-        var empty = NinjaForms.createEmptyCase(seq);
+        var empty = NF.createEmptyCase(seq);
         var y = new Date().getFullYear();
         empty.id = 'NJ-' + y + '-' + String(seq).padStart(3, '0');
-        NinjaForms.fillForm(form, empty);
+        NF.fillForm(form, empty);
         formDirty = false;
+        if (NF.bindEvidenceRecordsUI) NF.bindEvidenceRecordsUI(form);
+        if (NF.bindInterviewSessionsUI) NF.bindInterviewSessionsUI(form);
+        if (NF.bindScopeEntityRowsUI) NF.bindScopeEntityRowsUI(form);
+        if (NF.bindScopeConstraintsUI) NF.bindScopeConstraintsUI(form);
+        if (window.NinjaApp && NinjaApp.togglePrecautionaryOther) NinjaApp.togglePrecautionaryOther();
         $('btnDelete').style.display = 'none';
-        $('caseId').readOnly = false;
+        $('caseId').readOnly = true;
         if (form) {
           form.setAttribute('data-form-context', 'new');
           form.removeAttribute('data-form-context-id');
@@ -56,6 +66,7 @@
         if (window.NinjaSections && form) NinjaSections.syncSectionsToPhase(form);
         if (window.NinjaTips && NinjaTips.updateConditionalTips) NinjaTips.updateConditionalTips(form);
         if (window.NinjaApp && window.NinjaApp.updateInterviewDuration) window.NinjaApp.updateInterviewDuration();
+        if (window.NinjaApp && window.NinjaApp.toggleScopeAmendmentReason) window.NinjaApp.toggleScopeAmendmentReason();
         var receiptEl = document.getElementById('receiptResponseStatus');
         if (receiptEl) receiptEl.dispatchEvent(new Event('change'));
       });
@@ -63,8 +74,13 @@
     }
     NinjaStorage.getById(id).then(function (c) {
       if (!c) { if (showMessage) showMessage('Case not found.', 'error'); return; }
-      NinjaForms.fillForm(form, c);
+      NF.fillForm(form, c);
       formDirty = false;
+      if (NF.bindEvidenceRecordsUI) NF.bindEvidenceRecordsUI(form);
+      if (NF.bindInterviewSessionsUI) NF.bindInterviewSessionsUI(form);
+      if (NF.bindScopeEntityRowsUI) NF.bindScopeEntityRowsUI(form);
+      if (NF.bindScopeConstraintsUI) NF.bindScopeConstraintsUI(form);
+      if (window.NinjaApp && NinjaApp.togglePrecautionaryOther) NinjaApp.togglePrecautionaryOther();
       $('btnDelete').style.display = 'block';
       $('caseId').readOnly = true;
       if (form) {
@@ -76,6 +92,7 @@
       if (window.NinjaSections && form) NinjaSections.syncSectionsToPhase(form);
       if (window.NinjaTips && NinjaTips.updateConditionalTips) NinjaTips.updateConditionalTips(form);
       if (window.NinjaApp && window.NinjaApp.updateInterviewDuration) window.NinjaApp.updateInterviewDuration();
+      if (window.NinjaApp && window.NinjaApp.toggleScopeAmendmentReason) window.NinjaApp.toggleScopeAmendmentReason();
       var receiptEl = document.getElementById('receiptResponseStatus');
       if (receiptEl) receiptEl.dispatchEvent(new Event('change'));
     });
@@ -84,39 +101,64 @@
   function saveCase() {
     var form = $('caseForm');
     if (!form) return;
+    if (typeof window.NinjaForms === 'undefined' || !window.NinjaForms.validateForm) {
+      if (showMessage) showMessage('Forms module not loaded.', 'error');
+      return;
+    }
+    var NF = window.NinjaForms;
     var btnSave = $('btnSave');
     if (btnSave) { btnSave.classList.add('is-loading'); btnSave.disabled = true; }
     form.querySelectorAll('[aria-invalid="true"]').forEach(function (el) { el.removeAttribute('aria-invalid'); });
-    var validation = NinjaForms.validateForm(form);
-    if (!validation.ok) {
+    var validation = NF.validateForm(form);
+    if (!validation.ok && validation.errors && validation.errors.length) {
       if (btnSave) { btnSave.classList.remove('is-loading'); btnSave.disabled = false; }
-      var msg = validation.msg === 'caseId' ? (NinjaI18n ? NinjaI18n.t('validationRequired') : 'Case ID required.')
-        : validation.msg === 'reporterName' || validation.msg === 'reporterPhone' || validation.msg === 'reporterEmail'
-        ? (NinjaI18n ? NinjaI18n.t('validationReporter') : 'Name, phone and email are required when reporter is not Anonymous.')
-        : validation.msg === 'reporterDept'
-        ? (NinjaI18n ? NinjaI18n.t('validationDepartment') : 'Department is required when reporter type is Employee.')
-        : (NinjaI18n ? NinjaI18n.t('validationScore') : 'Scores must be 1-5.');
+      var t = NinjaI18n && NinjaI18n.t ? NinjaI18n.t.bind(NinjaI18n) : function (k) { return k; };
+      var fieldLabelMap = {
+        caseId: t('caseId'),
+        reporterName: t('name'),
+        reporterPhone: t('phone'),
+        reporterEmail: t('email'),
+        reporterDept: t('department'),
+        geographic: t('geographic'),
+        sovereignty: t('validationScore'),
+        financial: t('validationScore'),
+        evidence: t('validationScore'),
+        reputation: t('validationScore')
+      };
+      var labels = [];
+      var seen = {};
+      var scoreLabelAdded = false;
+      validation.errors.forEach(function (err) {
+        var lid = err.fieldId || (err.msg === 'score' ? 'sovereignty' : err.msg);
+        if (err.msg === 'score') {
+          if (!scoreLabelAdded) {
+            scoreLabelAdded = true;
+            labels.push(fieldLabelMap.sovereignty || t('validationScore'));
+          }
+        } else if (!seen[lid]) {
+          seen[lid] = true;
+          labels.push(fieldLabelMap[lid] || t(err.msg) || lid);
+        }
+      });
+      var msg = (t('validationRequiredFieldsList') || 'The following required fields are missing or invalid: ') + labels.join(', ');
       if (showMessage) showMessage(msg, 'error');
-      if (validation.msg === 'caseId') {
-        var idEl = form.querySelector('#caseId');
-        if (idEl) { idEl.setAttribute('aria-invalid', 'true'); idEl.focus(); }
-      } else if (validation.msg === 'reporterName' || validation.msg === 'reporterPhone' || validation.msg === 'reporterEmail') {
-        var reporterEl = form.querySelector('#' + validation.msg);
-        if (reporterEl) { reporterEl.setAttribute('aria-invalid', 'true'); reporterEl.focus(); }
-      } else if (validation.msg === 'reporterDept') {
-        var deptEl = form.querySelector('#reporterDept');
-        if (deptEl) { deptEl.setAttribute('aria-invalid', 'true'); deptEl.focus(); }
-      } else if (validation.msg === 'score') {
-        ['sovereignty', 'financial', 'evidence', 'reputation'].forEach(function (id) {
-          var el = form.querySelector('#' + id);
-          if (el) el.setAttribute('aria-invalid', 'true');
-        });
+      validation.errors.forEach(function (err) {
+        var fieldId = err.fieldId || (err.msg === 'score' ? 'sovereignty' : err.msg);
+        var el = form.querySelector('#' + fieldId);
+        if (el) el.setAttribute('aria-invalid', 'true');
+      });
+      var firstErr = validation.errors[0];
+      var firstId = firstErr && (firstErr.fieldId || (firstErr.msg === 'score' ? 'sovereignty' : firstErr.msg));
+      if (firstId === 'sovereignty' || firstId === 'financial' || firstId === 'evidence' || firstId === 'reputation') {
         var firstScore = form.querySelector('#sovereignty');
         if (firstScore) firstScore.focus();
+      } else {
+        var firstEl = form.querySelector('#' + firstId);
+        if (firstEl) firstEl.focus();
       }
       return;
     }
-    var caseObj = NinjaForms.collectForm(form);
+    var caseObj = NF.collectForm(form);
     NinjaStorage.save(caseObj)
       .then(function () {
         if (btnSave) { btnSave.classList.remove('is-loading'); btnSave.disabled = false; }

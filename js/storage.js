@@ -61,6 +61,10 @@
         const now = new Date().toISOString();
         if (!caseObj.createdAt) caseObj.createdAt = now;
         caseObj.updatedAt = now;
+        if (caseObj.id && typeof caseObj.id === 'string') {
+          const match = caseObj.id.match(/^NJ-\d{4}-(\d+)$/);
+          if (match) caseObj.seq = parseInt(match[1], 10);
+        }
         const req = store.put(caseObj);
         req.onsuccess = () => resolve(caseObj);
         req.onerror = () => reject(req.error);
@@ -82,7 +86,17 @@
 
   function nextSeq() {
     return getAll().then(cases => {
-      const max = cases.reduce((m, c) => Math.max(m, c.seq || 0), 0);
+      let max = 0;
+      cases.forEach(c => {
+        if (c.seq != null && c.seq > max) max = c.seq;
+        if (c.id && typeof c.id === 'string') {
+          const match = c.id.match(/^NJ-\d{4}-(\d+)$/);
+          if (match) {
+            const n = parseInt(match[1], 10);
+            if (n > max) max = n;
+          }
+        }
+      });
       return max + 1;
     });
   }

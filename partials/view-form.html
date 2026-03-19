@@ -15,6 +15,8 @@
         <button type="button" role="tab" class="form-tab" data-section="sectionEvidence" aria-selected="false" aria-controls="sectionEvidence" id="tabEvidence">Evidence</button>
         <button type="button" role="tab" class="form-tab" data-section="sectionExternalParties" aria-selected="false" aria-controls="sectionExternalParties" id="tabExternalParties">External parties</button>
         <button type="button" role="tab" class="form-tab" data-section="sectionImpact" aria-selected="false" aria-controls="sectionImpact" id="tabImpact">Impact</button>
+        <button type="button" role="tab" class="form-tab" data-section="sectionReview" aria-selected="false" aria-controls="sectionReview" id="tabReview">Review &amp; Decision</button>
+        <button type="button" role="tab" class="form-tab" data-section="sectionGrievance" aria-selected="false" aria-controls="sectionGrievance" id="tabGrievance">Grievance / Appeal</button>
       </nav>
       <form id="caseForm" class="form-container">
         <div id="formSectionContentSlot" class="form-section-content-slot">
@@ -142,20 +144,6 @@
               <textarea id="reporterNotes" name="reporter.notes"></textarea>
             </div>
           </div>
-          <h4 id="labelSectionWhistleblower">Whistleblower incentives (Phase 11)</h4>
-          <div class="form-row">
-            <div class="form-group" style="grid-column: 1 / -1;">
-              <fieldset>
-                <legend id="labelWhistleblowerIncentive">Incentive recommendation</legend>
-                <label><input type="checkbox" name="impact.whistleblowerCash" value="Yes"> Financial reward (SAR): <input type="text" id="whistleblowerAmount" name="impact.whistleblowerAmount" size="10"></label>
-                <label><input type="checkbox" name="impact.whistleblowerThanks" value="Yes"> Letter of thanks (moral)</label>
-                <label><input type="checkbox" name="impact.whistleblowerNo" value="Yes"> No reward recommended (reason: <input type="text" id="whistleblowerNoReason" name="impact.whistleblowerNoReason" size="30">)</label>
-              </fieldset>
-            </div>
-            <div class="form-group" style="grid-column: 1 / -1;">
-              <label><input type="checkbox" name="impact.whistleblowerProtection" value="Yes"> Whistleblower protection plan activated, file closed without negative impact</label>
-            </div>
-          </div>
           </div>
         </div>
 
@@ -175,8 +163,8 @@
               </select>
             </div>
             <div class="form-group">
-              <label for="geographic" id="labelGeographic">Geographic</label>
-              <select id="geographic" name="classification.geographic">
+              <label for="geographic" id="labelGeographic">Country</label>
+              <select id="geographic" name="classification.geographic" required aria-required="true">
                 <option value="">—</option>
                 <option value="KSA" id="optKSA">KSA</option>
                 <option value="Qatar">Qatar</option>
@@ -284,6 +272,10 @@
                 <option value="">—</option>
               </select>
             </div>
+            <div class="form-group" id="precautionaryMeasuresOtherWrap" style="grid-column: 1 / -1; display: none;">
+              <label for="precautionaryMeasuresOther" id="labelPrecautionaryMeasuresOther">Other precautionary measures</label>
+              <textarea id="precautionaryMeasuresOther" name="scope.precautionaryMeasuresOther" rows="3"></textarea>
+            </div>
             <div class="form-group" style="grid-column: 1 / -1;">
               <span class="label-block" id="labelTeamMembers">Investigation team members</span>
               <div id="teamMembersGroup" class="checkbox-group" role="group" aria-labelledby="labelTeamMembers"></div>
@@ -304,12 +296,45 @@
               <input type="date" id="scopeDateTo" name="scope.scopeDateTo">
             </div>
             <div class="form-group" style="grid-column: 1 / -1;">
-              <label for="scopeEntities" id="labelScopeEntities">Entities / departments and individuals</label>
-              <textarea id="scopeEntities" name="scope.scopeEntities" rows="3" data-placeholder-key="placeholderScopeEntities"></textarea>
+              <span class="label-block" id="labelScopeEntities">Entities / departments and individuals</span>
+              <div id="scopeEntitiesContainer"></div>
+              <p style="margin-top: 0.5rem;"><button type="button" class="btn btn-outline" id="btnAddScopeEntity"></button></p>
+              <template id="scopeEntityRowTpl">
+                <div class="scope-entity-block card" data-scope-entity style="margin-bottom: 0.75rem; padding: 0.75rem;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
+                    <strong class="scope-entity-heading"></strong>
+                    <button type="button" class="btn btn-sm btn-outline btn-remove-scope-entity"></button>
+                  </div>
+                  <div class="form-row interview-session-grid">
+                    <div class="form-group">
+                      <label><span class="label-relatedEntity">Related entity / department</span></label>
+                      <input type="text" data-se-k="relatedEntity" data-placeholder-key="placeholderRelatedEntity">
+                    </div>
+                    <div class="form-group">
+                      <label><span class="label-jobNumber">Job number</span></label>
+                      <input type="text" data-se-k="jobNumber" data-placeholder-key="placeholderJobNumberShort">
+                    </div>
+                    <div class="form-group">
+                      <label><span class="label-personName">Name</span></label>
+                      <input type="text" data-se-k="personName" data-placeholder-key="placeholderPersonName" autocomplete="name">
+                    </div>
+                  </div>
+                </div>
+              </template>
             </div>
             <div class="form-group" style="grid-column: 1 / -1;">
-              <label for="scopeConstraints" id="labelScopeConstraints">Regulatory and legal constraints</label>
-              <textarea id="scopeConstraints" name="scope.scopeConstraints" rows="3"></textarea>
+              <span class="label-block" id="labelScopeConstraints">Regulatory and legal constraints</span>
+              <div id="scopeConstraintsContainer"></div>
+              <p style="margin-top: 0.5rem;"><button type="button" class="btn btn-outline" id="btnAddScopeConstraint"></button></p>
+              <template id="scopeConstraintRowTpl">
+                <div class="form-row scope-constraint-block" data-scope-constraint style="margin-bottom: 0.5rem; align-items: flex-end;">
+                  <div class="form-group" style="flex: 1; min-width: 12rem;">
+                    <label><span class="label-constraintText">Constraint</span></label>
+                    <input type="text" data-sc-k="constraintText" data-placeholder-key="placeholderConstraintItem">
+                  </div>
+                  <button type="button" class="btn btn-sm btn-outline btn-remove-scope-constraint"></button>
+                </div>
+              </template>
             </div>
             <div class="form-group" style="grid-column: 1 / -1;">
               <label for="scopeExclusions" id="labelScopeExclusions">What the investigation does NOT include</label>
@@ -361,45 +386,14 @@
               </fieldset>
             </div>
             <div class="form-group">
-              <label for="legalRep1" id="labelLegalRep1">Legal rep 1</label>
-              <input type="text" id="legalRep1" name="process.legalRep1" data-placeholder-key="placeholderLegalRep">
-            </div>
-            <div class="form-group">
-              <label for="legalRep2" id="labelLegalRep2">Legal rep 2</label>
-              <input type="text" id="legalRep2" name="process.legalRep2">
-            </div>
-            <div class="form-group">
-              <label for="legalRep3" id="labelLegalRep3">Legal rep 3</label>
-              <input type="text" id="legalRep3" name="process.legalRep3">
-            </div>
-            <div class="form-group">
-              <label for="managementRep" id="labelManagementRep">Management rep</label>
-              <input type="text" id="managementRep" name="process.managementRep" data-placeholder-key="placeholderLegalRep">
-            </div>
-            <div class="form-group">
               <label for="clearance" id="labelClearance">Note</label>
               <input type="text" id="clearance" name="process.clearance" data-placeholder-key="placeholderClearance">
             </div>
-            <div class="form-group" style="grid-column: 1 / -1;">
+            <div id="scopeAmendmentReasonWrap" class="form-group" style="grid-column: 1 / -1; display: none;">
               <label for="scopeAmendmentReason" id="labelScopeAmendmentReason">Scope amendment reason</label>
               <input type="text" id="scopeAmendmentReason" name="process.scopeAmendmentReason" data-placeholder-key="placeholderScopeAmendment">
             </div>
           </div>
-          <h4 id="labelSectionFormChecklist">Form verification checklist</h4>
-          <div class="form-row">
-            <div class="form-group" style="grid-column: 1 / -1;">
-              <p class="form-hint" id="labelFormChecklistHint">Verify that the following forms have been completed and attached:</p>
-              <div id="formChecklistGroup" class="checkbox-group"></div>
-            </div>
-          </div>
-          <h4 id="labelSectionQualityReview">Report quality review (Phase 10)</h4>
-          <div class="form-row">
-            <div class="form-group" style="grid-column: 1 / -1;">
-              <p class="form-hint" id="labelQualityReviewHint">Compliance Manager must complete before final approval:</p>
-              <div id="qualityReviewGroup" class="checkbox-group"></div>
-            </div>
-          </div>
-          <p class="tip-conditional" id="tipRedPathEl" data-tip="tipRedPath" role="status" aria-live="polite" style="display:none;"></p>
           </div>
         </div>
 
@@ -408,189 +402,123 @@
           <p class="section-tip" id="tipInterview" data-tip="sectionInterview" aria-live="polite"></p>
           <button type="button" class="btn-link btn-toggle-tip" data-tip="sectionInterview" aria-expanded="false"><span class="tip-label">Show tips</span></button>
           <p class="form-hint" id="labelInterviewMulti">Multiple interviews supported. Document each interview below.</p>
-          <div class="form-row interview-block" data-interview-index="1">
-            <div class="form-group" style="grid-column: 1 / -1;"><strong id="labelInterview1">Interview 1</strong></div>
-            <div class="form-group">
-              <label for="interviewClassification" id="labelInterviewClassification">Classification</label>
-              <select id="interviewClassification" name="interview.classification">
-                <option value="">—</option>
-                <option value="Informal">Informal fact-finding</option>
-                <option value="Formal">Formal with witnesses</option>
-                <option value="Confrontation">Confrontation with suspect</option>
-              </select>
+          <p class="form-hint" id="interviewDurationNote"><span id="labelInterviewDuration"></span> <span id="interviewDurationDays" class="form-readonly" aria-live="polite">—</span></p>
+          <div id="interviewSessionsContainer"></div>
+          <p style="margin-top: 0.5rem;"><button type="button" class="btn btn-outline" id="btnAddInterviewRecord"></button></p>
+          <template id="interviewSessionTpl">
+            <div class="form-row interview-session-block card" data-interview-session style="margin-bottom: 1.25rem; padding: 1rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
+                <strong class="interview-session-heading"></strong>
+                <button type="button" class="btn btn-sm btn-outline btn-remove-interview-session"></button>
+              </div>
+              <div class="form-row interview-session-grid">
+                <div class="form-group">
+                  <label><span class="label-intervieweeName">Interviewee name</span></label>
+                  <input type="text" data-int-k="intervieweeName" data-placeholder-key="placeholderIntervieweeName">
+                </div>
+                <div class="form-group">
+                  <label><span class="label-intervieweeJobNumber">Job number / ID</span></label>
+                  <input type="text" data-int-k="intervieweeJobNumber" data-placeholder-key="placeholderIntervieweeJobNumber">
+                </div>
+                <div class="form-group">
+                  <label><span class="label-interviewClassification">Classification</span></label>
+                  <select data-int-k="classification" class="interview-session-select">
+                    <option value="">—</option>
+                    <option value="Informal">Informal fact-finding</option>
+                    <option value="Formal">Formal with witnesses</option>
+                    <option value="Confrontation">Confrontation with suspect</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label><span class="label-interviewDate">Interview date (NJ-F-17)</span></label>
+                  <input type="date" data-int-k="interviewDate" class="interview-session-date">
+                </div>
+                <div class="form-group">
+                  <label><span class="label-rightsNotified">Rights notified</span></label>
+                  <select data-int-k="rightsNotified" class="interview-session-select">
+                    <option value="">—</option>
+                    <option value="Yes signed">Yes, signed</option>
+                    <option value="Yes verbal">Yes, verbal with witness</option>
+                    <option value="No">No</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label><span class="label-documentationMethod">Documentation method</span></label>
+                  <select data-int-k="documentationMethod" class="interview-session-select">
+                    <option value="">—</option>
+                    <option value="Written minutes">Written signed minutes</option>
+                    <option value="Digital recording">Digital recording (with consent)</option>
+                    <option value="Notes">Real-time notes</option>
+                    <option value="Transcript">Audio transcript</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label><span class="label-receiptResponseStatus">Receipt / response status</span></label>
+                  <select data-int-k="receiptResponseStatus" class="interview-session-select interview-session-receipt"><option value="">—</option></select>
+                </div>
+                <div class="form-group">
+                  <label><span class="label-summonsId">Summons ID</span></label>
+                  <input type="text" data-int-k="summonsId" data-placeholder-key="placeholderSummonsId">
+                </div>
+                <div class="form-group">
+                  <label><span class="label-summonsStatus">Summons status</span></label>
+                  <select data-int-k="summonsStatus" class="interview-session-select interview-session-summons"><option value="">—</option></select>
+                </div>
+                <div class="form-group" style="grid-column: 1 / -1;">
+                  <label><span class="label-interviewMinutes">Interview minutes / notes</span></label>
+                  <textarea data-int-k="minutes" rows="3"></textarea>
+                </div>
+              </div>
             </div>
-            <div class="form-group">
-              <label for="interviewDate" id="labelInterviewDate">Interview date (NJ-F-17)</label>
-              <input type="date" id="interviewDate" name="interview.interviewDate" aria-describedby="interviewDurationNote">
-            </div>
-            <div class="form-group">
-              <label for="interviewDurationDays" id="labelInterviewDuration">Duration (report → interview, days)</label>
-              <output id="interviewDurationDays" class="form-readonly" aria-live="polite">—</output>
-            </div>
-            <div class="form-group">
-              <label for="rightsNotified" id="labelRightsNotified">Rights notified</label>
-              <select id="rightsNotified" name="interview.rightsNotified">
-                <option value="">—</option>
-                <option value="Yes signed">Yes, signed</option>
-                <option value="Yes verbal">Yes, verbal with witness</option>
-                <option value="No">No</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="documentationMethod" id="labelDocumentationMethod">Documentation method</label>
-              <select id="documentationMethod" name="interview.documentationMethod">
-                <option value="">—</option>
-                <option value="Written minutes">Written signed minutes</option>
-                <option value="Digital recording">Digital recording (with consent)</option>
-                <option value="Notes">Real-time notes</option>
-                <option value="Transcript">Audio transcript</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="receiptResponseStatus" id="labelReceiptResponseStatus">Receipt / response status</label>
-              <select id="receiptResponseStatus" name="interview.receiptResponseStatus" aria-describedby="obstructionAlert">
-                <option value="">—</option>
-              </select>
-              <p id="obstructionAlert" class="form-hint form-hint--warning" role="alert" aria-live="polite" style="display:none;"></p>
-            </div>
-            <div class="form-group">
-              <label for="summonsId" id="labelSummonsId">Summons ID</label>
-              <input type="text" id="summonsId" name="interview.summonsId" data-placeholder-key="placeholderSummonsId">
-            </div>
-            <div class="form-group">
-              <label for="summonsStatus" id="labelSummonsStatus">Summons status</label>
-              <select id="summonsStatus" name="interview.summonsStatus">
-                <option value="">—</option>
-              </select>
-            </div>
-          </div>
-          <div class="form-row interview-block" data-interview-index="2">
-            <div class="form-group" style="grid-column: 1 / -1;"><strong id="labelInterview2">Interview 2</strong></div>
-            <div class="form-group">
-              <label for="interview2Classification">Classification</label>
-              <select id="interview2Classification" name="interview.interview2Classification">
-                <option value="">—</option>
-                <option value="Informal">Informal fact-finding</option>
-                <option value="Formal">Formal with witnesses</option>
-                <option value="Confrontation">Confrontation with suspect</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="interview2Date">Date</label>
-              <input type="date" id="interview2Date" name="interview.interview2Date">
-            </div>
-            <div class="form-group">
-              <label for="interview2RightsNotified">Rights notified</label>
-              <select id="interview2RightsNotified" name="interview.interview2RightsNotified">
-                <option value="">—</option>
-                <option value="Yes signed">Yes, signed</option>
-                <option value="Yes verbal">Yes, verbal with witness</option>
-                <option value="No">No</option>
-              </select>
-            </div>
-            <div class="form-group" style="grid-column: 1 / -1;">
-              <label for="interview2Minutes" id="labelInterviewMinutes">Interview minutes / notes</label>
-              <textarea id="interview2Minutes" name="interview.interview2Minutes" rows="2"></textarea>
-            </div>
-          </div>
-          <div class="form-row interview-block" data-interview-index="3">
-            <div class="form-group" style="grid-column: 1 / -1;"><strong id="labelInterview3">Interview 3</strong></div>
-            <div class="form-group">
-              <label for="interview3Classification">Classification</label>
-              <select id="interview3Classification" name="interview.interview3Classification">
-                <option value="">—</option>
-                <option value="Informal">Informal fact-finding</option>
-                <option value="Formal">Formal with witnesses</option>
-                <option value="Confrontation">Confrontation with suspect</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="interview3Date">Date</label>
-              <input type="date" id="interview3Date" name="interview.interview3Date">
-            </div>
-            <div class="form-group">
-              <label for="interview3RightsNotified">Rights notified</label>
-              <select id="interview3RightsNotified" name="interview.interview3RightsNotified">
-                <option value="">—</option>
-                <option value="Yes signed">Yes, signed</option>
-                <option value="Yes verbal">Yes, verbal with witness</option>
-                <option value="No">No</option>
-              </select>
-            </div>
-            <div class="form-group" style="grid-column: 1 / -1;">
-              <label for="interview3Minutes">Interview minutes / notes</label>
-              <textarea id="interview3Minutes" name="interview.interview3Minutes" rows="2"></textarea>
-            </div>
-          </div>
-          <div class="form-group" style="grid-column: 1 / -1;">
-            <label for="interviewAdditional" id="labelInterviewAdditional">Additional interviews (free text)</label>
-            <textarea id="interviewAdditional" name="interview.interviewAdditional" rows="2" data-placeholder-key="placeholderInterviewAdditional"></textarea>
-          </div>
+          </template>
           <p id="chainOfCustodyNote" class="form-hint" style="grid-column: 1 / -1;"></p>
           </div>
         </div>
 
+        <template id="evidenceRecordTpl">
+          <div class="evidence-record-block card" data-evidence-record style="margin-bottom: 1.25rem; padding: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
+              <strong class="evidence-record-heading"></strong>
+              <button type="button" class="btn btn-sm btn-outline btn-remove-evidence-record"></button>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label><span class="label-formOfEvidence">Form of evidence</span></label>
+                <select data-ev-k="formOfEvidence" class="evidence-row-select"><option value="">—</option></select>
+              </div>
+              <div class="form-group">
+                <label><span class="label-dataCategory">Data category</span></label>
+                <select data-ev-k="dataCategory" class="evidence-row-select"><option value="">—</option></select>
+              </div>
+              <div class="form-group">
+                <label><span class="label-examinationType">Examination type</span></label>
+                <select data-ev-k="examinationType" class="evidence-row-select"><option value="">—</option></select>
+              </div>
+              <div class="form-group" style="grid-column: 1 / -1;">
+                <label><span class="label-evidenceHashValue">Identifier / hash</span></label>
+                <input type="text" data-ev-k="evidenceHashValue" data-placeholder-key="placeholderEvidenceHash">
+              </div>
+              <div class="form-group" style="grid-column: 1 / -1;">
+                <label><span class="label-chainOfCustody">Chain of custody</span></label>
+                <input type="text" data-ev-k="chainOfCustody" data-placeholder-key="placeholderChainOfCustody">
+              </div>
+              <div class="form-group">
+                <label><span class="label-supportingParty">Supporting party</span></label>
+                <select data-ev-k="supportingParty" class="evidence-row-select"><option value="">—</option></select>
+              </div>
+              <div class="form-group" style="grid-column: 1 / -1;">
+                <label><span class="label-evidenceLinkUrl">Evidence link (URL)</span></label>
+                <input type="url" data-ev-k="evidenceLinkUrl" data-placeholder-key="placeholderEvidenceLinkUrl" inputmode="url" autocomplete="url">
+              </div>
+            </div>
+          </div>
+        </template>
         <div class="form-section form-tab-panel" id="sectionEvidence" role="tabpanel" aria-labelledby="tabEvidence" >
           <div class="form-section-body" id="sectionEvidenceBody">
           <p class="section-tip" id="tipEvidence" data-tip="sectionEvidence" aria-live="polite"></p>
           <button type="button" class="btn-link btn-toggle-tip" data-tip="sectionEvidence" aria-expanded="false"><span class="tip-label">Show tips</span></button>
-          <div class="form-row">
-            <div class="form-group">
-              <label for="formOfEvidence" id="labelFormOfEvidence">Form of evidence</label>
-              <select id="formOfEvidence" name="evidence.formOfEvidence">
-                <option value="">—</option>
-                <option value="Electronic">Electronic</option>
-                <option value="Paper">Paper</option>
-                <option value="Witness">Witness testimony</option>
-                <option value="Public">Public information</option>
-                <option value="Systems">Company systems</option>
-                <option value="Physical">Physical</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="dataCategory" id="labelDataCategory">Data category</label>
-              <select id="dataCategory" name="evidence.dataCategory">
-                <option value="">—</option>
-                <option value="Standard">Standard files</option>
-                <option value="Password protected">Password protected</option>
-                <option value="Deleted">Deleted (partial/full)</option>
-                <option value="Hidden">Hidden</option>
-                <option value="Encrypted">Encrypted</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="examinationType" id="labelExaminationType">Type of examination</label>
-              <select id="examinationType" name="evidence.examinationType">
-                <option value="">—</option>
-                <option value="Workplace inspection">Workplace inspection</option>
-                <option value="System review">Company systems review</option>
-                <option value="Storage media">Storage media review</option>
-                <option value="Technical">Technical equipment</option>
-              </select>
-            </div>
-            <div class="form-group" style="grid-column: 1 / -1;">
-              <label for="evidenceHashValue" id="labelEvidenceHashValue">Digital/material identifier (e.g. Hash Value Integrity)</label>
-              <input type="text" id="evidenceHashValue" name="evidence.evidenceHashValue" data-placeholder-key="placeholderEvidenceHash">
-            </div>
-            <div class="form-group" style="grid-column: 1 / -1;">
-              <label for="chainOfCustody" id="labelChainOfCustody">Chain of custody</label>
-              <input type="text" id="chainOfCustody" name="evidence.chainOfCustody" data-placeholder-key="placeholderChainOfCustody">
-            </div>
-            <div class="form-group" style="grid-column: 1 / -1;">
-              <label for="evidenceItemsList" id="labelEvidenceItemsList">Additional evidence items (multiple evidence supported)</label>
-              <textarea id="evidenceItemsList" name="evidence.evidenceItemsList" rows="3" data-placeholder-key="placeholderEvidenceItems"></textarea>
-            </div>
-            <div class="form-group">
-              <label for="supportingParty" id="labelSupportingParty">Supporting party</label>
-              <select id="supportingParty" name="evidence.supportingParty">
-                <option value="">—</option>
-                <option value="IT">IT department</option>
-                <option value="Digital forensics">Qualified digital forensics team</option>
-                <option value="External accredited">Accredited external party</option>
-                <option value="Other">Other</option>
-              </select>
-            </div>
-          </div>
+          <div id="evidenceRecordsContainer"></div>
+          <p style="margin-top: 0.5rem;"><button type="button" class="btn btn-outline" id="btnAddEvidenceRecord">Add evidence</button></p>
           </div>
         </div>
 
@@ -667,9 +595,9 @@
             <div class="form-group" style="grid-column: 1 / -1;">
               <fieldset>
                 <legend id="labelRootCauseClass">Root cause classification</legend>
-                <label><input type="checkbox" name="impact.rootCauseHuman" value="Yes"> Human: intent, negligence, lack of training, financial pressure, evidence destruction, refusal to provide data</label><br>
-                <label><input type="checkbox" name="impact.rootCauseOrg" value="Yes"> Organizational: absent policy, conflicting authorities, process gap, lack of segregation, weak oversight, external collusion</label><br>
-                <label><input type="checkbox" name="impact.rootCauseTech" value="Yes"> Technical: software vulnerability, RegTech weakness, absent automated alerts</label>
+                <label><input type="checkbox" name="impact.rootCauseHuman" value="Yes"> <span id="labelRootCauseHumanCb"></span></label><br>
+                <label><input type="checkbox" name="impact.rootCauseOrg" value="Yes"> <span id="labelRootCauseOrgCb"></span></label><br>
+                <label><input type="checkbox" name="impact.rootCauseTech" value="Yes"> <span id="labelRootCauseTechCb"></span></label>
               </fieldset>
             </div>
           </div>
@@ -718,10 +646,16 @@
             </div>
             <div class="form-group">
               <label for="netSavings" id="labelNetSavings">Net savings (recovery − investigation cost)</label>
-              <input type="text" id="netSavings" name="impact.netSavings">
+              <p class="form-hint" id="hintNetSavings" aria-hidden="true"></p>
+              <input type="text" id="netSavings" name="impact.netSavings" data-placeholder-key="placeholderAssetRecoveryNotes">
+            </div>
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label for="assetRecoveryNotes" id="labelAssetRecoveryNotes">Notes</label>
+              <textarea id="assetRecoveryNotes" name="impact.assetRecoveryNotes" rows="2" data-placeholder-key="placeholderAssetRecoveryNotes"></textarea>
             </div>
           </div>
           <h4 id="labelStrategicRecs">4. Strategic recommendations</h4>
+          <p class="form-hint" id="strategicRecsIntro" aria-live="polite"></p>
           <div class="form-row">
             <div class="form-group" style="grid-column: 1 / -1;">
               <label for="correctiveActions" id="labelCorrectiveActions">Corrective actions</label>
@@ -736,10 +670,10 @@
             <h4 id="labelClosureReasons" style="grid-column: 1 / -1;">Closure reasons</h4>
             <div class="form-group" style="grid-column: 1 / -1;">
               <fieldset>
-                <label><input type="checkbox" name="impact.closureNoViolation" value="Yes"> No violation proven: evidence does not support regulatory breach</label><br>
-                <label><input type="checkbox" name="impact.closureMalicious" value="Yes"> Malicious report: intentional misrepresentation or harm to targets</label><br>
-                <label><input type="checkbox" name="impact.closurePartial" value="Yes"> Partial violation: recommend alternative administrative action</label><br>
-                <label><input type="checkbox" name="impact.closureFileClosed" value="Yes"> File closed: unable to reach root cause or loss of legal validity</label>
+                <label><input type="checkbox" name="impact.closureNoViolation" value="Yes"> <span id="labelClosureNoViolationCb"></span></label><br>
+                <label><input type="checkbox" name="impact.closureMalicious" value="Yes"> <span id="labelClosureMaliciousCb"></span></label><br>
+                <label><input type="checkbox" name="impact.closurePartial" value="Yes"> <span id="labelClosurePartialCb"></span></label><br>
+                <label><input type="checkbox" name="impact.closureFileClosed" value="Yes"> <span id="labelClosureFileClosedCb"></span></label>
               </fieldset>
             </div>
             <div class="form-group" style="grid-column: 1 / -1;">
@@ -813,45 +747,69 @@
               </select>
             </div>
             <div class="form-group" style="grid-column: 1 / -1;">
-              <span class="label-block" id="labelRegulatoryRef">Regulatory reference (multi-select)</span>
-              <div id="regulatoryRefGroup" class="checkbox-group" role="group" aria-labelledby="labelRegulatoryRef"></div>
-              <label for="regulatoryRefArticle" id="labelRegulatoryRefArticle">Article / clause number</label>
-              <input type="text" id="regulatoryRefArticle" name="impact.regulatoryRefArticle" data-placeholder-key="placeholderRegulatoryRefArticle">
-            </div>
-            <div class="form-group">
-              <label for="impactValue" id="labelImpactValue">Impact value</label>
-              <input type="text" id="impactValue" name="impact.impactValue" data-placeholder-key="placeholderImpactValue">
-            </div>
-            <div class="form-group">
-              <label for="impactCurrency" id="labelImpactCurrency">Currency</label>
-              <select id="impactCurrency" name="impact.impactCurrency">
-                <option value="">—</option>
-                <option value="SAR">SAR (ريال)</option>
-                <option value="USD">USD (دولار)</option>
-                <option value="KWD">KWD (دينار)</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="recoveryValue" id="labelRecoveryValue">Recovery value</label>
-              <input type="text" id="recoveryValue" name="impact.recoveryValue">
-            </div>
-            <div class="form-group">
-              <label for="rcaType" id="labelRcaType">RCA / Root cause</label>
-              <select id="rcaType" name="impact.rcaType">
-                <option value="">—</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="rcaSubtype" id="labelRcaSubtype">RCA sub-menu</label>
-              <select id="rcaSubtype" name="impact.rcaSubtype">
-                <option value="">—</option>
-              </select>
-            </div>
-            <div class="form-group" style="grid-column: 1 / -1;">
-              <label for="rootCauses" id="labelRootCauses">Root causes (summary)</label>
-              <textarea id="rootCauses" name="impact.rootCauses" rows="2" data-placeholder-key="placeholderRootCauses"></textarea>
+              <span class="label-block" id="labelRegulatoryRef">Regulatory reference</span>
+              <p class="form-hint" id="labelRegulatoryRefArticle">Article / clause per option</p>
+              <div id="regulatoryRefGroup" class="checkbox-group regulatory-ref-wrap" role="group" aria-labelledby="labelRegulatoryRef"></div>
             </div>
           </div>
+          </div>
+        </div>
+
+        <div class="form-section form-tab-panel" id="sectionReview" role="tabpanel" aria-labelledby="tabReview">
+          <div class="form-section-body" id="sectionReviewBody">
+          <p class="section-tip" id="tipReview" data-tip="sectionReview" aria-live="polite"></p>
+          <button type="button" class="btn-link btn-toggle-tip" data-tip="sectionReview" aria-expanded="false"><span class="tip-label">Show tips</span></button>
+          <h4 id="labelSectionFormChecklist">Form verification checklist</h4>
+          <div class="form-row">
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <p class="form-hint" id="labelFormChecklistHint">Verify that the following forms have been completed and attached:</p>
+              <div id="formChecklistGroup" class="checkbox-group"></div>
+            </div>
+          </div>
+          <h4 id="labelSectionQualityReview">Report quality review (Phase 10)</h4>
+          <div class="form-row">
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <p class="form-hint" id="labelQualityReviewHint">Compliance Manager must complete before final approval:</p>
+              <div id="qualityReviewGroup" class="checkbox-group"></div>
+            </div>
+          </div>
+          <h4 id="labelSectionWhistleblower">Whistleblower incentives (Phase 11)</h4>
+          <div class="form-row">
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <fieldset>
+                <legend id="labelWhistleblowerIncentive">Incentive recommendation</legend>
+                <label><input type="checkbox" name="impact.whistleblowerCash" value="Yes"> Financial reward (SAR): <input type="text" id="whistleblowerAmount" name="impact.whistleblowerAmount" size="10"></label>
+                <label><input type="checkbox" name="impact.whistleblowerThanks" value="Yes"> Letter of thanks (moral)</label>
+                <label><input type="checkbox" name="impact.whistleblowerNo" value="Yes"> No reward recommended (reason: <input type="text" id="whistleblowerNoReason" name="impact.whistleblowerNoReason" size="30">)</label>
+              </fieldset>
+            </div>
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label><input type="checkbox" name="impact.whistleblowerProtection" value="Yes"> Whistleblower protection plan activated, file closed without negative impact</label>
+            </div>
+          </div>
+          <h4 id="labelFinalDecisionActions">Final decision and subsequent actions</h4>
+          <p class="form-hint" id="labelDecisionIntro">Recommendations are subject to accountability.</p>
+          <div class="form-row" id="reviewDecisionBlock">
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <fieldset>
+                <legend id="labelDecisionPartA">Part A — Recommendation</legend>
+                <div id="reviewDecisionPartAGroup" class="checkbox-group"></div>
+              </fieldset>
+            </div>
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <fieldset>
+                <legend id="labelDecisionPartB">Part B — Departments to implement</legend>
+                <div id="reviewDecisionPartBGroup" class="checkbox-group"></div>
+              </fieldset>
+            </div>
+          </div>
+          </div>
+        </div>
+
+        <div class="form-section form-tab-panel" id="sectionGrievance" role="tabpanel" aria-labelledby="tabGrievance">
+          <div class="form-section-body" id="sectionGrievanceBody">
+          <p class="section-tip" id="tipGrievance" data-tip="sectionGrievance" aria-live="polite"></p>
+          <button type="button" class="btn-link btn-toggle-tip" data-tip="sectionGrievance" aria-expanded="false"><span class="tip-label">Show tips</span></button>
           <h4 id="labelSectionGrievance">Grievance / Appeal (Phase 12)</h4>
           <div class="form-row">
             <div class="form-group">

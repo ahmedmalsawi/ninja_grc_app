@@ -64,9 +64,17 @@
     setLang(currentLang);
   }
 
+  function textForLang(key, lang) {
+    const entry = translations[key];
+    if (!entry) return key;
+    const L = lang === 'ar' ? 'ar' : 'en';
+    return entry[L] || entry.en || entry.ar || key;
+  }
+
   global.NinjaI18n = {
     init,
     t,
+    textForLang,
     getLang,
     setLang,
     getPhases,

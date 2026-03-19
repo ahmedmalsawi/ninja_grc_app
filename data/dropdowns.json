@@ -200,9 +200,9 @@
     {"value": "Other", "labelEn": "Other", "labelAr": "أخرى"}
   ],
   "mandatoryLevel": [
-    {"value": "Must", "labelEn": "Must (يجب)", "labelAr": "يجب"},
-    {"value": "Should", "labelEn": "Should (ينبغي)", "labelAr": "ينبغي"},
-    {"value": "May", "labelEn": "May (يجوز)", "labelAr": "يجوز"}
+    {"value": "Must", "labelEn": "Must", "labelAr": "يجب"},
+    {"value": "Should", "labelEn": "Should", "labelAr": "ينبغي"},
+    {"value": "May", "labelEn": "May", "labelAr": "يجوز"}
   ],
   "impactCurrency": [
     {"value": "SAR", "labelEn": "SAR (ريال)", "labelAr": "ريال"},
@@ -224,7 +224,7 @@
     {"value": "Other", "labelEn": "Other", "labelAr": "أخرى"}
   ],
   "subScope": [
-    {"value": "HR policy breach", "labelEn": "HR policy breach", "labelAr": "مخالفة سياسة HR", "scopeType": "Institutional"},
+    {"value": "HR policy breach", "labelEn": "HR policy breach", "labelAr": "مخالفة سياسة الموارد البشرية", "scopeType": "Institutional"},
     {"value": "Labour law", "labelEn": "Labour law", "labelAr": "نظام العمل", "scopeType": "Institutional"},
     {"value": "Employee relations", "labelEn": "Employee relations", "labelAr": "علاقات الموظفين", "scopeType": "Institutional"},
     {"value": "Acts omissions", "labelEn": "Acts / omissions", "labelAr": "أفعال/إغفالات", "scopeType": "Institutional"},
@@ -234,7 +234,7 @@
     {"value": "Board", "labelEn": "Board", "labelAr": "مجلس الإدارة", "scopeType": "Integrity"},
     {"value": "Cyber incidents", "labelEn": "Cyber incidents and system misuse", "labelAr": "حوادث سيبرانية وإساءة استخدام الأنظمة", "scopeType": "Technical"},
     {"value": "Technical fraud", "labelEn": "Technical fraud / data manipulation", "labelAr": "مخاطر احتيال تقني وتلاعب بالبيانات", "scopeType": "Technical"},
-    {"value": "Fraud risk assessment", "labelEn": "Fraud risk assessment (fraud pattern analysis and prevention support)", "labelAr": "تقييم مخاطر الاحتيال (تحليل أنماط الاحتيال ودعم جهود الوقاية)", "scopeType": "Technical"},
+    {"value": "Fraud risk assessment", "labelEn": "fraud pattern analysis and prevention support", "labelAr": " تحليل أنماط الاحتيال ودعم جهود الوقاية", "scopeType": "Technical"},
     {"value": "PDPL breach", "labelEn": "Data breach or leak (PDPL)", "labelAr": "اختراق أو تسريب بيانات شخصية (PDPL)", "scopeType": "Technical"},
     {"value": "Money laundering", "labelEn": "Money laundering", "labelAr": "غسل أموال", "scopeType": "Financial"},
     {"value": "Asset misappropriation", "labelEn": "Asset misappropriation", "labelAr": "اختلاس أصول", "scopeType": "Financial"},
@@ -258,7 +258,7 @@
     {"value": "External collusion", "labelEn": "External collusion", "labelAr": "تواطؤ خارجي", "rcaType": "Human"},
     {"value": "Deliberate obstruction", "labelEn": "Deliberate obstruction (refusal to provide data / destruction of evidence)", "labelAr": "عرقلة متعمدة (امتناع عن التزويد بالبيانات / إتلاف أدلة)", "rcaType": "Human"},
     {"value": "System vulnerability", "labelEn": "System vulnerability", "labelAr": "ثغرة بالنظام", "rcaType": "Technical"},
-    {"value": "Manual override", "labelEn": "Manual override", "labelAr": "تجاوز يدوي (Override)", "rcaType": "Technical"},
+    {"value": "Manual override", "labelEn": "Manual override", "labelAr": "تجاوز يدوي", "rcaType": "Technical"},
     {"value": "Opportunity", "labelEn": "1. Opportunity (system vulnerability)", "labelAr": "1. الفرصة (ثغرة بالنظام)", "rcaType": "FraudTriangle"},
     {"value": "Pressure", "labelEn": "2. Pressure (financial/environmental)", "labelAr": "2. الدافع (ضغط مالي/بيئي)", "rcaType": "FraudTriangle"},
     {"value": "Rationalization", "labelEn": "3. Rationalization (violator's mental image of their action)", "labelAr": "3. التبرير (الصورة الذهنية للمخالف عن فعله)", "rcaType": "FraudTriangle"}
@@ -272,7 +272,8 @@
   "precautionaryMeasures": [
     {"value": "Suspend financial", "labelEn": "Suspend authorities", "labelAr": "إيقاف الصلاحيات"},
     {"value": "Freeze warehouse", "labelEn": "Freeze warehouse access", "labelAr": "تجميد الوصول للمستودعات"},
-    {"value": "Notify banks", "labelEn": "Notify banks (with Legal)", "labelAr": "إشعار المصارف بالتنسيق مع القانونية"}
+    {"value": "Notify banks", "labelEn": "Notify banks (coordinate with Legal)", "labelAr": "إشعار المصارف بالتنسيق مع القانونية"},
+    {"value": "OtherPrecautionary", "labelEn": "Other (specify)", "labelAr": "خيارات أخرى"}
   ],
   "employees": [
     {"value": "سامح النجار", "labelEn": "Sameh Al-Najjar", "labelAr": "سامح النجار"}
@@ -294,7 +295,7 @@
     {"value": "Technical member", "labelEn": "Technical member", "labelAr": "عضو فني"},
     {"value": "Legal counsel", "labelEn": "Legal counsel", "labelAr": "مستشار قانوني"},
     {"value": "Technical expert", "labelEn": "Technical expert", "labelAr": "خبير تقني"},
-    {"value": "سامح النجار", "labelEn": "Sameh Al-Najjar (Compliance Manager)", "labelAr": "سامح النجار (مدير الامتثال)"}
+    {"value": "ConcernedDeptRep", "labelEn": "Representative of concerned department", "labelAr": "ممثل عن الإدارة المعنية"}
   ],
   "formChecklist": [
     {"value": "IndependenceDeclaration", "labelEn": "Independence & confidentiality declaration (with legal privilege)", "labelAr": "إقرار الاستقلالية والسرية مع إقرار الامتياز القانوني والمراجعة الأمنية"},

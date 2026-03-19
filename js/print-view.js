@@ -40,7 +40,8 @@
     var sc = c.scope || {};
     var pr = c.process || {};
     var iv = c.interview || {};
-    var ed = c.evidenceDetails || (typeof c.evidence === 'object' ? c.evidence : null) || {};
+    var ed = c.evidenceDetails || (typeof c.evidence === 'object' && !Array.isArray(c.evidence) ? c.evidence : null) || {};
+    var edList = (c.evidenceRecords && Array.isArray(c.evidenceRecords) && c.evidenceRecords.length) ? c.evidenceRecords : [ed];
     var ex = c.externalParties || {};
     var im = c.impact || {};
     var path = c.path || 'green';
@@ -79,32 +80,94 @@
     html += row(t('subScope'), sc.subScope);
     html += row(t('escalationLevel'), sc.escalationLevel);
     html += row(t('severity'), sc.severity);
+    var precDisp = sc.precautionaryMeasures || '';
+    if (precDisp === 'OtherPrecautionary' && sc.precautionaryMeasuresOther) precDisp = (sc.precautionaryMeasuresOther || '').trim() ? precDisp + ': ' + sc.precautionaryMeasuresOther : precDisp;
+    html += row(t('precautionaryMeasures'), precDisp);
+    if (sc.teamMemberRoster && sc.teamMemberRoster.length) {
+      var tml = sc.teamMemberRoster.map(function (m) {
+        return (m.role || '') + (m.name ? ' — ' + m.name : '') + (m.employeeNo ? ' (' + t('teamMemberJobNumber') + ': ' + m.employeeNo + ')' : '');
+      }).join('; ');
+      html += row(t('teamMembers'), tml);
+    } else if (sc.teamMembers && sc.teamMembers.length) {
+      html += row(t('teamMembers'), sc.teamMembers.join(', '));
+    }
     html += '</table>';
+    if (sc.scopeEntityRows && Array.isArray(sc.scopeEntityRows) && sc.scopeEntityRows.length) {
+      sc.scopeEntityRows.forEach(function (er, ei) {
+        if (!(er && (er.relatedEntity || er.jobNumber || er.personName))) return;
+        html += '<p class="print-section" style="margin-bottom:0.25rem"><strong>' + escapeHtml((t('scopeEntityRowTitle') || 'Related party') + ' ' + (ei + 1)) + '</strong></p>';
+        html += '<table class="print-table">';
+        html += row(t('relatedEntityLabel'), er.relatedEntity);
+        html += row(t('teamMemberJobNumber'), er.jobNumber);
+        html += row(t('name'), er.personName);
+        html += '</table>';
+      });
+    } else if (sc.scopeEntities && String(sc.scopeEntities).trim()) {
+      html += '<table class="print-table">';
+      html += row(t('scopeEntities'), sc.scopeEntities);
+      html += '</table>';
+    }
+    if (sc.constraintItems && Array.isArray(sc.constraintItems) && sc.constraintItems.length) {
+      var lines = sc.constraintItems.map(function (c) { return c && c.constraintText ? String(c.constraintText).trim() : ''; }).filter(Boolean);
+      if (lines.length) {
+        html += '<table class="print-table">';
+        html += row(t('scopeConstraints'), lines.join('; '));
+        html += '</table>';
+      }
+    } else if (sc.scopeConstraints && String(sc.scopeConstraints).trim()) {
+      html += '<table class="print-table">';
+      html += row(t('scopeConstraints'), sc.scopeConstraints);
+      html += '</table>';
+    }
 
     html += '<h3 class="print-section">' + t('sectionProcess') + '</h3><table class="print-table">';
     html += row(t('caseAcceptanceStatus'), pr.caseAcceptanceStatus);
     html += row(t('legalPrivilege'), pr.legalPrivilege);
     html += '</table>';
 
-    html += '<h3 class="print-section">' + t('sectionInterview') + '</h3><table class="print-table">';
-    html += row(t('interviewClassification'), iv.classification);
-    html += row(t('interviewDate'), iv.interviewDate);
-    html += row(t('rightsNotified'), iv.rightsNotified);
-    html += row(t('documentationMethod'), iv.documentationMethod);
-    html += row(t('receiptResponseStatus'), iv.receiptResponseStatus);
-    html += row(t('summonsId'), iv.summonsId);
-    html += row(t('summonsStatus'), iv.summonsStatus);
-    html += '</table>';
+    html += '<h3 class="print-section">' + t('sectionInterview') + '</h3>';
+    if (iv.sessions && Array.isArray(iv.sessions) && iv.sessions.length) {
+      iv.sessions.forEach(function (sess, idx) {
+        var subTitle = (sess.intervieweeName && sess.intervieweeName.trim()) ? escapeHtml(sess.intervieweeName.trim()) + (sess.interviewDate ? ' — ' + sess.interviewDate : '') : (t('interviewSessionTitle') || 'Interview') + ' ' + (idx + 1) + (sess.interviewDate ? ' — ' + sess.interviewDate : '');
+        html += '<p class="print-section" style="margin-bottom:0.25rem"><strong>' + subTitle + '</strong></p>';
+        html += '<table class="print-table">';
+        html += row(t('intervieweeName'), sess.intervieweeName);
+        html += row(t('intervieweeJobNumber'), sess.intervieweeJobNumber);
+        html += row(t('interviewClassification'), sess.classification);
+        html += row(t('interviewDate'), sess.interviewDate);
+        html += row(t('rightsNotified'), sess.rightsNotified);
+        html += row(t('documentationMethod'), sess.documentationMethod);
+        html += row(t('receiptResponseStatus'), sess.receiptResponseStatus);
+        html += row(t('summonsId'), sess.summonsId);
+        html += row(t('summonsStatus'), sess.summonsStatus);
+        html += row(t('interviewMinutes'), sess.minutes);
+        html += '</table>';
+      });
+    } else {
+      html += '<table class="print-table">';
+      html += row(t('interviewClassification'), iv.classification);
+      html += row(t('interviewDate'), iv.interviewDate);
+      html += row(t('rightsNotified'), iv.rightsNotified);
+      html += row(t('documentationMethod'), iv.documentationMethod);
+      html += row(t('receiptResponseStatus'), iv.receiptResponseStatus);
+      html += row(t('summonsId'), iv.summonsId);
+      html += row(t('summonsStatus'), iv.summonsStatus);
+      html += '</table>';
+    }
 
-    html += '<h3 class="print-section">' + t('sectionEvidence') + '</h3><table class="print-table">';
-    html += row(t('formOfEvidence'), ed.formOfEvidence);
-    html += row(t('dataCategory'), ed.dataCategory);
-    html += row(t('examinationType'), ed.examinationType);
-    html += row(t('evidenceHashValue'), ed.evidenceHashValue);
-    html += row(t('chainOfCustody'), ed.chainOfCustody);
-    html += row(t('evidenceItemsList'), ed.evidenceItemsList);
-    html += row(t('supportingParty'), ed.supportingParty);
-    html += '</table>';
+    html += '<h3 class="print-section">' + t('sectionEvidence') + '</h3>';
+    edList.forEach(function (ev, evIdx) {
+      if (edList.length > 1) html += '<p class="print-section" style="margin-bottom:0.25rem"><strong>' + escapeHtml((t('evidenceRecordTitle') || '') + ' ' + (evIdx + 1)) + '</strong></p>';
+      html += '<table class="print-table">';
+      html += row(t('formOfEvidence'), ev.formOfEvidence);
+      html += row(t('dataCategory'), ev.dataCategory);
+      html += row(t('examinationType'), ev.examinationType);
+      html += row(t('evidenceHashValue'), ev.evidenceHashValue);
+      html += row(t('chainOfCustody'), ev.chainOfCustody);
+      html += row(t('supportingParty'), ev.supportingParty);
+      html += row(t('evidenceLinkUrl'), ev.evidenceLinkUrl);
+      html += '</table>';
+    });
 
     html += '<h3 class="print-section">' + t('sectionImpact') + '</h3><table class="print-table">';
     html += row(t('currentStatus'), statusLabel(im.currentStatus));
@@ -126,13 +189,11 @@
     html += row(t('recoveryOpportunityValue'), im.recoveryOpportunityValue);
     html += row(t('recoveryStatus'), im.recoveryStatus);
     html += row(t('amountRecovered'), im.amountRecovered);
+    html += row(t('netSavings'), im.netSavings);
+    if (im.assetRecoveryNotes) html += row(t('assetRecoveryNotes'), im.assetRecoveryNotes);
     html += row(t('correctiveActions'), im.correctiveActions);
     html += row(t('preventiveActions'), im.preventiveActions);
     html += row(t('recommendationType'), im.recommendationType);
-    html += row(t('impactValue'), im.impactValue);
-    html += row(t('rcaType'), im.rcaType);
-    html += row(t('rcaSubtype'), im.rcaSubtype);
-    html += row(t('rootCauses'), im.rootCauses);
     html += row(t('grievanceDate'), im.grievanceDate);
     html += row(t('grievanceGrounds'), im.grievanceGrounds);
     html += '</table>';

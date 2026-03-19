@@ -41,7 +41,7 @@
     var tipEl = document.querySelector('.section-tip[data-tip="' + tipKey + '"]');
     var btn = document.querySelector('.btn-toggle-tip[data-tip="' + tipKey + '"]');
     if (!tipEl || !tipsData[tipKey]) return;
-    var text = getTipText(tipKey);
+    var text = (tipKey === 'sectionInterview' && tipsData.interviewGuidance) ? getTipText('interviewGuidance') : getTipText(tipKey);
     tipEl.textContent = text;
     if (!tipEl.classList.contains('is-visible')) tipEl.classList.remove('is-visible');
     if (btn) {
@@ -132,7 +132,8 @@
       if (getDisplayMode(tipKey) === 'hover' || getDisplayMode(tipKey) === 'conditional') return;
       var tipEl = document.querySelector('.section-tip[data-tip="' + tipKey + '"]');
       if (!tipEl || !tipsData[tipKey]) return;
-      tipEl.textContent = getTipText(tipKey);
+      var text = (tipKey === 'sectionInterview' && tipsData.interviewGuidance) ? getTipText('interviewGuidance') : getTipText(tipKey);
+      tipEl.textContent = text;
     });
     applyHoverTips();
     updateConditionalTips(document.getElementById('caseForm'));

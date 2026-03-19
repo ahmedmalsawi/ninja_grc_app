@@ -57,6 +57,10 @@
     "en": "Classification: Informal fact-finding, Formal with witnesses, or Confrontation with suspect. Rights notified: signed, or verbal with witness (refused to sign). Documentation: written signed minutes, digital recording (with consent), real-time notes, or audio transcript. Summons: Red path = immediate notice; Yellow = 24h notice; or scheduled.",
     "ar": "التصنيف: غير رسمية لتقصي الحقائق، رسمية مع شهود، مقابلة مواجهة مع مشتبه به. تم الإخطار بالحقوق: تم الإخطار والتوقيع، أو شفهياً مع شاهد (رفض التوقيع). التوثيق: محضر خطي موقع، تسجيل رقمي (بموافقة)، ملاحظات لحظية، تفريغ صوتي. الاستدعاء: المسار الأحمر = إخطار فوري؛ الأصفر = إخطار قبل 24 ساعة؛ أو مجدول."
   },
+  "interviewGuidance": {
+    "en": "Conducting interviews: (1) Prepare: define objectives, evidence to show, expected outcomes (admission, rebuttal, systemic gap). (2) Document interviewee identity and role. (3) Notify rights (signed or verbal with witness). (4) Use written minutes, recording with consent, or real-time notes. (5) Record receipt/summons status; link summons ID to case. (6) Preserve chain of custody for all evidence presented.",
+    "ar": "إجراء المقابلات: (1) التحضير: تحديد الأهداف، والأدلة المستعرضة، والنتائج المتوقعة (اعتراف، تفنيد دفوع، ثغرة نظامية). (2) توثيق هوية المُقابَل وصلاحياته. (3) الإخطار بالحقوق (توقيع أو إشعار شفهي مع شاهد). (4) استخدام محضر خطي، أو تسجيل بموافقة، أو ملاحظات لحظية. (5) تسجيل حالة التسلّم والاستدعاء؛ ربط رقم الاستدعاء برقم الحالة. (6) الحفاظ على سلسلة الحيازة لكل الأدلة المعروضة."
+  },
   "sectionEvidence": {
     "en": "Form: Electronic, paper, witness testimony, public info, company systems, tangible, other. Data category: standard files, password protected, deleted (full/partial), hidden, encrypted. Examination: workplace inspection, systems review, storage media, technical equipment. Chain of custody: full documentation, link to source, prevent tampering. Supporting party: IT, qualified digital forensics team, accredited external party.",
     "ar": "الشكل: إلكتروني، ورقي، شهادة شهود، معلومات عامة، أنظمة الشركة، أدلة ملموسة، أخرى. فئة البيانات: ملفات قياسية، محمية بكلمة مرور، محذوفة كلياً/جزئياً، مخفية، مشفرة. الفحص: تفتيش مكان العمل، فحص أنظمة الشركة، مراجعة وسائط التخزين، فحص عتاد تقني. التتبع: توثيق كامل لسلسلة الحيازة، ربط الملف بالمصدر الأصلي، منع التلاعب. الجهة المساندة: إدارة تقنية المعلومات، فريق جنائي رقمي مؤهل، جهة خارجية معتمدة."
@@ -68,5 +72,13 @@
   "sectionImpact": {
     "en": "Report content: Purpose, methodology, sources, facts, conclusions, recommendations, scope limits, constraints, assumptions. Recommendation type: Legal/sovereign referral, Improve controls, or Close investigation. Mandatory level: Must (يجب), Should (ينبغي), May (يجوز). Disciplinary: Warning, deduction, termination Art. 80 (no severance), sovereign referral. Root causes: e.g. segregation of duties, policy gap, weak controls, lack of awareness, financial pressure, collusion, obstruction.",
     "ar": "محتوى السجل: الغرض، المنهجية، المصادر، عرض الوقائع، الاستنتاجات، التوصيات، حدود النطاق، القيود، الافتراضات. نوع التوصية: إحالة قضائية/سيادية، تحسين ضوابط، حفظ التحقيق. مستوى الإلزام: يجب، ينبغي، يجوز. الإجراء التأديبي: إنذار، حسم، فصل بموجب المادة 80 بدون مكافأة، إحالة سيادية. الأسباب الجذرية: انعدام فصل المهام، غياب السياسات، ضعف الرقابة، نقص وعي، ضغوط مالية، تواطؤ، عرقلة متعمدة."
+  },
+  "sectionReview": {
+    "en": "Form verification checklist and report quality review (Phase 10) must be completed. Whistleblower incentives (Phase 11): recommend reward or protection. Final decision and subsequent actions: record the decision and assign implementation to the concerned departments.",
+    "ar": "قائمة تحقق النماذج ومراجعة جودة التقرير (المرحلة 10) يجب إكمالها. حوافز المبلّغ (المرحلة 11): التوصية بمكافأة أو حماية. القرار النهائي والإجراءات اللاحقة: تسجيل القرار وتكليف الإدارات المعنية بالتنفيذ."
+  },
+  "sectionGrievance": {
+    "en": "Grievance / Appeal (Phase 12): Record submission date, grounds, acceptance decision (Accepted / Rejected / Pending), and any decision amendment.",
+    "ar": "التظلم / الاستئناف (المرحلة 12): تسجيل تاريخ التقديم، ودفوع التظلم، وقرار القبول (مقبول / مرفوض / قيد الدراسة)، وأي تعديل على القرار."
   }
 }

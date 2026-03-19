@@ -13,16 +13,16 @@
     7: 'sectionInterview',
     8: 'sectionEvidence',
     9: 'sectionImpact',
-    10: 'sectionProcess',
-    11: 'sectionReporter',
-    12: 'sectionImpact'
+    10: 'sectionImpact',
+    11: 'sectionReview',
+    12: 'sectionGrievance'
   };
 
   function getSectionIds() {
     return [
       'sectionCaseInfo', 'sectionScoring', 'sectionReporter', 'sectionClassification',
       'sectionScope', 'sectionProcess', 'sectionInterview', 'sectionEvidence',
-      'sectionExternalParties', 'sectionImpact'
+      'sectionExternalParties', 'sectionImpact', 'sectionReview', 'sectionGrievance'
     ];
   }
 
