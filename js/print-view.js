@@ -27,6 +27,16 @@
     return '<tr><th scope="row">' + escapeHtml(label) + '</th><td>' + escapeHtml(String(value)) + '</td></tr>';
   }
 
+  function interviewSessionBool(v) {
+    return v === true || v === 'yes' || v === 'Yes' || v === '1';
+  }
+
+  function rowBool(label, checked) {
+    var ok = interviewSessionBool(checked);
+    var txt = ok ? (t('labelYes') || 'Yes') : (t('labelNo') || 'No');
+    return '<tr><th scope="row">' + escapeHtml(label) + '</th><td>' + escapeHtml(txt) + '</td></tr>';
+  }
+
   function escapeHtml(s) {
     if (s == null) return '';
     var div = document.createElement('div');
@@ -140,6 +150,22 @@
         html += row(t('receiptResponseStatus'), sess.receiptResponseStatus);
         html += row(t('summonsId'), sess.summonsId);
         html += row(t('summonsStatus'), sess.summonsStatus);
+        html += row(t('interviewTechnicalAuthorities'), sess.technicalAuthorities);
+        html += row(t('interviewPersonalityInfluence'), sess.personalityInfluence);
+        html += rowBool(t('interviewIndependenceVerified'), sess.independenceVerified);
+        html += row(t('interviewCoreObjective'), sess.sessionCoreObjective);
+        html += row(t('interviewInfoToExtract'), sess.sessionInfoToExtract);
+        html += row(t('interviewEvidencePresented'), sess.sessionEvidencePresented);
+        var expOut = [];
+        if (interviewSessionBool(sess.outcomePartialFullAdmission)) expOut.push(t('interviewOutcomePartialFull'));
+        if (interviewSessionBool(sess.outcomeRevealPartners)) expOut.push(t('interviewOutcomeRevealPartners'));
+        if (interviewSessionBool(sess.outcomeRefuteDefenses)) expOut.push(t('interviewOutcomeRefuteDefenses'));
+        if (interviewSessionBool(sess.outcomeSystemicGap)) expOut.push(t('interviewOutcomeSystemicGap'));
+        html += row(t('interviewExpectedOutcomesLegend'), expOut.join('; '));
+        html += row(t('interviewLeadInvestigator'), [sess.leadInvestigatorName, sess.leadInvestigatorJobNumber].filter(Boolean).join(' — ') || '');
+        html += row(t('interviewWitnessRecorder'), [sess.witnessRecorderName, sess.witnessRecorderJobNumber].filter(Boolean).join(' — ') || '');
+        html += row(t('interviewTechExpert'), [sess.techExpertName, sess.techExpertJobNumber].filter(Boolean).join(' — ') || '');
+        html += row(t('interviewDeptRep'), [sess.deptRepName, sess.deptRepJobNumber].filter(Boolean).join(' — ') || '');
         html += row(t('interviewMinutes'), sess.minutes);
         html += '</table>';
       });

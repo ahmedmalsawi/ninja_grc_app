@@ -496,7 +496,7 @@
           <div id="interviewSessionsContainer"></div>
           <p style="margin-top: 0.5rem;"><button type="button" class="btn btn-outline" id="btnAddInterviewRecord"></button></p>
           <template id="interviewSessionTpl">
-            <div class="form-row interview-session-block card" data-interview-session style="margin-bottom: 1.25rem; padding: 1rem;">
+            <div class="interview-session-block card" data-interview-session style="margin-bottom: 1.25rem; padding: 1rem;">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
                 <strong class="interview-session-heading"></strong>
                 <button type="button" class="btn btn-sm btn-outline btn-remove-interview-session"></button>
@@ -554,6 +554,115 @@
                   <label><span class="label-summonsStatus">Summons status</span></label>
                   <select data-int-k="summonsStatus" class="interview-session-select interview-session-summons"><option value="">—</option></select>
                 </div>
+              </div>
+
+              <fieldset class="interview-fieldset">
+                <legend class="label-interviewTraitsLegend">Professional traits analysis</legend>
+                <div class="form-row interview-session-grid">
+                  <div class="form-group" style="grid-column: 1 / -1;">
+                    <label><span class="label-interviewTechnicalAuthorities">Technical authorities</span></label>
+                    <p class="form-hint label-interviewTechnicalAuthoritiesHint"></p>
+                    <textarea data-int-k="technicalAuthorities" rows="2" data-placeholder-key="placeholderInterviewTechnicalAuthorities"></textarea>
+                  </div>
+                  <div class="form-group" style="grid-column: 1 / -1;">
+                    <label><span class="label-interviewPersonalityInfluence">Personality influence</span></label>
+                    <p class="form-hint label-interviewPersonalityInfluenceHint"></p>
+                    <textarea data-int-k="personalityInfluence" rows="2" data-placeholder-key="placeholderInterviewPersonalityInfluence"></textarea>
+                  </div>
+                  <div class="form-group interview-checkbox-full" style="grid-column: 1 / -1;">
+                    <label class="checkbox-inline">
+                      <input type="checkbox" data-int-k="independenceVerified" value="yes">
+                      <span class="label-interviewIndependenceVerified"></span>
+                    </label>
+                  </div>
+                </div>
+              </fieldset>
+
+              <fieldset class="interview-fieldset">
+                <legend class="label-interviewGoalsLegend">Goals and intended outputs</legend>
+                <div class="form-row interview-session-grid">
+                  <div class="form-group" style="grid-column: 1 / -1;">
+                    <label><span class="label-interviewCoreObjective">Core objective</span></label>
+                    <p class="form-hint label-interviewCoreObjectiveHint"></p>
+                    <textarea data-int-k="sessionCoreObjective" rows="2" data-placeholder-key="placeholderInterviewCoreObjective"></textarea>
+                  </div>
+                  <div class="form-group" style="grid-column: 1 / -1;">
+                    <label><span class="label-interviewInfoToExtract">Information to extract</span></label>
+                    <textarea data-int-k="sessionInfoToExtract" rows="2" data-placeholder-key="placeholderInterviewInfoToExtract"></textarea>
+                  </div>
+                  <div class="form-group" style="grid-column: 1 / -1;">
+                    <label><span class="label-interviewEvidencePresented">Evidence presented</span></label>
+                    <textarea data-int-k="sessionEvidencePresented" rows="2" data-placeholder-key="placeholderInterviewEvidencePresented"></textarea>
+                  </div>
+                  <div class="form-group interview-outcomes-group" style="grid-column: 1 / -1;">
+                    <span class="label-interviewExpectedOutcomesLegend" style="display:block;font-weight:600;margin-bottom:0.35rem;"></span>
+                    <div class="interview-outcome-checks">
+                      <label class="checkbox-inline"><input type="checkbox" data-int-k="outcomePartialFullAdmission" value="yes"><span class="label-outcomePartialFullAdmission"></span></label>
+                      <label class="checkbox-inline"><input type="checkbox" data-int-k="outcomeRevealPartners" value="yes"><span class="label-outcomeRevealPartners"></span></label>
+                      <label class="checkbox-inline"><input type="checkbox" data-int-k="outcomeRefuteDefenses" value="yes"><span class="label-outcomeRefuteDefenses"></span></label>
+                      <label class="checkbox-inline"><input type="checkbox" data-int-k="outcomeSystemicGap" value="yes"><span class="label-outcomeSystemicGap"></span></label>
+                    </div>
+                  </div>
+                </div>
+              </fieldset>
+
+              <fieldset class="interview-fieldset">
+                <legend class="label-interviewTeamLegend">Execution team</legend>
+                <div class="interview-team-block">
+                  <p class="interview-team-role"><strong class="label-teamRoleLeadInvestigator"></strong> — <span class="label-teamRoleLeadInvestigatorHint"></span></p>
+                  <div class="form-row interview-session-grid">
+                    <div class="form-group">
+                      <label><span class="label-liName">Name</span></label>
+                      <input type="text" data-int-k="leadInvestigatorName" data-placeholder-key="placeholderPersonName">
+                    </div>
+                    <div class="form-group">
+                      <label><span class="label-liJob">Job number</span></label>
+                      <input type="text" data-int-k="leadInvestigatorJobNumber" data-placeholder-key="placeholderJobNumberShort">
+                    </div>
+                  </div>
+                </div>
+                <div class="interview-team-block">
+                  <p class="interview-team-role"><strong class="label-teamRoleWitnessRecorder"></strong> — <span class="label-teamRoleWitnessRecorderHint"></span></p>
+                  <div class="form-row interview-session-grid">
+                    <div class="form-group">
+                      <label><span class="label-wrName">Name</span></label>
+                      <input type="text" data-int-k="witnessRecorderName" data-placeholder-key="placeholderPersonName">
+                    </div>
+                    <div class="form-group">
+                      <label><span class="label-wrJob">Job number</span></label>
+                      <input type="text" data-int-k="witnessRecorderJobNumber" data-placeholder-key="placeholderJobNumberShort">
+                    </div>
+                  </div>
+                </div>
+                <div class="interview-team-block">
+                  <p class="interview-team-role"><strong class="label-teamRoleTechExpert"></strong> — <span class="label-teamRoleTechExpertHint"></span></p>
+                  <div class="form-row interview-session-grid">
+                    <div class="form-group">
+                      <label><span class="label-teName">Name</span></label>
+                      <input type="text" data-int-k="techExpertName" data-placeholder-key="placeholderPersonName">
+                    </div>
+                    <div class="form-group">
+                      <label><span class="label-teJob">Job number</span></label>
+                      <input type="text" data-int-k="techExpertJobNumber" data-placeholder-key="placeholderJobNumberShort">
+                    </div>
+                  </div>
+                </div>
+                <div class="interview-team-block">
+                  <p class="interview-team-role"><strong class="label-teamRoleDeptRep"></strong> — <span class="label-teamRoleDeptRepHint"></span></p>
+                  <div class="form-row interview-session-grid">
+                    <div class="form-group">
+                      <label><span class="label-drName">Name</span></label>
+                      <input type="text" data-int-k="deptRepName" data-placeholder-key="placeholderPersonName">
+                    </div>
+                    <div class="form-group">
+                      <label><span class="label-drJob">Job number</span></label>
+                      <input type="text" data-int-k="deptRepJobNumber" data-placeholder-key="placeholderJobNumberShort">
+                    </div>
+                  </div>
+                </div>
+              </fieldset>
+
+              <div class="form-row interview-session-grid" style="margin-top: 0.5rem;">
                 <div class="form-group" style="grid-column: 1 / -1;">
                   <label><span class="label-interviewMinutes">Interview minutes / notes</span></label>
                   <textarea data-int-k="minutes" rows="3"></textarea>

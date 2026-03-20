@@ -128,11 +128,33 @@
     return { constraintText: '' };
   }
 
-  var INTERVIEW_SESSION_KEYS = ['intervieweeName', 'intervieweeJobNumber', 'classification', 'interviewDate', 'rightsNotified', 'documentationMethod', 'receiptResponseStatus', 'summonsId', 'summonsStatus', 'minutes'];
+  var INTERVIEW_SESSION_KEYS = [
+    'intervieweeName', 'intervieweeJobNumber', 'classification', 'interviewDate',
+    'rightsNotified', 'documentationMethod', 'receiptResponseStatus', 'summonsId', 'summonsStatus',
+    'technicalAuthorities', 'personalityInfluence', 'independenceVerified',
+    'sessionCoreObjective', 'sessionInfoToExtract', 'sessionEvidencePresented',
+    'outcomePartialFullAdmission', 'outcomeRevealPartners', 'outcomeRefuteDefenses', 'outcomeSystemicGap',
+    'leadInvestigatorName', 'leadInvestigatorJobNumber', 'witnessRecorderName', 'witnessRecorderJobNumber',
+    'techExpertName', 'techExpertJobNumber', 'deptRepName', 'deptRepJobNumber',
+    'minutes'
+  ];
+  var INTERVIEW_SESSION_BOOL_KEYS = {
+    independenceVerified: true,
+    outcomePartialFullAdmission: true,
+    outcomeRevealPartners: true,
+    outcomeRefuteDefenses: true,
+    outcomeSystemicGap: true
+  };
+
+  function interviewSessionBoolValue(v) {
+    return v === true || v === 'yes' || v === 'Yes' || v === '1';
+  }
 
   function emptyInterviewSession() {
     var o = {};
-    INTERVIEW_SESSION_KEYS.forEach(function (k) { o[k] = ''; });
+    INTERVIEW_SESSION_KEYS.forEach(function (k) {
+      o[k] = INTERVIEW_SESSION_BOOL_KEYS[k] ? false : '';
+    });
     return o;
   }
 
@@ -467,7 +489,12 @@
       var o = {};
       INTERVIEW_SESSION_KEYS.forEach(function (k) {
         var el = row.querySelector('[data-int-k="' + k + '"]');
-        o[k] = el ? (el.value || '').trim() : '';
+        if (!el) { o[k] = INTERVIEW_SESSION_BOOL_KEYS[k] ? false : ''; return; }
+        if (el.type === 'checkbox') {
+          o[k] = !!el.checked;
+        } else {
+          o[k] = (el.value || '').trim();
+        }
       });
       out.push(o);
     });
@@ -483,7 +510,32 @@
       if (receiptSel) NinjaSettings.populateSelect(receiptSel, 'receiptResponseStatus', { lang: lang });
       if (summonsSel) NinjaSettings.populateSelect(summonsSel, 'summonsStatus', { lang: lang });
     }
-    [['intervieweeName', 'intervieweeName'], ['intervieweeJobNumber', 'intervieweeJobNumber'], ['interviewClassification', 'interviewClassification'], ['interviewDate', 'interviewDate'], ['rightsNotified', 'rightsNotified'], ['documentationMethod', 'documentationMethod'], ['receiptResponseStatus', 'receiptResponseStatus'], ['summonsId', 'summonsId'], ['summonsStatus', 'summonsStatus'], ['interviewMinutes', 'interviewMinutes']].forEach(function (pair) {
+    [
+      ['intervieweeName', 'intervieweeName'], ['intervieweeJobNumber', 'intervieweeJobNumber'],
+      ['interviewClassification', 'interviewClassification'], ['interviewDate', 'interviewDate'],
+      ['rightsNotified', 'rightsNotified'], ['documentationMethod', 'documentationMethod'],
+      ['receiptResponseStatus', 'receiptResponseStatus'], ['summonsId', 'summonsId'], ['summonsStatus', 'summonsStatus'],
+      ['interviewMinutes', 'interviewMinutes'],
+      ['interviewTraitsLegend', 'interviewTraitsLegend'], ['interviewTechnicalAuthorities', 'interviewTechnicalAuthorities'],
+      ['interviewTechnicalAuthoritiesHint', 'interviewTechnicalAuthoritiesHint'], ['interviewPersonalityInfluence', 'interviewPersonalityInfluence'],
+      ['interviewPersonalityInfluenceHint', 'interviewPersonalityInfluenceHint'], ['interviewIndependenceVerified', 'interviewIndependenceVerified'],
+      ['interviewGoalsLegend', 'interviewGoalsLegend'],
+      ['interviewCoreObjective', 'interviewCoreObjective'],
+      ['interviewCoreObjectiveHint', 'interviewCoreObjectiveHint'],
+      ['interviewInfoToExtract', 'interviewInfoToExtract'],
+      ['interviewEvidencePresented', 'interviewEvidencePresented'],
+      ['interviewExpectedOutcomesLegend', 'interviewExpectedOutcomesLegend'],
+      ['outcomePartialFullAdmission', 'interviewOutcomePartialFull'], ['outcomeRevealPartners', 'interviewOutcomeRevealPartners'],
+      ['outcomeRefuteDefenses', 'interviewOutcomeRefuteDefenses'], ['outcomeSystemicGap', 'interviewOutcomeSystemicGap'],
+      ['interviewTeamLegend', 'interviewTeamLegend'], ['teamRoleLeadInvestigator', 'interviewLeadInvestigator'],
+      ['teamRoleLeadInvestigatorHint', 'interviewLeadInvestigatorHint'], ['liName', 'name'], ['liJob', 'teamMemberJobNumber'],
+      ['teamRoleWitnessRecorder', 'interviewWitnessRecorder'], ['teamRoleWitnessRecorderHint', 'interviewWitnessRecorderHint'],
+      ['wrName', 'name'], ['wrJob', 'teamMemberJobNumber'],
+      ['teamRoleTechExpert', 'interviewTechExpert'], ['teamRoleTechExpertHint', 'interviewTechExpertHint'],
+      ['teName', 'name'], ['teJob', 'teamMemberJobNumber'],
+      ['teamRoleDeptRep', 'interviewDeptRep'], ['teamRoleDeptRepHint', 'interviewDeptRepHint'],
+      ['drName', 'name'], ['drJob', 'teamMemberJobNumber']
+    ].forEach(function (pair) {
       var el = row.querySelector('.label-' + pair[0]);
       if (el) el.textContent = t(pair[1]);
     });
@@ -564,7 +616,12 @@
       populateInterviewSessionRow(row);
       INTERVIEW_SESSION_KEYS.forEach(function (k) {
         var el = row.querySelector('[data-int-k="' + k + '"]');
-        if (el) el.value = sess[k] != null ? sess[k] : '';
+        if (!el) return;
+        if (el.type === 'checkbox') {
+          el.checked = interviewSessionBoolValue(sess[k]);
+        } else {
+          el.value = sess[k] != null ? sess[k] : '';
+        }
       });
     });
     updateInterviewSessionHeadings(c);

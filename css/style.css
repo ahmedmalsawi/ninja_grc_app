@@ -277,9 +277,26 @@ body {
   margin-bottom: 1rem;
 }
 
-/* Interview session & scope entity rows: explicit multi-column grid */
+/* Interview session card: full width (avoid form-row on outer card — was splitting header vs fields into 2 columns) */
+.interview-session-block {
+  width: 100%;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+.interview-session-block .interview-session-grid {
+  width: 100%;
+}
+
+/* Interview session & scope entity rows: explicit multi-column grid, use horizontal space */
 .form-row.interview-session-grid {
   grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+@media (min-width: 1000px) {
+  .form-row.interview-session-grid {
+    grid-template-columns: repeat(3, minmax(10rem, 1fr));
+  }
 }
 @media (max-width: 900px) {
   .form-row.interview-session-grid {
@@ -290,6 +307,59 @@ body {
   .form-row.interview-session-grid {
     grid-template-columns: 1fr;
   }
+}
+
+.interview-session-block .interview-fieldset {
+  border: 1px solid var(--color-border, #e2e8f0);
+  border-radius: var(--radius);
+  padding: 0.75rem 1rem 1rem;
+  margin: 0.75rem 0;
+  background: var(--color-surface-muted, #f8fafc);
+}
+.interview-session-block .interview-fieldset legend {
+  font-weight: 600;
+  color: var(--color-primary);
+  padding: 0 0.35rem;
+}
+.interview-session-block .interview-outcome-checks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+  align-items: flex-start;
+}
+.interview-session-block .interview-team-block {
+  margin-bottom: 1rem;
+}
+.interview-session-block .interview-team-block:last-child {
+  margin-bottom: 0;
+}
+.interview-session-block .interview-team-role {
+  margin: 0 0 0.35rem 0;
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+/* Review & decision: checklist / quality / decision blocks use grid instead of ragged flex-wrap */
+#sectionReview #formChecklistGroup.checkbox-group,
+#sectionReview #qualityReviewGroup.checkbox-group {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 18.5rem), 1fr));
+  gap: 0.5rem 1.25rem;
+  width: 100%;
+  align-items: start;
+}
+#sectionReview #reviewDecisionPartAGroup.checkbox-group,
+#sectionReview #reviewDecisionPartBGroup.checkbox-group {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr));
+  gap: 0.5rem 1.25rem;
+  width: 100%;
+  align-items: start;
+}
+#sectionReview .checkbox-inline {
+  align-items: flex-start;
+  min-width: 0;
+  line-height: 1.35;
 }
 .form-row:last-child { margin-bottom: 0; }
 
@@ -779,6 +849,7 @@ textarea[aria-invalid="true"] {
   font-size: 0.875rem;
   color: var(--color-text);
   line-height: 1.5;
+  white-space: pre-wrap;
 }
 .section-tip.is-visible { display: block; }
 .tip-conditional {
