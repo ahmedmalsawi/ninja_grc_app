@@ -295,6 +295,7 @@
     {"value": "Technical member", "labelEn": "Technical member", "labelAr": "عضو فني"},
     {"value": "Legal counsel", "labelEn": "Legal counsel", "labelAr": "مستشار قانوني"},
     {"value": "Technical expert", "labelEn": "Technical expert", "labelAr": "خبير تقني"},
+    {"value": "Operations management", "labelEn": "Operations management", "labelAr": "إدارة العمليات"},
     {"value": "ConcernedDeptRep", "labelEn": "Representative of concerned department", "labelAr": "ممثل عن الإدارة المعنية"}
   ],
   "formChecklist": [
