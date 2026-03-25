@@ -4,6 +4,7 @@
  */
 (function () {
   var tipsData = {};
+  var PREF_KEY = 'ninja-grc-show-tips-controls';
 
   var HOVER_TIP_INPUTS = {
     sovereigntyTip: 'sovereignty',
@@ -117,11 +118,38 @@
     });
   }
 
+  function areTipsControlsEnabled() {
+    try {
+      return (typeof localStorage !== 'undefined') && localStorage.getItem(PREF_KEY) === 'true';
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function applyTipsControlsPreference() {
+    var enabled = areTipsControlsEnabled();
+    document.querySelectorAll('.btn-toggle-tip').forEach(function (btn) {
+      btn.style.display = enabled ? '' : 'none';
+    });
+    document.querySelectorAll('.section-tip').forEach(function (el) {
+      if (!enabled) {
+        el.classList.remove('is-visible');
+        el.style.display = 'none';
+      } else {
+        el.style.display = '';
+      }
+    });
+    document.querySelectorAll('.tip-conditional').forEach(function (el) {
+      if (!enabled) el.style.display = 'none';
+    });
+  }
+
   function init() {
     loadTips().then(function () {
       Object.keys(tipsData).forEach(showTipsForSection);
       applyHoverTips();
       bindToggles();
+      applyTipsControlsPreference();
       var form = document.getElementById('caseForm');
       if (form) updateConditionalTips(form);
     });
@@ -137,6 +165,7 @@
     });
     applyHoverTips();
     updateConditionalTips(document.getElementById('caseForm'));
+    applyTipsControlsPreference();
   }
 
   if (document.readyState === 'loading') {
@@ -149,6 +178,8 @@
     loadTips: loadTips,
     refreshTips: refreshTips,
     updateConditionalTips: updateConditionalTips,
-    getTipText: getTipText
+    getTipText: getTipText,
+    applyTipsControlsPreference: applyTipsControlsPreference,
+    areTipsControlsEnabled: areTipsControlsEnabled
   };
 })();

@@ -113,6 +113,7 @@
       exportJson: 'btnExportJson', exportCsv: 'btnExportCsv', filterByPath: 'filterByPath', filterByPhase: 'filterByPhase', filterByStatus: 'filterByStatus', all: 'all',
       saved: 'saved', deleted: 'deleted', validationRequired: 'validationRequired', validationScore: 'validationScore',
       settingsTitle: 'settingsTitle', settingsIntro: 'settingsIntro', settingsEditOptions: 'settingsEditorTitle',
+      settingsTipsHeading: 'settingsTipsHeading', settingsTipsDesc: 'settingsTipsDesc', prefShowTipsControls: 'labelPrefShowTipsControls',
       settingsAddOption: 'settingsEditorAdd', settingsRestoreDefaults: 'settingsEditorRestore'
     };
     Object.keys(ids).forEach(function (key) {
@@ -538,6 +539,18 @@
       setNavActiveFromPage();
       if (typeof NinjaI18n !== 'undefined' && NinjaI18n.applyDirLang) NinjaI18n.applyDirLang();
       if (typeof applyTranslations === 'function') applyTranslations();
+      var tipsPref = document.getElementById('prefShowTipsControls');
+      if (tipsPref) {
+        try {
+          tipsPref.checked = (typeof localStorage !== 'undefined') && localStorage.getItem('ninja-grc-show-tips-controls') === 'true';
+        } catch (e) {
+          tipsPref.checked = false;
+        }
+        tipsPref.addEventListener('change', function () {
+          try { if (typeof localStorage !== 'undefined') localStorage.setItem('ninja-grc-show-tips-controls', tipsPref.checked ? 'true' : 'false'); } catch (e) {}
+          if (window.NinjaTips && NinjaTips.applyTipsControlsPreference) NinjaTips.applyTipsControlsPreference();
+        });
+      }
       var p = (window.NinjaSettings && NinjaSettings.init) ? NinjaSettings.init() : Promise.resolve();
       return p.then(function () {
         if ($('langAr')) $('langAr').addEventListener('click', function () {
