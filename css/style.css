@@ -348,13 +348,46 @@ body {
   width: 100%;
   align-items: start;
 }
-#sectionReview #reviewDecisionPartAGroup.checkbox-group,
-#sectionReview #reviewDecisionPartBGroup.checkbox-group {
+#sectionReview .review-final-decision fieldset {
+  width: 100%;
+}
+#sectionReview .review-decision-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-top: 0.35rem;
+}
+#sectionReview .review-decision-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem 0.5rem;
+  line-height: 1.4;
+}
+#sectionReview .review-decision-inline-input {
+  min-width: 4rem;
+  max-width: 100%;
+  padding: 0.2rem 0.35rem;
+  font: inherit;
+}
+#sectionReview .review-decision-dept-title {
+  font-weight: 600;
+  margin: 0.65rem 0 0.25rem 0;
+}
+#sectionReview .review-decision-dept-title:first-of-type {
+  margin-top: 0.35rem;
+}
+#sectionImpact .strategic-art80-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr));
-  gap: 0.5rem 1.25rem;
-  width: 100%;
-  align-items: start;
+  gap: 0.35rem 1rem;
+  margin-top: 0.35rem;
+}
+#sectionImpact .checkbox-block {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.35rem;
+  line-height: 1.35;
 }
 #sectionReview .checkbox-inline {
   align-items: flex-start;

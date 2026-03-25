@@ -21,6 +21,17 @@
     return 'path-' + (path || 'green');
   }
 
+  function emptyExternalParty() {
+    return { partyType: '', natureOfCommunication: '', encryption: '', confidentiality: '', writtenAgreement: false };
+  }
+
+  function emptyAccountableEntity() {
+    return {
+      personName: '', jobNumber: '', relatedEntity: '', convictionLevel: '',
+      guidanceViolationProven: false, guidanceNoViolation: false, guidanceInsufficientEvidence: false
+    };
+  }
+
   function createEmptyCase(seq) {
     return {
       id: '',
@@ -98,7 +109,7 @@
         evidenceLinkUrl: ''
       },
       evidenceRecords: [],
-      externalParties: {},
+      externalParties: { parties: [emptyExternalParty()] },
       impact: {
         currentStatus: 'Open',
         recommendationType: '',
@@ -114,6 +125,9 @@
   }
 
   var EVIDENCE_ROW_KEYS = ['formOfEvidence', 'dataCategory', 'examinationType', 'evidenceHashValue', 'chainOfCustody', 'supportingParty', 'evidenceLinkUrl'];
+  var EXTERNAL_PARTY_KEYS = ['partyType', 'natureOfCommunication', 'encryption', 'confidentiality'];
+  var ACCOUNTABLE_ENTITY_TEXT_KEYS = ['personName', 'jobNumber', 'relatedEntity', 'convictionLevel'];
+  var ACCOUNTABLE_ENTITY_BOOL_KEYS = { guidanceViolationProven: true, guidanceNoViolation: true, guidanceInsufficientEvidence: true };
 
   var SCOPE_ENTITY_KEYS = ['relatedEntity', 'jobNumber', 'personName'];
   var SCOPE_CONSTRAINT_KEY = 'constraintText';
@@ -298,6 +312,243 @@
       row.remove();
       updateEvidenceRecordHeadings(c);
     });
+  }
+
+  function collectExternalPartiesFromForm(formEl) {
+    var c = formEl.querySelector('#externalPartiesContainer');
+    if (!c) return null;
+    var rows = c.querySelectorAll('[data-external-party]');
+    var out = [];
+    rows.forEach(function (row) {
+      var o = {};
+      EXTERNAL_PARTY_KEYS.forEach(function (k) {
+        var el = row.querySelector('[data-ext-k="' + k + '"]');
+        o[k] = el ? (el.value || '').trim() : '';
+      });
+      var wa = row.querySelector('[data-ext-k="writtenAgreement"]');
+      o.writtenAgreement = !!(wa && wa.checked);
+      out.push(o);
+    });
+    return out.length ? out : [emptyExternalParty()];
+  }
+
+  function populateExternalPartyRow(row) {
+    var lang = (typeof NinjaI18n !== 'undefined' && NinjaI18n.getLang) ? NinjaI18n.getLang() : 'en';
+    if (window.NinjaSettings && NinjaSettings.populateSelect) {
+      [['partyType', 'partyType'], ['natureOfCommunication', 'natureOfCommunication'], ['encryption', 'encryption']].forEach(function (pair) {
+        var sel = row.querySelector('select[data-ext-k="' + pair[0] + '"]');
+        if (sel) NinjaSettings.populateSelect(sel, pair[1], { lang: lang });
+      });
+    }
+    var t = (typeof NinjaI18n !== 'undefined' && NinjaI18n.t) ? NinjaI18n.t.bind(NinjaI18n) : function (k) { return k; };
+    [['ext-partyType', 'partyType'], ['ext-natureOfCommunication', 'natureOfCommunication'], ['ext-encryption', 'encryption'], ['ext-writtenAgreement', 'writtenAgreement'], ['ext-confidentiality', 'externalConfidentiality']].forEach(function (pair) {
+      var el = row.querySelector('.label-' + pair[0]);
+      if (el) el.textContent = t(pair[1]);
+    });
+  }
+
+  function updateExternalPartyHeadings(container) {
+    if (!container) return;
+    var t = (typeof NinjaI18n !== 'undefined' && NinjaI18n.t) ? NinjaI18n.t.bind(NinjaI18n) : function (k) { return k; };
+    var rows = container.querySelectorAll('[data-external-party]');
+    rows.forEach(function (row, i) {
+      var h = row.querySelector('.external-party-heading');
+      if (h) h.textContent = (t('externalPartyRecordTitle') || 'External party') + ' ' + (i + 1);
+      var rm = row.querySelector('.btn-remove-external-party');
+      if (rm) {
+        rm.style.display = rows.length > 1 ? 'inline-block' : 'none';
+        rm.textContent = t('removeExternalParty') || 'Remove';
+      }
+    });
+    var addBtn = document.getElementById('btnAddExternalParty');
+    if (addBtn && t) addBtn.textContent = t('addExternalParty') || addBtn.textContent;
+  }
+
+  function fillExternalPartiesInForm(formEl, caseObj) {
+    var c = formEl.querySelector('#externalPartiesContainer');
+    var tpl = document.getElementById('externalPartyTpl');
+    if (!c || !tpl || !tpl.content) return;
+    var ep = caseObj.externalParties || {};
+    var parties = (ep.parties && Array.isArray(ep.parties) && ep.parties.length) ? ep.parties.slice() : null;
+    if (!parties || !parties.length) {
+      if (ep.partyType || ep.natureOfCommunication || ep.encryption || (ep.confidentiality && String(ep.confidentiality).trim())) {
+        parties = [{
+          partyType: ep.partyType || '',
+          natureOfCommunication: ep.natureOfCommunication || '',
+          encryption: ep.encryption || '',
+          confidentiality: ep.confidentiality || '',
+          writtenAgreement: ep.writtenAgreement === 'Yes' || ep.writtenAgreement === true
+        }];
+      } else {
+        parties = [emptyExternalParty()];
+      }
+    }
+    c.innerHTML = '';
+    parties.forEach(function (p) {
+      var row = tpl.content.firstElementChild.cloneNode(true);
+      c.appendChild(row);
+      populateExternalPartyRow(row);
+      EXTERNAL_PARTY_KEYS.forEach(function (k) {
+        var el = row.querySelector('[data-ext-k="' + k + '"]');
+        if (el) el.value = p[k] != null ? p[k] : '';
+      });
+      var wa = row.querySelector('[data-ext-k="writtenAgreement"]');
+      if (wa) wa.checked = !!(p.writtenAgreement === true || p.writtenAgreement === 'Yes' || p.writtenAgreement === 'yes');
+    });
+    updateExternalPartyHeadings(c);
+  }
+
+  function bindExternalPartiesUI(formEl) {
+    var c = formEl.querySelector('#externalPartiesContainer');
+    var tpl = document.getElementById('externalPartyTpl');
+    var addBtn = document.getElementById('btnAddExternalParty');
+    if (!c || !tpl || !addBtn) return;
+    if (addBtn.dataset.extPartyBound) return;
+    addBtn.dataset.extPartyBound = '1';
+    addBtn.addEventListener('click', function () {
+      var row = tpl.content.firstElementChild.cloneNode(true);
+      c.appendChild(row);
+      populateExternalPartyRow(row);
+      updateExternalPartyHeadings(c);
+    });
+    c.addEventListener('click', function (e) {
+      var btn = e.target && e.target.closest && e.target.closest('.btn-remove-external-party');
+      if (!btn || !c.contains(btn)) return;
+      var row = btn.closest('[data-external-party]');
+      if (!row || c.querySelectorAll('[data-external-party]').length <= 1) return;
+      row.remove();
+      updateExternalPartyHeadings(c);
+    });
+  }
+
+  function refreshExternalPartyLabels() {
+    var c = document.getElementById('externalPartiesContainer');
+    if (!c) return;
+    c.querySelectorAll('[data-external-party]').forEach(function (row) {
+      var vals = {};
+      EXTERNAL_PARTY_KEYS.forEach(function (k) {
+        var el = row.querySelector('[data-ext-k="' + k + '"]');
+        if (el) vals[k] = el.value;
+      });
+      var wa = row.querySelector('[data-ext-k="writtenAgreement"]');
+      var waChecked = wa && wa.checked;
+      populateExternalPartyRow(row);
+      EXTERNAL_PARTY_KEYS.forEach(function (k) {
+        var el = row.querySelector('[data-ext-k="' + k + '"]');
+        if (el && vals[k] != null) el.value = vals[k];
+      });
+      var wa2 = row.querySelector('[data-ext-k="writtenAgreement"]');
+      if (wa2) wa2.checked = !!waChecked;
+    });
+    updateExternalPartyHeadings(c);
+  }
+
+  function collectAccountableEntitiesFromForm(formEl) {
+    var c = formEl.querySelector('#accountableEntitiesContainer');
+    if (!c) return null;
+    var rows = c.querySelectorAll('[data-accountable-entity]');
+    var out = [];
+    rows.forEach(function (row) {
+      var o = {};
+      ACCOUNTABLE_ENTITY_TEXT_KEYS.forEach(function (k) {
+        var el = row.querySelector('[data-acc-k="' + k + '"]');
+        o[k] = el ? (el.value || '').trim() : '';
+      });
+      Object.keys(ACCOUNTABLE_ENTITY_BOOL_KEYS).forEach(function (k) {
+        var el = row.querySelector('[data-acc-k="' + k + '"]');
+        o[k] = !!(el && el.checked);
+      });
+      out.push(o);
+    });
+    return out.length ? out : [emptyAccountableEntity()];
+  }
+
+  function populateAccountableEntityRow(row) {
+    var t = (typeof NinjaI18n !== 'undefined' && NinjaI18n.t) ? NinjaI18n.t.bind(NinjaI18n) : function (k) { return k; };
+    [
+      ['acc-personName', 'name'], ['acc-jobNumber', 'teamMemberJobNumber'], ['acc-relatedEntity', 'relatedEntityLabel'],
+      ['acc-convictionLevel', 'accConvictionLevel'], ['acc-guidedBy', 'accGuidedBy'],
+      ['acc-guidanceViolationProven', 'accGuidanceViolationProven'], ['acc-guidanceNoViolation', 'accGuidanceNoViolation'],
+      ['acc-guidanceInsufficientEvidence', 'accGuidanceInsufficientEvidence']
+    ].forEach(function (pair) {
+      var el = row.querySelector('.label-' + pair[0]);
+      if (el) el.textContent = t(pair[1]);
+    });
+  }
+
+  function updateAccountableEntityHeadings(container) {
+    if (!container) return;
+    var t = (typeof NinjaI18n !== 'undefined' && NinjaI18n.t) ? NinjaI18n.t.bind(NinjaI18n) : function (k) { return k; };
+    var rows = container.querySelectorAll('[data-accountable-entity]');
+    rows.forEach(function (row, i) {
+      var h = row.querySelector('.accountable-entity-heading');
+      if (h) h.textContent = (t('accountableEntityRecordTitle') || 'Entity') + ' ' + (i + 1);
+      var rm = row.querySelector('.btn-remove-accountable-entity');
+      if (rm) {
+        rm.style.display = rows.length > 1 ? 'inline-block' : 'none';
+        rm.textContent = t('removeAccountableEntity') || 'Remove';
+      }
+    });
+    var addBtn = document.getElementById('btnAddAccountableEntity');
+    if (addBtn && t) addBtn.textContent = t('addAccountableEntity') || addBtn.textContent;
+  }
+
+  function fillAccountableEntitiesInForm(formEl, caseObj) {
+    var c = formEl.querySelector('#accountableEntitiesContainer');
+    var tpl = document.getElementById('accountableEntityTpl');
+    if (!c || !tpl || !tpl.content) return;
+    var im = caseObj.impact || {};
+    var list = (im.accountableEntities && Array.isArray(im.accountableEntities) && im.accountableEntities.length) ? im.accountableEntities.slice() : [emptyAccountableEntity()];
+    c.innerHTML = '';
+    list.forEach(function (ent) {
+      var row = tpl.content.firstElementChild.cloneNode(true);
+      c.appendChild(row);
+      populateAccountableEntityRow(row);
+      ACCOUNTABLE_ENTITY_TEXT_KEYS.forEach(function (k) {
+        var el = row.querySelector('[data-acc-k="' + k + '"]');
+        if (el) el.value = ent[k] != null ? ent[k] : '';
+      });
+      Object.keys(ACCOUNTABLE_ENTITY_BOOL_KEYS).forEach(function (k) {
+        var el = row.querySelector('[data-acc-k="' + k + '"]');
+        if (el) el.checked = !!(ent[k] === true || ent[k] === 'yes' || ent[k] === 'Yes');
+      });
+    });
+    updateAccountableEntityHeadings(c);
+  }
+
+  function bindAccountableEntitiesUI(formEl) {
+    var c = formEl.querySelector('#accountableEntitiesContainer');
+    var tpl = document.getElementById('accountableEntityTpl');
+    var addBtn = document.getElementById('btnAddAccountableEntity');
+    if (!c || !tpl || !addBtn) return;
+    if (addBtn.dataset.accEntBound) return;
+    addBtn.dataset.accEntBound = '1';
+    addBtn.addEventListener('click', function () {
+      var row = tpl.content.firstElementChild.cloneNode(true);
+      c.appendChild(row);
+      populateAccountableEntityRow(row);
+      updateAccountableEntityHeadings(c);
+    });
+    c.addEventListener('click', function (e) {
+      var btn = e.target && e.target.closest && e.target.closest('.btn-remove-accountable-entity');
+      if (!btn || !c.contains(btn)) return;
+      var row = btn.closest('[data-accountable-entity]');
+      if (!row || c.querySelectorAll('[data-accountable-entity]').length <= 1) return;
+      row.remove();
+      updateAccountableEntityHeadings(c);
+    });
+  }
+
+  function refreshAccountableEntityLabels() {
+    var c = document.getElementById('accountableEntitiesContainer');
+    if (!c) return;
+    c.querySelectorAll('[data-accountable-entity]').forEach(function (row) { populateAccountableEntityRow(row); });
+    updateAccountableEntityHeadings(c);
+  }
+
+  function isFormCheckboxChecked(formEl, htmlId) {
+    var el = formEl.querySelector('#' + htmlId);
+    return !!(el && el.type === 'checkbox' && el.checked);
   }
 
   function collectScopeEntityRows(formEl) {
@@ -795,16 +1046,12 @@
       supportingParty: '',
       evidenceLinkUrl: ''
     };
-    caseObj.externalParties = {
-      partyType: get('partyType'),
-      natureOfCommunication: get('natureOfCommunication'),
-      encryption: get('encryption'),
-      writtenAgreement: (function () {
-        var el = formEl.querySelector('#writtenAgreement');
-        return el && el.checked ? 'Yes' : 'No';
-      })(),
-      confidentiality: get('externalConfidentiality')
-    };
+    var extCollected = collectExternalPartiesFromForm(formEl);
+    if (extCollected !== null) {
+      caseObj.externalParties = { parties: extCollected };
+    } else {
+      caseObj.externalParties = { parties: [emptyExternalParty()] };
+    }
     var rcHuman = formEl.querySelector('[name="impact.rootCauseHuman"]');
     var rcOrg = formEl.querySelector('[name="impact.rootCauseOrg"]');
     var rcTech = formEl.querySelector('[name="impact.rootCauseTech"]');
@@ -873,7 +1120,7 @@
     caseObj.impact.referralProsecution = refProc && refProc.checked;
     caseObj.impact.referralNazaha = refNaz && refNaz.checked;
     caseObj.impact.referralSecurity = refSec && refSec.checked;
-    caseObj.impact.assetRecoveryAmount = get('assetRecoveryAmount');
+    caseObj.impact.assetRecoveryAmount = caseObj.impact.strategicOptAssetRecovery ? get('assetRecoveryAmount') : '';
     caseObj.impact.whistleblowerCash = wbCash && wbCash.checked;
     caseObj.impact.whistleblowerThanks = wbThanks && wbThanks.checked;
     caseObj.impact.whistleblowerNo = wbNo && wbNo.checked;
@@ -886,6 +1133,44 @@
     caseObj.impact.grievanceDecisionAmendment = get('grievanceDecisionAmendment');
     caseObj.impact.formChecklist = (window.NinjaSettings && NinjaSettings.getCheckboxGroupValues) ? NinjaSettings.getCheckboxGroupValues('formChecklistGroup') : [];
     caseObj.impact.qualityReview = (window.NinjaSettings && NinjaSettings.getCheckboxGroupValues) ? NinjaSettings.getCheckboxGroupValues('qualityReviewGroup') : [];
+    caseObj.impact.formChecklistNotes = get('formChecklistNotes');
+    caseObj.impact.qualityReviewNotes = get('qualityReviewNotes');
+    var accCollected = collectAccountableEntitiesFromForm(formEl);
+    if (accCollected !== null) caseObj.impact.accountableEntities = accCollected;
+    caseObj.impact.strategicOptAssetRecovery = isFormCheckboxChecked(formEl, 'strategicOptAssetRecovery');
+    caseObj.impact.strategicOptReferProsecution = isFormCheckboxChecked(formEl, 'strategicOptReferProsecution');
+    caseObj.impact.strategicArt80EmployerAssault = isFormCheckboxChecked(formEl, 'strategicArt80EmployerAssault');
+    caseObj.impact.strategicArt80Obligations = isFormCheckboxChecked(formEl, 'strategicArt80Obligations');
+    caseObj.impact.strategicArt80Misconduct = isFormCheckboxChecked(formEl, 'strategicArt80Misconduct');
+    caseObj.impact.strategicArt80IntentionalLoss = isFormCheckboxChecked(formEl, 'strategicArt80IntentionalLoss');
+    caseObj.impact.strategicArt80Forgery = isFormCheckboxChecked(formEl, 'strategicArt80Forgery');
+    caseObj.impact.strategicArt80Probation = isFormCheckboxChecked(formEl, 'strategicArt80Probation');
+    caseObj.impact.strategicArt80Absence = isFormCheckboxChecked(formEl, 'strategicArt80Absence');
+    caseObj.impact.strategicArt80PositionAbuse = isFormCheckboxChecked(formEl, 'strategicArt80PositionAbuse');
+    caseObj.impact.strategicArt80TradeSecrets = isFormCheckboxChecked(formEl, 'strategicArt80TradeSecrets');
+    caseObj.impact.strategicClosureNoProof = isFormCheckboxChecked(formEl, 'strategicClosureNoProof');
+    caseObj.impact.strategicClosureMalicious = isFormCheckboxChecked(formEl, 'strategicClosureMalicious');
+    caseObj.impact.strategicClosurePartialAdmin = isFormCheckboxChecked(formEl, 'strategicClosurePartialAdmin');
+    caseObj.impact.strategicClosureUnable = isFormCheckboxChecked(formEl, 'strategicClosureUnable');
+    caseObj.impact.fdArt80 = isFormCheckboxChecked(formEl, 'fdArt80');
+    caseObj.impact.fdArt80Paragraph = get('fdArt80Paragraph');
+    caseObj.impact.fdDeduction = isFormCheckboxChecked(formEl, 'fdDeduction');
+    caseObj.impact.fdDeductionDetail = get('fdDeductionDetail');
+    caseObj.impact.fdFinalWarningTransfer = isFormCheckboxChecked(formEl, 'fdFinalWarningTransfer');
+    caseObj.impact.fdReferAuthorities = isFormCheckboxChecked(formEl, 'fdReferAuthorities');
+    caseObj.impact.fdRepayAmount = isFormCheckboxChecked(formEl, 'fdRepayAmount');
+    caseObj.impact.fdRepayAmountValue = get('fdRepayAmountValue');
+    caseObj.impact.fdRevokeAccess = isFormCheckboxChecked(formEl, 'fdRevokeAccess');
+    caseObj.impact.fdSalaryStopContinue = isFormCheckboxChecked(formEl, 'fdSalaryStopContinue');
+    caseObj.impact.fdCloseInvestigation = isFormCheckboxChecked(formEl, 'fdCloseInvestigation');
+    caseObj.impact.fdHrRestore = isFormCheckboxChecked(formEl, 'fdHrRestore');
+    caseObj.impact.fdHrCancelSuspension = isFormCheckboxChecked(formEl, 'fdHrCancelSuspension');
+    caseObj.impact.fdHrRecord = isFormCheckboxChecked(formEl, 'fdHrRecord');
+    caseObj.impact.fdTechRestoreAccess = isFormCheckboxChecked(formEl, 'fdTechRestoreAccess');
+    caseObj.impact.fdTechStopMonitoring = isFormCheckboxChecked(formEl, 'fdTechStopMonitoring');
+    caseObj.impact.fdPdplReturnAssets = isFormCheckboxChecked(formEl, 'fdPdplReturnAssets');
+    caseObj.impact.fdPdplDestroy = isFormCheckboxChecked(formEl, 'fdPdplDestroy');
+    caseObj.impact.fdPdplArchive = isFormCheckboxChecked(formEl, 'fdPdplArchive');
     caseObj.impact.recommendationType = get('recommendationType');
     caseObj.impact.disciplinaryAction = get('disciplinaryAction');
     caseObj.impact.mandatoryLevel = get('mandatoryLevel');
@@ -994,13 +1279,8 @@
       }
     }
     fillEvidenceRecordsInForm(formEl, caseObj);
-    if (caseObj.externalParties) {
-      set('partyType', caseObj.externalParties.partyType);
-      set('natureOfCommunication', caseObj.externalParties.natureOfCommunication);
-      set('encryption', caseObj.externalParties.encryption);
-      set('writtenAgreement', caseObj.externalParties.writtenAgreement);
-      set('externalConfidentiality', caseObj.externalParties.confidentiality);
-    }
+    fillExternalPartiesInForm(formEl, caseObj);
+    fillAccountableEntitiesInForm(formEl, caseObj);
     if (caseObj.impact) {
       if (window.NinjaSettings && NinjaSettings.setCheckboxGroupValues) {
         NinjaSettings.setCheckboxGroupValues('regulatoryRefGroup', caseObj.impact.regulatoryRef || []);
@@ -1012,6 +1292,46 @@
         NinjaSettings.setCheckboxGroupValues('formChecklistGroup', caseObj.impact.formChecklist || []);
         NinjaSettings.setCheckboxGroupValues('qualityReviewGroup', caseObj.impact.qualityReview || []);
       }
+      set('formChecklistNotes', caseObj.impact.formChecklistNotes);
+      set('qualityReviewNotes', caseObj.impact.qualityReviewNotes);
+      var setImpactCb = function (id, v) {
+        var el = formEl.querySelector('#' + id);
+        if (el && el.type === 'checkbox') el.checked = !!v;
+      };
+      setImpactCb('strategicOptAssetRecovery', caseObj.impact.strategicOptAssetRecovery);
+      setImpactCb('strategicOptReferProsecution', caseObj.impact.strategicOptReferProsecution);
+      setImpactCb('strategicArt80EmployerAssault', caseObj.impact.strategicArt80EmployerAssault);
+      setImpactCb('strategicArt80Obligations', caseObj.impact.strategicArt80Obligations);
+      setImpactCb('strategicArt80Misconduct', caseObj.impact.strategicArt80Misconduct);
+      setImpactCb('strategicArt80IntentionalLoss', caseObj.impact.strategicArt80IntentionalLoss);
+      setImpactCb('strategicArt80Forgery', caseObj.impact.strategicArt80Forgery);
+      setImpactCb('strategicArt80Probation', caseObj.impact.strategicArt80Probation);
+      setImpactCb('strategicArt80Absence', caseObj.impact.strategicArt80Absence);
+      setImpactCb('strategicArt80PositionAbuse', caseObj.impact.strategicArt80PositionAbuse);
+      setImpactCb('strategicArt80TradeSecrets', caseObj.impact.strategicArt80TradeSecrets);
+      setImpactCb('strategicClosureNoProof', caseObj.impact.strategicClosureNoProof);
+      setImpactCb('strategicClosureMalicious', caseObj.impact.strategicClosureMalicious);
+      setImpactCb('strategicClosurePartialAdmin', caseObj.impact.strategicClosurePartialAdmin);
+      setImpactCb('strategicClosureUnable', caseObj.impact.strategicClosureUnable);
+      setImpactCb('fdArt80', caseObj.impact.fdArt80);
+      set('fdArt80Paragraph', caseObj.impact.fdArt80Paragraph);
+      setImpactCb('fdDeduction', caseObj.impact.fdDeduction);
+      set('fdDeductionDetail', caseObj.impact.fdDeductionDetail);
+      setImpactCb('fdFinalWarningTransfer', caseObj.impact.fdFinalWarningTransfer);
+      setImpactCb('fdReferAuthorities', caseObj.impact.fdReferAuthorities);
+      setImpactCb('fdRepayAmount', caseObj.impact.fdRepayAmount);
+      set('fdRepayAmountValue', caseObj.impact.fdRepayAmountValue);
+      setImpactCb('fdRevokeAccess', caseObj.impact.fdRevokeAccess);
+      setImpactCb('fdSalaryStopContinue', caseObj.impact.fdSalaryStopContinue);
+      setImpactCb('fdCloseInvestigation', caseObj.impact.fdCloseInvestigation);
+      setImpactCb('fdHrRestore', caseObj.impact.fdHrRestore);
+      setImpactCb('fdHrCancelSuspension', caseObj.impact.fdHrCancelSuspension);
+      setImpactCb('fdHrRecord', caseObj.impact.fdHrRecord);
+      setImpactCb('fdTechRestoreAccess', caseObj.impact.fdTechRestoreAccess);
+      setImpactCb('fdTechStopMonitoring', caseObj.impact.fdTechStopMonitoring);
+      setImpactCb('fdPdplReturnAssets', caseObj.impact.fdPdplReturnAssets);
+      setImpactCb('fdPdplDestroy', caseObj.impact.fdPdplDestroy);
+      setImpactCb('fdPdplArchive', caseObj.impact.fdPdplArchive);
       set('currentStatus', caseObj.impact.currentStatus || 'Open');
       set('technicalViolation', caseObj.impact.technicalViolation);
       if (caseObj.impact.fiveWhys1 !== undefined || caseObj.impact.fiveWhys2 !== undefined) {
@@ -1069,6 +1389,7 @@
       if (rNaz) rNaz.checked = !!caseObj.impact.referralNazaha;
       if (rSec) rSec.checked = !!caseObj.impact.referralSecurity;
       set('assetRecoveryAmount', caseObj.impact.assetRecoveryAmount);
+      if (window.NinjaApp && window.NinjaApp.toggleStrategicAssetRecoveryAmount) window.NinjaApp.toggleStrategicAssetRecoveryAmount();
       var wbC = formEl.querySelector('[name="impact.whistleblowerCash"]');
       var wbT = formEl.querySelector('[name="impact.whistleblowerThanks"]');
       var wbN = formEl.querySelector('[name="impact.whistleblowerNo"]');
@@ -1187,6 +1508,10 @@
     updateReporterRequired,
     validateForm,
     bindEvidenceRecordsUI: bindEvidenceRecordsUI,
+    bindExternalPartiesUI: bindExternalPartiesUI,
+    bindAccountableEntitiesUI: bindAccountableEntitiesUI,
+    refreshExternalPartyLabels: refreshExternalPartyLabels,
+    refreshAccountableEntityLabels: refreshAccountableEntityLabels,
     fillEvidenceRecordsInForm: fillEvidenceRecordsInForm,
     updateEvidenceRecordHeadings: updateEvidenceRecordHeadings,
     refreshAllEvidenceRowSelects: refreshAllEvidenceRowSelects,

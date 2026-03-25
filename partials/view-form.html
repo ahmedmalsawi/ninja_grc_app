@@ -65,19 +65,43 @@
           <div class="form-row">
             <div class="form-group">
               <label for="sovereignty" id="labelSovereignty">Regulatory impact (1-5)</label>
-              <input type="number" id="sovereignty" name="sovereignty" min="1" max="5" value="1" title="1-2: Minor procedural breach. 3-4: Material policy breach. 5: Clear breach of relevant regulations.">
+              <select id="sovereignty" name="sovereignty" title="1-2: Minor procedural breach. 3-4: Material policy breach. 5: Clear breach of relevant regulations.">
+                <option value="1" selected>1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+              </select>
             </div>
             <div class="form-group">
               <label for="financial" id="labelFinancial">Financial (1-5)</label>
-              <input type="number" id="financial" name="financial" min="1" max="5" value="1">
+              <select id="financial" name="financial">
+                <option value="1" selected>1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+              </select>
             </div>
             <div class="form-group">
               <label for="evidence" id="labelEvidence">Evidence (1-5)</label>
-              <input type="number" id="evidence" name="evidence" min="1" max="5" value="1">
+              <select id="evidence" name="evidence">
+                <option value="1" selected>1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+              </select>
             </div>
             <div class="form-group">
               <label for="reputation" id="labelReputation">Reputation (1-5)</label>
-              <input type="number" id="reputation" name="reputation" min="1" max="5" value="1">
+              <select id="reputation" name="reputation">
+                <option value="1" selected>1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+              </select>
             </div>
           </div>
           <div class="form-summary">
@@ -580,7 +604,6 @@
               </div>
             </div>
           </template>
-          <p id="chainOfCustodyNote" class="form-hint" style="grid-column: 1 / -1;"></p>
           </div>
         </div>
 
@@ -635,46 +658,40 @@
           <div class="form-section-body" id="sectionExternalPartiesBody">
           <p class="section-tip" id="tipExternalParties" data-tip="sectionExternalParties" aria-live="polite"></p>
           <button type="button" class="btn-link btn-toggle-tip" data-tip="sectionExternalParties" aria-expanded="false"><span class="tip-label">Show tips</span></button>
-          <div class="form-row">
-            <div class="form-group">
-              <label for="partyType" id="labelPartyType">Party type</label>
-              <select id="partyType" name="externalParties.partyType">
-                <option value="">—</option>
-                <option value="Law enforcement">Law enforcement</option>
-                <option value="Regulator">Regulator</option>
-                <option value="Legal counsel">Legal counsel</option>
-                <option value="Support">Support party</option>
-              </select>
+          <div id="externalPartiesContainer"></div>
+          <p style="margin-top: 0.5rem;"><button type="button" class="btn btn-outline" id="btnAddExternalParty"></button></p>
+          <template id="externalPartyTpl">
+            <div class="external-party-block card" data-external-party style="margin-bottom: 1.25rem; padding: 1rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
+                <strong class="external-party-heading"></strong>
+                <button type="button" class="btn btn-sm btn-outline btn-remove-external-party"></button>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label><span class="label-ext-partyType">Party type</span></label>
+                  <select data-ext-k="partyType" class="external-party-select"><option value="">—</option></select>
+                </div>
+                <div class="form-group">
+                  <label><span class="label-ext-natureOfCommunication">Nature</span></label>
+                  <select data-ext-k="natureOfCommunication" class="external-party-select"><option value="">—</option></select>
+                </div>
+                <div class="form-group">
+                  <label><span class="label-ext-encryption">Encryption</span></label>
+                  <select data-ext-k="encryption" class="external-party-select"><option value="">—</option></select>
+                </div>
+                <div class="form-group">
+                  <label class="checkbox-inline">
+                    <input type="checkbox" data-ext-k="writtenAgreement" value="Yes">
+                    <span class="label-ext-writtenAgreement">Written agreement</span>
+                  </label>
+                </div>
+                <div class="form-group" style="grid-column: 1 / -1;">
+                  <label><span class="label-ext-confidentiality">Confidentiality</span></label>
+                  <input type="text" data-ext-k="confidentiality" data-placeholder-key="placeholderConfidentiality">
+                </div>
+              </div>
             </div>
-            <div class="form-group">
-              <label for="natureOfCommunication" id="labelNatureOfCommunication">Nature of communication</label>
-              <select id="natureOfCommunication" name="externalParties.natureOfCommunication">
-                <option value="">—</option>
-                <option value="Exploratory">Exploratory requirements</option>
-                <option value="Procedures">Sharing procedures</option>
-                <option value="Evidence request">Evidence request</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="encryption" id="labelEncryption">Encryption</label>
-              <select id="encryption" name="externalParties.encryption">
-                <option value="">—</option>
-                <option value="Yes">Encrypted email</option>
-                <option value="Need-to-know">Need-to-know only</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="writtenAgreement" id="labelWrittenAgreement">Written agreement</label>
-              <label class="checkbox-inline">
-                <input type="checkbox" id="writtenAgreement" name="externalParties.writtenAgreement" value="Yes">
-                <span id="labelWrittenAgreementYes">Yes</span>
-              </label>
-            </div>
-            <div class="form-group" style="grid-column: 1 / -1;">
-              <label for="externalConfidentiality" id="labelExternalConfidentiality">Confidentiality</label>
-              <input type="text" id="externalConfidentiality" name="externalParties.confidentiality" data-placeholder-key="placeholderConfidentiality">
-            </div>
-          </div>
+          </template>
           </div>
         </div>
 
@@ -725,6 +742,44 @@
               <textarea id="reputationLegalImpact" name="impact.reputationLegalImpact" rows="2" data-placeholder-key="placeholderReputationImpact"></textarea>
             </div>
           </div>
+          <h4 id="labelImpactAccountableEntities">Entities / departments and individuals concerned</h4>
+          <p class="form-hint" id="labelImpactAccountableEntitiesHint"></p>
+          <div id="accountableEntitiesContainer"></div>
+          <p style="margin-top: 0.5rem;"><button type="button" class="btn btn-outline" id="btnAddAccountableEntity"></button></p>
+          <template id="accountableEntityTpl">
+            <div class="accountable-entity-block card" data-accountable-entity style="margin-bottom: 1.25rem; padding: 1rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
+                <strong class="accountable-entity-heading"></strong>
+                <button type="button" class="btn btn-sm btn-outline btn-remove-accountable-entity"></button>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label><span class="label-acc-personName">Name</span></label>
+                  <input type="text" data-acc-k="personName" data-placeholder-key="placeholderPersonName">
+                </div>
+                <div class="form-group">
+                  <label><span class="label-acc-jobNumber">Job number</span></label>
+                  <input type="text" data-acc-k="jobNumber" data-placeholder-key="placeholderJobNumberShort">
+                </div>
+                <div class="form-group" style="grid-column: 1 / -1;">
+                  <label><span class="label-acc-relatedEntity">Concerned department</span></label>
+                  <input type="text" data-acc-k="relatedEntity" data-placeholder-key="placeholderRelatedEntity">
+                </div>
+                <div class="form-group" style="grid-column: 1 / -1;">
+                  <label><span class="label-acc-convictionLevel">Conviction / liability level</span></label>
+                  <input type="text" data-acc-k="convictionLevel">
+                </div>
+                <div class="form-group" style="grid-column: 1 / -1;">
+                  <fieldset class="acc-guidance-fieldset">
+                    <legend class="label-acc-guidedBy">Guided by</legend>
+                    <label class="checkbox-inline"><input type="checkbox" data-acc-k="guidanceViolationProven" value="yes"><span class="label-acc-guidanceViolationProven"></span></label>
+                    <label class="checkbox-inline"><input type="checkbox" data-acc-k="guidanceNoViolation" value="yes"><span class="label-acc-guidanceNoViolation"></span></label>
+                    <label class="checkbox-inline"><input type="checkbox" data-acc-k="guidanceInsufficientEvidence" value="yes"><span class="label-acc-guidanceInsufficientEvidence"></span></label>
+                  </fieldset>
+                </div>
+              </div>
+            </div>
+          </template>
           <h4 id="labelAssetRecovery">3. Asset recovery matrix</h4>
           <div class="form-row">
             <div class="form-group">
@@ -774,6 +829,42 @@
               <label for="preventiveActions" id="labelPreventiveActions">Preventive actions</label>
               <textarea id="preventiveActions" name="impact.preventiveActions" rows="2" data-placeholder-key="placeholderPreventiveActions"></textarea>
             </div>
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <fieldset>
+                <legend id="labelStrategicRecMultiselect">Strategic options</legend>
+                <label class="checkbox-inline"><input type="checkbox" name="impact.strategicOptAssetRecovery" id="strategicOptAssetRecovery" value="Yes"><span id="labelStrategicOptAssetRecovery"></span></label>
+                <label class="checkbox-inline"><input type="checkbox" name="impact.strategicOptReferProsecution" id="strategicOptReferProsecution" value="Yes"><span id="labelStrategicOptReferProsecution"></span></label>
+              </fieldset>
+            </div>
+            <div class="form-group" id="strategicAssetRecoveryAmountWrap" style="grid-column: 1 / -1; display:none;">
+              <label for="assetRecoveryAmount" id="labelAssetRecoveryAmount">Asset recovery: employee to return (SAR)</label>
+              <input type="text" id="assetRecoveryAmount" name="impact.assetRecoveryAmount">
+            </div>
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <fieldset>
+                <legend id="labelStrategicArt80Title">Article 80 termination — grounds (multi-select)</legend>
+                <div class="strategic-art80-grid">
+                  <label class="checkbox-block"><input type="checkbox" name="impact.strategicArt80EmployerAssault" id="strategicArt80EmployerAssault" value="Yes"><span id="labelStrategicArt80EmployerAssault"></span></label>
+                  <label class="checkbox-block"><input type="checkbox" name="impact.strategicArt80Obligations" id="strategicArt80Obligations" value="Yes"><span id="labelStrategicArt80Obligations"></span></label>
+                  <label class="checkbox-block"><input type="checkbox" name="impact.strategicArt80Misconduct" id="strategicArt80Misconduct" value="Yes"><span id="labelStrategicArt80Misconduct"></span></label>
+                  <label class="checkbox-block"><input type="checkbox" name="impact.strategicArt80IntentionalLoss" id="strategicArt80IntentionalLoss" value="Yes"><span id="labelStrategicArt80IntentionalLoss"></span></label>
+                  <label class="checkbox-block"><input type="checkbox" name="impact.strategicArt80Forgery" id="strategicArt80Forgery" value="Yes"><span id="labelStrategicArt80Forgery"></span></label>
+                  <label class="checkbox-block"><input type="checkbox" name="impact.strategicArt80Probation" id="strategicArt80Probation" value="Yes"><span id="labelStrategicArt80Probation"></span></label>
+                  <label class="checkbox-block"><input type="checkbox" name="impact.strategicArt80Absence" id="strategicArt80Absence" value="Yes"><span id="labelStrategicArt80Absence"></span></label>
+                  <label class="checkbox-block"><input type="checkbox" name="impact.strategicArt80PositionAbuse" id="strategicArt80PositionAbuse" value="Yes"><span id="labelStrategicArt80PositionAbuse"></span></label>
+                  <label class="checkbox-block"><input type="checkbox" name="impact.strategicArt80TradeSecrets" id="strategicArt80TradeSecrets" value="Yes"><span id="labelStrategicArt80TradeSecrets"></span></label>
+                </div>
+              </fieldset>
+            </div>
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <fieldset>
+                <legend id="labelStrategicInvestigationClosure">Close investigation (strategic)</legend>
+                <label class="checkbox-block"><input type="checkbox" name="impact.strategicClosureNoProof" id="strategicClosureNoProof" value="Yes"><span id="labelStrategicClosureNoProof"></span></label>
+                <label class="checkbox-block"><input type="checkbox" name="impact.strategicClosureMalicious" id="strategicClosureMalicious" value="Yes"><span id="labelStrategicClosureMalicious"></span></label>
+                <label class="checkbox-block"><input type="checkbox" name="impact.strategicClosurePartialAdmin" id="strategicClosurePartialAdmin" value="Yes"><span id="labelStrategicClosurePartialAdmin"></span></label>
+                <label class="checkbox-block"><input type="checkbox" name="impact.strategicClosureUnable" id="strategicClosureUnable" value="Yes"><span id="labelStrategicClosureUnable"></span></label>
+              </fieldset>
+            </div>
           </div>
           <div id="impactClosureSection" class="form-row" style="display:none;">
             <h4 id="labelClosureReasons" style="grid-column: 1 / -1;">Closure reasons</h4>
@@ -819,10 +910,6 @@
                 <label><input type="checkbox" name="impact.referralNazaha" value="Yes"><span id="labelReferralNazaha">Nazaha</span></label>
                 <label><input type="checkbox" name="impact.referralSecurity" value="Yes"><span id="labelReferralSecurity">Public Security</span></label>
               </fieldset>
-            </div>
-            <div class="form-group" style="grid-column: 1 / -1;">
-              <label for="assetRecoveryAmount" id="labelAssetRecoveryAmount">Asset recovery: employee to return (SAR)</label>
-              <input type="text" id="assetRecoveryAmount" name="impact.assetRecoveryAmount">
             </div>
           </div>
           <div class="form-row">
@@ -873,6 +960,8 @@
             <div class="form-group" style="grid-column: 1 / -1;">
               <p class="form-hint" id="labelFormChecklistHint">Verify that the following forms have been completed and attached:</p>
               <div id="formChecklistGroup" class="checkbox-group"></div>
+              <label for="formChecklistNotes" id="labelFormChecklistNotes">Notes</label>
+              <textarea id="formChecklistNotes" name="impact.formChecklistNotes" rows="2"></textarea>
             </div>
           </div>
           <h4 id="labelSectionQualityReview">Report quality review (Phase 10)</h4>
@@ -880,6 +969,8 @@
             <div class="form-group" style="grid-column: 1 / -1;">
               <p class="form-hint" id="labelQualityReviewHint">Compliance Manager must complete before final approval:</p>
               <div id="qualityReviewGroup" class="checkbox-group"></div>
+              <label for="qualityReviewNotes" id="labelQualityReviewNotes">Notes</label>
+              <textarea id="qualityReviewNotes" name="impact.qualityReviewNotes" rows="2"></textarea>
             </div>
           </div>
           <h4 id="labelSectionWhistleblower">Whistleblower incentives (Phase 11)</h4>
@@ -897,18 +988,39 @@
             </div>
           </div>
           <h4 id="labelFinalDecisionActions">Final decision and subsequent actions</h4>
-          <p class="form-hint" id="labelDecisionIntro">Recommendations are subject to accountability.</p>
-          <div class="form-row" id="reviewDecisionBlock">
+          <p class="form-hint" id="labelDecisionIntro"></p>
+          <div class="form-row review-final-decision" id="reviewDecisionBlock">
             <div class="form-group" style="grid-column: 1 / -1;">
               <fieldset>
-                <legend id="labelDecisionPartA">Part A — Recommendation</legend>
-                <div id="reviewDecisionPartAGroup" class="checkbox-group"></div>
+                <legend id="labelDecisionPartA">Part A — Final decision</legend>
+                <p class="form-hint" id="labelDecisionPartASub"></p>
+                <div class="review-decision-lines">
+                  <label class="review-decision-line"><input type="checkbox" name="impact.fdArt80" id="fdArt80" value="Yes"><span id="labelFdArt80"></span><input type="text" id="fdArt80Paragraph" name="impact.fdArt80Paragraph" class="review-decision-inline-input" size="8" aria-label="Article 80 paragraph"></label>
+                  <label class="review-decision-line"><input type="checkbox" name="impact.fdDeduction" id="fdDeduction" value="Yes"><span id="labelFdDeduction"></span><input type="text" id="fdDeductionDetail" name="impact.fdDeductionDetail" class="review-decision-inline-input" size="14" aria-label="Deduction days or amount"></label>
+                  <label class="review-decision-line"><input type="checkbox" name="impact.fdFinalWarningTransfer" id="fdFinalWarningTransfer" value="Yes"><span id="labelFdFinalWarningTransfer"></span></label>
+                  <label class="review-decision-line"><input type="checkbox" name="impact.fdReferAuthorities" id="fdReferAuthorities" value="Yes"><span id="labelFdReferAuthorities"></span></label>
+                  <label class="review-decision-line"><input type="checkbox" name="impact.fdRepayAmount" id="fdRepayAmount" value="Yes"><span id="labelFdRepayAmount"></span><input type="text" id="fdRepayAmountValue" name="impact.fdRepayAmountValue" class="review-decision-inline-input" size="12" aria-label="Amount SAR"></label>
+                  <label class="review-decision-line"><input type="checkbox" name="impact.fdRevokeAccess" id="fdRevokeAccess" value="Yes"><span id="labelFdRevokeAccess"></span></label>
+                  <label class="review-decision-line"><input type="checkbox" name="impact.fdSalaryStopContinue" id="fdSalaryStopContinue" value="Yes"><span id="labelFdSalaryStopContinue"></span></label>
+                  <label class="review-decision-line"><input type="checkbox" name="impact.fdCloseInvestigation" id="fdCloseInvestigation" value="Yes"><span id="labelFdCloseInvestigation"></span></label>
+                </div>
               </fieldset>
             </div>
             <div class="form-group" style="grid-column: 1 / -1;">
               <fieldset>
-                <legend id="labelDecisionPartB">Part B — Departments to implement</legend>
-                <div id="reviewDecisionPartBGroup" class="checkbox-group"></div>
+                <legend id="labelDecisionPartB">Part B — Departments assigned</legend>
+                <p class="form-hint" id="labelDecisionPartBSub"></p>
+                <p class="review-decision-dept-title" id="labelFdDeptHR"></p>
+                <label class="review-decision-line"><input type="checkbox" name="impact.fdHrRestore" id="fdHrRestore" value="Yes"><span id="labelFdHrRestore"></span></label>
+                <label class="review-decision-line"><input type="checkbox" name="impact.fdHrCancelSuspension" id="fdHrCancelSuspension" value="Yes"><span id="labelFdHrCancelSuspension"></span></label>
+                <label class="review-decision-line"><input type="checkbox" name="impact.fdHrRecord" id="fdHrRecord" value="Yes"><span id="labelFdHrRecord"></span></label>
+                <p class="review-decision-dept-title" id="labelFdDeptTech"></p>
+                <label class="review-decision-line"><input type="checkbox" name="impact.fdTechRestoreAccess" id="fdTechRestoreAccess" value="Yes"><span id="labelFdTechRestoreAccess"></span></label>
+                <label class="review-decision-line"><input type="checkbox" name="impact.fdTechStopMonitoring" id="fdTechStopMonitoring" value="Yes"><span id="labelFdTechStopMonitoring"></span></label>
+                <p class="review-decision-dept-title" id="labelFdDeptPdpl"></p>
+                <label class="review-decision-line"><input type="checkbox" name="impact.fdPdplReturnAssets" id="fdPdplReturnAssets" value="Yes"><span id="labelFdPdplReturnAssets"></span></label>
+                <label class="review-decision-line"><input type="checkbox" name="impact.fdPdplDestroy" id="fdPdplDestroy" value="Yes"><span id="labelFdPdplDestroy"></span></label>
+                <label class="review-decision-line"><input type="checkbox" name="impact.fdPdplArchive" id="fdPdplArchive" value="Yes"><span id="labelFdPdplArchive"></span></label>
               </fieldset>
             </div>
           </div>

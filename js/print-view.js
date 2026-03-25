@@ -181,6 +181,24 @@
       html += '</table>';
     }
 
+    var exParties = (ex.parties && Array.isArray(ex.parties) && ex.parties.length) ? ex.parties : (ex.partyType ? [{
+      partyType: ex.partyType, natureOfCommunication: ex.natureOfCommunication, encryption: ex.encryption,
+      confidentiality: ex.confidentiality, writtenAgreement: ex.writtenAgreement === 'Yes' || ex.writtenAgreement === true
+    }] : []);
+    if (exParties.length) {
+      html += '<h3 class="print-section">' + t('sectionExternalParties') + '</h3>';
+      exParties.forEach(function (xp, xi) {
+        html += '<p class="print-section" style="margin-bottom:0.25rem"><strong>' + escapeHtml((t('externalPartyRecordTitle') || 'External party') + ' ' + (xi + 1)) + '</strong></p>';
+        html += '<table class="print-table">';
+        html += row(t('partyType'), xp.partyType);
+        html += row(t('natureOfCommunication'), xp.natureOfCommunication);
+        html += row(t('encryption'), xp.encryption);
+        html += row(t('writtenAgreement'), (xp.writtenAgreement === true || xp.writtenAgreement === 'Yes') ? (t('labelYes') || 'Yes') : '');
+        html += row(t('externalConfidentiality'), xp.confidentiality);
+        html += '</table>';
+      });
+    }
+
     html += '<h3 class="print-section">' + t('sectionEvidence') + '</h3>';
     edList.forEach(function (ev, evIdx) {
       if (edList.length > 1) html += '<p class="print-section" style="margin-bottom:0.25rem"><strong>' + escapeHtml((t('evidenceRecordTitle') || '') + ' ' + (evIdx + 1)) + '</strong></p>';
@@ -212,6 +230,21 @@
     html += row(t('regulatoryImpact'), im.regulatoryImpact);
     html += row(t('financialOperationalImpact'), im.financialOperationalImpact);
     html += row(t('reputationLegalImpact'), im.reputationLegalImpact);
+    if (im.accountableEntities && Array.isArray(im.accountableEntities) && im.accountableEntities.length) {
+      im.accountableEntities.forEach(function (ae, ai) {
+        if (!(ae && (ae.personName || ae.jobNumber || ae.relatedEntity || ae.convictionLevel))) return;
+        html += '<tr><th colspan="2" scope="colgroup" style="background:#e2e8f0;text-align:start;padding:0.35rem 0.5rem">' + escapeHtml((t('accountableEntityRecordTitle') || '') + ' ' + (ai + 1)) + '</th></tr>';
+        html += row(t('name'), ae.personName);
+        html += row(t('teamMemberJobNumber'), ae.jobNumber);
+        html += row(t('relatedEntityLabel'), ae.relatedEntity);
+        html += row(t('accConvictionLevel'), ae.convictionLevel);
+        var g = [];
+        if (interviewSessionBool(ae.guidanceViolationProven)) g.push(t('accGuidanceViolationProven'));
+        if (interviewSessionBool(ae.guidanceNoViolation)) g.push(t('accGuidanceNoViolation'));
+        if (interviewSessionBool(ae.guidanceInsufficientEvidence)) g.push(t('accGuidanceInsufficientEvidence'));
+        html += row(t('accGuidedBy'), g.join('; '));
+      });
+    }
     html += row(t('recoveryOpportunityValue'), im.recoveryOpportunityValue);
     html += row(t('recoveryStatus'), im.recoveryStatus);
     html += row(t('amountRecovered'), im.amountRecovered);
@@ -219,9 +252,45 @@
     if (im.assetRecoveryNotes) html += row(t('assetRecoveryNotes'), im.assetRecoveryNotes);
     html += row(t('correctiveActions'), im.correctiveActions);
     html += row(t('preventiveActions'), im.preventiveActions);
+    var strat = [];
+    if (interviewSessionBool(im.strategicOptAssetRecovery)) strat.push(t('strategicOptAssetRecovery'));
+    if (interviewSessionBool(im.strategicOptReferProsecution)) strat.push(t('strategicOptReferProsecution'));
+    if (strat.length) html += row(t('strategicRecMultiselect'), strat.join('; '));
+    var art80 = [];
+    [['strategicArt80EmployerAssault', 'strategicArt80EmployerAssault'], ['strategicArt80Obligations', 'strategicArt80Obligations'], ['strategicArt80Misconduct', 'strategicArt80Misconduct'], ['strategicArt80IntentionalLoss', 'strategicArt80IntentionalLoss'], ['strategicArt80Forgery', 'strategicArt80Forgery'], ['strategicArt80Probation', 'strategicArt80Probation'], ['strategicArt80Absence', 'strategicArt80Absence'], ['strategicArt80PositionAbuse', 'strategicArt80PositionAbuse'], ['strategicArt80TradeSecrets', 'strategicArt80TradeSecrets']].forEach(function (p) {
+      if (interviewSessionBool(im[p[0]])) art80.push(t(p[1]));
+    });
+    if (art80.length) html += row(t('strategicArt80Title'), art80.join('; '));
+    var scl = [];
+    [['strategicClosureNoProof', 'strategicClosureNoProof'], ['strategicClosureMalicious', 'strategicClosureMalicious'], ['strategicClosurePartialAdmin', 'strategicClosurePartialAdmin'], ['strategicClosureUnable', 'strategicClosureUnable']].forEach(function (p) {
+      if (interviewSessionBool(im[p[0]])) scl.push(t(p[1]));
+    });
+    if (scl.length) html += row(t('strategicInvestigationClosure'), scl.join('; '));
     html += row(t('recommendationType'), im.recommendationType);
     html += row(t('grievanceDate'), im.grievanceDate);
     html += row(t('grievanceGrounds'), im.grievanceGrounds);
+    html += row(t('formChecklistNotes'), im.formChecklistNotes);
+    html += row(t('qualityReviewNotes'), im.qualityReviewNotes);
+    var fdLines = [];
+    if (interviewSessionBool(im.fdArt80)) fdLines.push(t('fdArt80') + (im.fdArt80Paragraph ? ' — ' + im.fdArt80Paragraph : ''));
+    if (interviewSessionBool(im.fdDeduction)) fdLines.push(t('fdDeduction') + (im.fdDeductionDetail ? ' — ' + im.fdDeductionDetail : ''));
+    if (interviewSessionBool(im.fdFinalWarningTransfer)) fdLines.push(t('fdFinalWarningTransfer'));
+    if (interviewSessionBool(im.fdReferAuthorities)) fdLines.push(t('fdReferAuthorities'));
+    if (interviewSessionBool(im.fdRepayAmount)) fdLines.push(t('fdRepayAmount') + (im.fdRepayAmountValue ? ' — ' + im.fdRepayAmountValue : ''));
+    if (interviewSessionBool(im.fdRevokeAccess)) fdLines.push(t('fdRevokeAccess'));
+    if (interviewSessionBool(im.fdSalaryStopContinue)) fdLines.push(t('fdSalaryStopContinue'));
+    if (interviewSessionBool(im.fdCloseInvestigation)) fdLines.push(t('fdCloseInvestigation'));
+    var fdB = [];
+    if (interviewSessionBool(im.fdHrRestore)) fdB.push(t('fdHrRestore'));
+    if (interviewSessionBool(im.fdHrCancelSuspension)) fdB.push(t('fdHrCancelSuspension'));
+    if (interviewSessionBool(im.fdHrRecord)) fdB.push(t('fdHrRecord'));
+    if (interviewSessionBool(im.fdTechRestoreAccess)) fdB.push(t('fdTechRestoreAccess'));
+    if (interviewSessionBool(im.fdTechStopMonitoring)) fdB.push(t('fdTechStopMonitoring'));
+    if (interviewSessionBool(im.fdPdplReturnAssets)) fdB.push(t('fdPdplReturnAssets'));
+    if (interviewSessionBool(im.fdPdplDestroy)) fdB.push(t('fdPdplDestroy'));
+    if (interviewSessionBool(im.fdPdplArchive)) fdB.push(t('fdPdplArchive'));
+    if (fdLines.length) html += row(t('decisionPartA'), fdLines.join('\n'));
+    if (fdB.length) html += row(t('decisionPartB'), fdB.join('\n'));
     html += '</table>';
 
     html += '</div>';

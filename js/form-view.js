@@ -51,6 +51,8 @@
         NF.fillForm(form, empty);
         formDirty = false;
         if (NF.bindEvidenceRecordsUI) NF.bindEvidenceRecordsUI(form);
+        if (NF.bindExternalPartiesUI) NF.bindExternalPartiesUI(form);
+        if (NF.bindAccountableEntitiesUI) NF.bindAccountableEntitiesUI(form);
         if (NF.bindInterviewSessionsUI) NF.bindInterviewSessionsUI(form);
         if (NF.bindScopeEntityRowsUI) NF.bindScopeEntityRowsUI(form);
         if (NF.bindScopeConstraintsUI) NF.bindScopeConstraintsUI(form);
@@ -77,6 +79,8 @@
       NF.fillForm(form, c);
       formDirty = false;
       if (NF.bindEvidenceRecordsUI) NF.bindEvidenceRecordsUI(form);
+      if (NF.bindExternalPartiesUI) NF.bindExternalPartiesUI(form);
+      if (NF.bindAccountableEntitiesUI) NF.bindAccountableEntitiesUI(form);
       if (NF.bindInterviewSessionsUI) NF.bindInterviewSessionsUI(form);
       if (NF.bindScopeEntityRowsUI) NF.bindScopeEntityRowsUI(form);
       if (NF.bindScopeConstraintsUI) NF.bindScopeConstraintsUI(form);

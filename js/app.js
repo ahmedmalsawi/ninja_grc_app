@@ -48,6 +48,22 @@
       closureObjectiveReasons: 'labelClosureObjectiveReasons', closureTechnicalReasons: 'labelClosureTechnicalReasons', rcaGapClosed: 'labelRcaGapClosed',
       accountabilityDetails: 'labelAccountabilityDetails', assetRecoveryAmount: 'labelAssetRecoveryAmount', whistleblowerIncentive: 'labelWhistleblowerIncentive',
       grievanceDate: 'labelGrievanceDate', grievanceGrounds: 'labelGrievanceGrounds', grievanceAcceptance: 'labelGrievanceAcceptance', grievanceDecisionAmendment: 'labelGrievanceDecisionAmendment',
+      sectionFormChecklist: 'labelSectionFormChecklist', sectionQualityReview: 'labelSectionQualityReview', sectionWhistleblower: 'labelSectionWhistleblower',
+      finalDecisionActions: 'labelFinalDecisionActions', decisionIntro: 'labelDecisionIntro', decisionPartA: 'labelDecisionPartA', decisionPartB: 'labelDecisionPartB',
+      decisionPartASub: 'labelDecisionPartASub', decisionPartBSub: 'labelDecisionPartBSub', formChecklistNotes: 'labelFormChecklistNotes', qualityReviewNotes: 'labelQualityReviewNotes',
+      impactAccountableEntities: 'labelImpactAccountableEntities',
+      impactAccountableEntitiesHint: 'labelImpactAccountableEntitiesHint',
+      strategicRecMultiselect: 'labelStrategicRecMultiselect', strategicOptAssetRecovery: 'labelStrategicOptAssetRecovery', strategicOptReferProsecution: 'labelStrategicOptReferProsecution',
+      strategicArt80Title: 'labelStrategicArt80Title', strategicArt80EmployerAssault: 'labelStrategicArt80EmployerAssault', strategicArt80Obligations: 'labelStrategicArt80Obligations',
+      strategicArt80Misconduct: 'labelStrategicArt80Misconduct', strategicArt80IntentionalLoss: 'labelStrategicArt80IntentionalLoss', strategicArt80Forgery: 'labelStrategicArt80Forgery',
+      strategicArt80Probation: 'labelStrategicArt80Probation', strategicArt80Absence: 'labelStrategicArt80Absence', strategicArt80PositionAbuse: 'labelStrategicArt80PositionAbuse',
+      strategicArt80TradeSecrets: 'labelStrategicArt80TradeSecrets', strategicInvestigationClosure: 'labelStrategicInvestigationClosure',
+      strategicClosureNoProof: 'labelStrategicClosureNoProof', strategicClosureMalicious: 'labelStrategicClosureMalicious', strategicClosurePartialAdmin: 'labelStrategicClosurePartialAdmin', strategicClosureUnable: 'labelStrategicClosureUnable',
+      fdArt80: 'labelFdArt80', fdDeduction: 'labelFdDeduction', fdFinalWarningTransfer: 'labelFdFinalWarningTransfer', fdReferAuthorities: 'labelFdReferAuthorities', fdRepayAmount: 'labelFdRepayAmount',
+      fdRevokeAccess: 'labelFdRevokeAccess', fdSalaryStopContinue: 'labelFdSalaryStopContinue', fdCloseInvestigation: 'labelFdCloseInvestigation',
+      fdDeptHR: 'labelFdDeptHR', fdHrRestore: 'labelFdHrRestore', fdHrCancelSuspension: 'labelFdHrCancelSuspension', fdHrRecord: 'labelFdHrRecord',
+      fdDeptTech: 'labelFdDeptTech', fdTechRestoreAccess: 'labelFdTechRestoreAccess', fdTechStopMonitoring: 'labelFdTechStopMonitoring',
+      fdDeptPdpl: 'labelFdDeptPdpl', fdPdplReturnAssets: 'labelFdPdplReturnAssets', fdPdplDestroy: 'labelFdPdplDestroy', fdPdplArchive: 'labelFdPdplArchive',
       interviewMulti: 'labelInterviewMulti', interview1: 'labelInterview1', interview2: 'labelInterview2', interview3: 'labelInterview3',
       interviewMinutes: 'labelInterviewMinutes',
       investigatingBody: 'labelInvestigatingBody', escalationJustification: 'labelEscalationJustification',
@@ -144,8 +160,6 @@
     if (btnImportAll) btnImportAll.textContent = t('importAll');
     var btnExportExcel = $('btnExportExcel');
     if (btnExportExcel) btnExportExcel.textContent = t('exportExcel');
-    var chainNote = $('chainOfCustodyNote');
-    if (chainNote) chainNote.textContent = t('chainOfCustodyNote');
     var obstAlert = $('obstructionAlert');
     if (obstAlert) obstAlert.textContent = t('obstructionAlert');
     document.querySelectorAll('[data-placeholder-key]').forEach(function (el) {
@@ -164,6 +178,8 @@
     else fillPhaseOptions();
     if (window.NinjaForms && NinjaForms.refreshAllEvidenceRowSelects) NinjaForms.refreshAllEvidenceRowSelects();
     if (window.NinjaForms && NinjaForms.refreshAllInterviewSessionLabels) NinjaForms.refreshAllInterviewSessionLabels();
+    if (window.NinjaForms && NinjaForms.refreshExternalPartyLabels) NinjaForms.refreshExternalPartyLabels();
+    if (window.NinjaForms && NinjaForms.refreshAccountableEntityLabels) NinjaForms.refreshAccountableEntityLabels();
     if (window.NinjaForms && NinjaForms.refreshAllScopeDynamicLabels) NinjaForms.refreshAllScopeDynamicLabels();
     var formNavLinks = document.querySelectorAll('.form-tab[role="tab"]');
     var sectionKeys = ['sectionCaseInfo','sectionScoring','sectionReporter','sectionClassification','sectionScope','sectionProcess','sectionInterview','sectionEvidence','sectionExternalParties','sectionImpact','sectionReview','sectionGrievance'];
@@ -230,7 +246,10 @@
     if (!form) return;
     ['sovereignty', 'financial', 'evidence', 'reputation'].forEach(function (id) {
       var e = form.querySelector('#' + id);
-      if (e) e.addEventListener('input', function () { NinjaForms.updateScoreDisplay(form); });
+      if (!e) return;
+      var upd = function () { NinjaForms.updateScoreDisplay(form); };
+      e.addEventListener('input', upd);
+      e.addEventListener('change', upd);
     });
   }
 
@@ -268,6 +287,16 @@
     var wrap = document.getElementById('precautionaryMeasuresOtherWrap');
     if (!sel || !wrap) return;
     wrap.style.display = (sel.value === 'OtherPrecautionary') ? 'block' : 'none';
+  }
+
+  function toggleStrategicAssetRecoveryAmount() {
+    var cb = document.getElementById('strategicOptAssetRecovery');
+    var wrap = document.getElementById('strategicAssetRecoveryAmountWrap');
+    var input = document.getElementById('assetRecoveryAmount');
+    if (!cb || !wrap) return;
+    var show = !!cb.checked;
+    wrap.style.display = show ? 'block' : 'none';
+    if (input) input.disabled = !show;
   }
 
   function setupInterviewWorkflow() {
@@ -320,11 +349,17 @@
       recType.addEventListener('change', toggleRecSections);
       toggleRecSections();
     }
+    var strategicAssetRecovery = form.querySelector('#strategicOptAssetRecovery');
+    if (strategicAssetRecovery) {
+      strategicAssetRecovery.addEventListener('change', toggleStrategicAssetRecoveryAmount);
+      toggleStrategicAssetRecoveryAmount();
+    }
   }
   window.NinjaApp = window.NinjaApp || {};
   window.NinjaApp.updateInterviewDuration = updateInterviewDuration;
   window.NinjaApp.togglePrecautionaryOther = togglePrecautionaryOther;
   window.NinjaApp.toggleScopeAmendmentReason = toggleScopeAmendmentReason;
+  window.NinjaApp.toggleStrategicAssetRecoveryAmount = toggleStrategicAssetRecoveryAmount;
 
   function init() {
     function setNavActiveFromPage() {
@@ -391,6 +426,8 @@
           if (window.NinjaSettings && NinjaSettings.populateAllSelects) NinjaSettings.populateAllSelects();
           if (window.NinjaForms && NinjaForms.refreshAllEvidenceRowSelects) NinjaForms.refreshAllEvidenceRowSelects();
     if (window.NinjaForms && NinjaForms.refreshAllInterviewSessionLabels) NinjaForms.refreshAllInterviewSessionLabels();
+    if (window.NinjaForms && NinjaForms.refreshExternalPartyLabels) NinjaForms.refreshExternalPartyLabels();
+    if (window.NinjaForms && NinjaForms.refreshAccountableEntityLabels) NinjaForms.refreshAccountableEntityLabels();
     if (window.NinjaForms && NinjaForms.refreshAllScopeDynamicLabels) NinjaForms.refreshAllScopeDynamicLabels();
           if (loadList && document.getElementById('viewList')) loadList();
         });
@@ -403,6 +440,8 @@
           if (window.NinjaSettings && NinjaSettings.populateAllSelects) NinjaSettings.populateAllSelects();
           if (window.NinjaForms && NinjaForms.refreshAllEvidenceRowSelects) NinjaForms.refreshAllEvidenceRowSelects();
     if (window.NinjaForms && NinjaForms.refreshAllInterviewSessionLabels) NinjaForms.refreshAllInterviewSessionLabels();
+    if (window.NinjaForms && NinjaForms.refreshExternalPartyLabels) NinjaForms.refreshExternalPartyLabels();
+    if (window.NinjaForms && NinjaForms.refreshAccountableEntityLabels) NinjaForms.refreshAccountableEntityLabels();
     if (window.NinjaForms && NinjaForms.refreshAllScopeDynamicLabels) NinjaForms.refreshAllScopeDynamicLabels();
           if (loadList && document.getElementById('viewList')) loadList();
         });
