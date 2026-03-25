@@ -74,11 +74,11 @@
     "ar": "محتوى السجل: الغرض، المنهجية، المصادر، عرض الوقائع، الاستنتاجات، التوصيات، حدود النطاق، القيود، الافتراضات. نوع التوصية: إحالة قضائية/سيادية، تحسين ضوابط، حفظ التحقيق. مستوى الإلزام: يجب، ينبغي، يجوز. الإجراء التأديبي: إنذار، حسم، فصل بموجب المادة 80 بدون مكافأة، إحالة سيادية. الأسباب الجذرية: انعدام فصل المهام، غياب السياسات، ضعف الرقابة، نقص وعي، ضغوط مالية، تواطؤ، عرقلة متعمدة."
   },
   "sectionReview": {
-    "en": "Form verification checklist and report quality review (Phase 10) must be completed. Whistleblower incentives (Phase 11): recommend reward or protection. Final decision and subsequent actions: record the decision and assign implementation to the concerned departments.",
-    "ar": "قائمة تحقق النماذج ومراجعة جودة التقرير (المرحلة 10) يجب إكمالها. حوافز المبلّغ (المرحلة 11): التوصية بمكافأة أو حماية. القرار النهائي والإجراءات اللاحقة: تسجيل القرار وتكليف الإدارات المعنية بالتنفيذ."
+    "en": "Form verification checklist and report quality review must be completed. Whistleblower incentives : recommend reward or protection. Final decision and subsequent actions: record the decision and assign implementation to the concerned departments.",
+    "ar": "قائمة تحقق النماذج ومراجعة جودة التقرير (المرحلة 10) يجب إكمالها. حوافز المبلّغ: التوصية بمكافأة أو حماية. القرار النهائي والإجراءات اللاحقة: تسجيل القرار وتكليف الإدارات المعنية بالتنفيذ."
   },
   "sectionGrievance": {
-    "en": "Grievance / Appeal (Phase 12): Record submission date, grounds, acceptance decision (Accepted / Rejected / Pending), and any decision amendment.",
-    "ar": "التظلم / الاستئناف (المرحلة 12): تسجيل تاريخ التقديم، ودفوع التظلم، وقرار القبول (مقبول / مرفوض / قيد الدراسة)، وأي تعديل على القرار."
+    "en": "Grievance / Appeal : Record submission date, grounds, acceptance decision (Accepted / Rejected / Pending), and any decision amendment.",
+    "ar": "التظلم / الاستئناف : تسجيل تاريخ التقديم، وأسباب التظلم، وقرار القبول (مقبول / مرفوض / قيد الدراسة)، وأي تعديل على القرار."
   }
 }

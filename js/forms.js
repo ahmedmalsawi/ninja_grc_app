@@ -966,6 +966,7 @@
     caseObj.classification.reportType = get('reportType');
     caseObj.classification.geographic = get('geographic');
     caseObj.classification.geographicCity = get('geographicCity');
+    caseObj.classification.geographicCityOther = caseObj.classification.geographicCity === 'Other' ? get('geographicCityOther') : '';
     caseObj.classification.pdplAction = get('pdplAction');
     caseObj.classification.reporterStatus = get('reporterStatus');
 
@@ -1173,6 +1174,7 @@
     caseObj.impact.fdPdplArchive = isFormCheckboxChecked(formEl, 'fdPdplArchive');
     caseObj.impact.recommendationType = get('recommendationType');
     caseObj.impact.disciplinaryAction = get('disciplinaryAction');
+    caseObj.impact.disciplinaryActionOther = caseObj.impact.disciplinaryAction === 'Other' ? get('disciplinaryActionOther') : '';
     caseObj.impact.mandatoryLevel = get('mandatoryLevel');
 
     return caseObj;
@@ -1205,6 +1207,7 @@
       set('reportType', caseObj.classification.reportType);
       set('geographic', caseObj.classification.geographic);
       set('geographicCity', caseObj.classification.geographicCity);
+      set('geographicCityOther', caseObj.classification.geographicCityOther);
       set('pdplAction', caseObj.classification.pdplAction);
       set('reporterStatus', caseObj.classification.reporterStatus);
     }
@@ -1406,10 +1409,12 @@
       set('grievanceDecisionAmendment', caseObj.impact.grievanceDecisionAmendment);
       set('recommendationType', caseObj.impact.recommendationType);
       set('disciplinaryAction', caseObj.impact.disciplinaryAction);
+      set('disciplinaryActionOther', caseObj.impact.disciplinaryActionOther);
       set('mandatoryLevel', caseObj.impact.mandatoryLevel);
     }
     updateScoreDisplay(formEl, caseObj.totalScore, caseObj.path);
     updateReporterRequired(formEl);
+    if (window.NinjaApp && window.NinjaApp.toggleOtherFreeTextFields) window.NinjaApp.toggleOtherFreeTextFields();
   }
 
   function updateReporterRequired(formEl) {
