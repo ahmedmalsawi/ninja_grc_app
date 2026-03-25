@@ -20,7 +20,7 @@ const headerTemplate = readPartial('header.html');
 const viewList = readPartial('view-list.html');
 const viewForm = readPartial('view-form.html');
 const viewReports = readPartial('view-reports.html');
-const viewSettings = readPartial('view-settings.html');
+/* Standalone settings (ninja header, cases.html links) are maintained as settings.html / settings-dropdowns.html — not emitted by this build. */
 const foot = readPartial('foot.html');
 
 function headerWithActive(activePage) {
@@ -34,8 +34,7 @@ function headerWithActive(activePage) {
 
 const pages = [
   { file: 'index.html', title: 'Cases', active: 'cases', main: viewList + '\n' + viewForm },
-  { file: 'reports.html', title: 'Reports', active: 'reports', main: viewReports },
-  { file: 'settings.html', title: 'Settings', active: 'settings', main: viewSettings }
+  { file: 'reports.html', title: 'Reports', active: 'reports', main: viewReports }
 ];
 
 pages.forEach(function (p) {

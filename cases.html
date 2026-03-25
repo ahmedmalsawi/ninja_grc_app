@@ -246,6 +246,10 @@
                 <option value="">—</option>
               </select>
             </div>
+            <div class="form-group" id="reporterDeptOtherWrap" style="display:none;">
+              <label for="reporterDepartmentOther" id="labelReporterDepartmentOther">Specify department</label>
+              <input type="text" id="reporterDepartmentOther" name="reporter.departmentOther" data-placeholder-key="placeholderRelatedEntity">
+            </div>
             <div class="form-group">
               <label for="reporterSource" id="labelSource">Source</label>
               <select id="reporterSource" name="reporter.source">
@@ -549,12 +553,7 @@
                 </div>
                 <div class="form-group">
                   <label><span class="label-interviewClassification">Classification</span></label>
-                  <select data-int-k="classification" class="interview-session-select">
-                    <option value="">—</option>
-                    <option value="Informal">Informal fact-finding</option>
-                    <option value="Formal">Formal with witnesses</option>
-                    <option value="Confrontation">Confrontation with suspect</option>
-                  </select>
+                  <select data-int-k="classification" class="interview-session-select"><option value="">—</option></select>
                 </div>
                 <div class="form-group">
                   <label><span class="label-interviewDate">Interview date (NJ-F-17)</span></label>
@@ -562,22 +561,11 @@
                 </div>
                 <div class="form-group">
                   <label><span class="label-rightsNotified">Rights notified</span></label>
-                  <select data-int-k="rightsNotified" class="interview-session-select">
-                    <option value="">—</option>
-                    <option value="Yes signed" data-i18n-option="optRightsNotifiedYesSigned">Yes, signed</option>
-                    <option value="Yes verbal" data-i18n-option="optRightsNotifiedYesVerbal">Yes, verbal with witness</option>
-                    <option value="No" data-i18n-option="optNo">No</option>
-                  </select>
+                  <select data-int-k="rightsNotified" class="interview-session-select"><option value="">—</option></select>
                 </div>
                 <div class="form-group">
                   <label><span class="label-documentationMethod">Documentation method</span></label>
-                  <select data-int-k="documentationMethod" class="interview-session-select">
-                    <option value="">—</option>
-                    <option value="Written minutes" data-i18n-option="optDocumentationWrittenMinutes">Written signed minutes</option>
-                    <option value="Digital recording" data-i18n-option="optDocumentationDigitalRecording">Digital recording (with consent)</option>
-                    <option value="Notes" data-i18n-option="optDocumentationNotes">Real-time notes</option>
-                    <option value="Transcript" data-i18n-option="optDocumentationTranscript">Audio transcript</option>
-                  </select>
+                  <select data-int-k="documentationMethod" class="interview-session-select"><option value="">—</option></select>
                 </div>
                 <div class="form-group">
                   <label><span class="label-receiptResponseStatus">Receipt / response status</span></label>
@@ -720,6 +708,10 @@
               <div class="form-group">
                 <label><span class="label-formOfEvidence">Form of evidence</span></label>
                 <select data-ev-k="formOfEvidence" class="evidence-row-select"><option value="">—</option></select>
+              </div>
+              <div class="form-group evidence-form-other-wrap" style="display:none;">
+                <label><span class="label-formOfEvidenceOther">Specify form of evidence</span></label>
+                <input type="text" data-ev-k="formOfEvidenceOther" data-placeholder-key="placeholderFormOfEvidenceOther">
               </div>
               <div class="form-group">
                 <label><span class="label-dataCategory">Data category</span></label>
@@ -910,11 +902,6 @@
             <div class="form-group">
               <label for="amountRecovered" id="labelAmountRecovered">Amount recovered to date (SAR)</label>
               <input type="text" id="amountRecovered" name="impact.amountRecovered">
-            </div>
-            <div class="form-group">
-              <label for="netSavings" id="labelNetSavings">Net savings (recovery − investigation cost)</label>
-              <p class="form-hint" id="hintNetSavings" aria-hidden="true"></p>
-              <input type="text" id="netSavings" name="impact.netSavings" data-placeholder-key="placeholderAssetRecoveryNotes">
             </div>
             <div class="form-group" style="grid-column: 1 / -1;">
               <label for="assetRecoveryNotes" id="labelAssetRecoveryNotes">Notes</label>

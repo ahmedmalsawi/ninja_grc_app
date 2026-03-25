@@ -60,6 +60,7 @@
         type: '',
         empId: '',
         department: '',
+        departmentOther: '',
         sources: '',
         source: '',
         protectionMeasures: ''
@@ -102,6 +103,7 @@
       interview: { sessions: [emptyInterviewSession()] },
       evidenceDetails: {
         formOfEvidence: '',
+        formOfEvidenceOther: '',
         dataCategory: '',
         examinationType: '',
         chainOfCustody: '',
@@ -124,7 +126,7 @@
     };
   }
 
-  var EVIDENCE_ROW_KEYS = ['formOfEvidence', 'dataCategory', 'examinationType', 'evidenceHashValue', 'chainOfCustody', 'supportingParty', 'evidenceLinkUrl'];
+  var EVIDENCE_ROW_KEYS = ['formOfEvidence', 'formOfEvidenceOther', 'dataCategory', 'examinationType', 'evidenceHashValue', 'chainOfCustody', 'supportingParty', 'evidenceLinkUrl'];
   var EXTERNAL_PARTY_KEYS = ['partyType', 'natureOfCommunication', 'encryption', 'confidentiality'];
   var ACCOUNTABLE_ENTITY_TEXT_KEYS = ['personName', 'jobNumber', 'relatedEntity', 'convictionLevel'];
   var ACCOUNTABLE_ENTITY_BOOL_KEYS = { guidanceViolationProven: true, guidanceNoViolation: true, guidanceInsufficientEvidence: true };
@@ -185,8 +187,11 @@
         var el = formEl.querySelector('#' + id);
         return el ? (el.value || '').trim() : '';
       };
+      var fo0 = g('formOfEvidence');
+      var foOtherEl = formEl.querySelector('#formOfEvidenceOther');
       return [{
-        formOfEvidence: g('formOfEvidence'),
+        formOfEvidence: fo0,
+        formOfEvidenceOther: fo0 === 'Other' && foOtherEl ? (foOtherEl.value || '').trim() : '',
         dataCategory: g('dataCategory'),
         examinationType: g('examinationType'),
         evidenceHashValue: g('evidenceHashValue'),
@@ -203,6 +208,7 @@
         var el = row.querySelector('[data-ev-k="' + k + '"]');
         o[k] = el ? (el.value || '').trim() : '';
       });
+      if (o.formOfEvidence !== 'Other') o.formOfEvidenceOther = '';
       out.push(o);
     });
     return out.length ? out : [emptyEvidenceRecord()];
@@ -217,10 +223,22 @@
         if (sel) NinjaSettings.populateSelect(sel, pair[1], { lang: lang });
       });
     }
-    [['label-formOfEvidence', 'formOfEvidence'], ['label-dataCategory', 'dataCategory'], ['label-examinationType', 'examinationType'], ['label-evidenceHashValue', 'evidenceHashValue'], ['label-chainOfCustody', 'chainOfCustody'], ['label-evidenceLinkUrl', 'evidenceLinkUrl'], ['label-supportingParty', 'supportingParty']].forEach(function (pair) {
+    [['label-formOfEvidence', 'formOfEvidence'], ['label-formOfEvidenceOther', 'formOfEvidenceOther'], ['label-dataCategory', 'dataCategory'], ['label-examinationType', 'examinationType'], ['label-evidenceHashValue', 'evidenceHashValue'], ['label-chainOfCustody', 'chainOfCustody'], ['label-evidenceLinkUrl', 'evidenceLinkUrl'], ['label-supportingParty', 'supportingParty']].forEach(function (pair) {
       var el = row.querySelector('.' + pair[0]);
       if (el) el.textContent = t(pair[1]);
     });
+    toggleEvidenceFormOtherRow(row);
+  }
+
+  function toggleEvidenceFormOtherRow(row) {
+    if (!row) return;
+    var sel = row.querySelector('select[data-ev-k="formOfEvidence"]');
+    var wrap = row.querySelector('.evidence-form-other-wrap');
+    var input = row.querySelector('[data-ev-k="formOfEvidenceOther"]');
+    if (!sel || !wrap) return;
+    var show = (sel.value || '').trim() === 'Other';
+    wrap.style.display = show ? 'block' : 'none';
+    if (input) input.disabled = !show;
   }
 
   function refreshAllEvidenceRowSelects() {
@@ -237,6 +255,7 @@
         var el = row.querySelector('[data-ev-k="' + k + '"]');
         if (el && vals[k] != null) el.value = vals[k];
       });
+      toggleEvidenceFormOtherRow(row);
     });
   }
 
@@ -262,6 +281,7 @@
     if (!c || !tpl || !tpl.content) {
       var evidenceSection = caseObj.evidenceDetails || (typeof caseObj.evidence === 'object' && caseObj.evidence && !Array.isArray(caseObj.evidence) ? caseObj.evidence : null);
       setFormValue(formEl, 'formOfEvidence', evidenceSection && evidenceSection.formOfEvidence != null ? evidenceSection.formOfEvidence : '');
+      setFormValue(formEl, 'formOfEvidenceOther', evidenceSection && evidenceSection.formOfEvidenceOther != null ? evidenceSection.formOfEvidenceOther : '');
       setFormValue(formEl, 'dataCategory', evidenceSection && evidenceSection.dataCategory != null ? evidenceSection.dataCategory : '');
       setFormValue(formEl, 'examinationType', evidenceSection && evidenceSection.examinationType != null ? evidenceSection.examinationType : '');
       setFormValue(formEl, 'evidenceHashValue', evidenceSection && evidenceSection.evidenceHashValue != null ? evidenceSection.evidenceHashValue : '');
@@ -287,6 +307,7 @@
         var el = row.querySelector('[data-ev-k="' + k + '"]');
         if (el) el.value = rec[k] != null ? rec[k] : '';
       });
+      toggleEvidenceFormOtherRow(row);
     });
     updateEvidenceRecordHeadings(c);
   }
@@ -302,6 +323,7 @@
       var row = tpl.content.firstElementChild.cloneNode(true);
       c.appendChild(row);
       populateEvidenceRecordRow(row);
+      toggleEvidenceFormOtherRow(row);
       updateEvidenceRecordHeadings(c);
     });
     c.addEventListener('click', function (e) {
@@ -756,8 +778,14 @@
     var lang = (typeof NinjaI18n !== 'undefined' && NinjaI18n.getLang) ? NinjaI18n.getLang() : 'en';
     var t = (typeof NinjaI18n !== 'undefined' && NinjaI18n.t) ? NinjaI18n.t.bind(NinjaI18n) : function (k) { return k; };
     if (window.NinjaSettings && NinjaSettings.populateSelect) {
+      var classSel = row.querySelector('select[data-int-k="classification"]');
+      var rightsSel = row.querySelector('select[data-int-k="rightsNotified"]');
+      var docSel = row.querySelector('select[data-int-k="documentationMethod"]');
       var receiptSel = row.querySelector('select.interview-session-receipt');
       var summonsSel = row.querySelector('select.interview-session-summons');
+      if (classSel) NinjaSettings.populateSelect(classSel, 'interviewClassification', { lang: lang });
+      if (rightsSel) NinjaSettings.populateSelect(rightsSel, 'rightsNotified', { lang: lang });
+      if (docSel) NinjaSettings.populateSelect(docSel, 'documentationMethod', { lang: lang });
       if (receiptSel) NinjaSettings.populateSelect(receiptSel, 'receiptResponseStatus', { lang: lang });
       if (summonsSel) NinjaSettings.populateSelect(summonsSel, 'summonsStatus', { lang: lang });
     }
@@ -959,6 +987,7 @@
       type: get('reporterType'),
       empId: caseObj.reporter.empId,
       department: get('reporterDept'),
+      departmentOther: get('reporterDept') === 'Other' ? get('reporterDepartmentOther') : '',
       sources: caseObj.reporter.sources,
       source: get('reporterSource'),
       protectionMeasures: caseObj.reporter.protectionMeasures
@@ -967,7 +996,8 @@
     caseObj.classification.reportType = get('reportType');
     caseObj.classification.geographic = get('geographic');
     caseObj.classification.geographicCity = get('geographicCity');
-    caseObj.classification.geographicCityOther = caseObj.classification.geographicCity === 'Other' ? get('geographicCityOther') : '';
+    var geoCity = get('geographicCity');
+    caseObj.classification.geographicCityOther = (geoCity === 'Other' || (geoCity && geoCity.indexOf('Other-') === 0)) ? get('geographicCityOther') : '';
     caseObj.classification.pdplAction = get('pdplAction');
     caseObj.classification.reporterStatus = get('reporterStatus');
 
@@ -1041,6 +1071,7 @@
     caseObj.evidenceRecords = evRows;
     caseObj.evidenceDetails = evRows && evRows.length ? evRows[0] : {
       formOfEvidence: '',
+      formOfEvidenceOther: '',
       dataCategory: '',
       examinationType: '',
       evidenceHashValue: '',
@@ -1105,7 +1136,6 @@
     caseObj.impact.recoveryStatus = get('recoveryStatus');
     caseObj.impact.recoveryPath = get('recoveryPath');
     caseObj.impact.amountRecovered = get('amountRecovered');
-    caseObj.impact.netSavings = get('netSavings');
     caseObj.impact.assetRecoveryNotes = get('assetRecoveryNotes');
     caseObj.impact.correctiveActions = get('correctiveActions');
     caseObj.impact.preventiveActions = get('preventiveActions');
@@ -1203,6 +1233,7 @@
       set('reporterNotes', caseObj.reporter.notes);
       set('reporterType', caseObj.reporter.type);
       set('reporterDept', caseObj.reporter.department);
+      set('reporterDepartmentOther', caseObj.reporter.departmentOther || '');
       set('reporterSource', caseObj.reporter.source);
     }
     if (caseObj.classification) {
@@ -1366,7 +1397,6 @@
       set('recoveryStatus', caseObj.impact.recoveryStatus);
       set('recoveryPath', caseObj.impact.recoveryPath);
       set('amountRecovered', caseObj.impact.amountRecovered);
-      set('netSavings', caseObj.impact.netSavings);
       set('assetRecoveryNotes', caseObj.impact.assetRecoveryNotes);
       set('correctiveActions', caseObj.impact.correctiveActions);
       set('preventiveActions', caseObj.impact.preventiveActions);
@@ -1417,6 +1447,7 @@
     updateScoreDisplay(formEl, caseObj.totalScore, caseObj.path);
     updateReporterRequired(formEl);
     if (window.NinjaApp && window.NinjaApp.toggleOtherFreeTextFields) window.NinjaApp.toggleOtherFreeTextFields();
+    if (window.NinjaApp && window.NinjaApp.toggleAllEvidenceFormOtherRows) window.NinjaApp.toggleAllEvidenceFormOtherRows(formEl);
     if (window.NinjaApp && window.NinjaApp.updateCloseDateComputations) window.NinjaApp.updateCloseDateComputations();
   }
 
@@ -1523,6 +1554,7 @@
     fillEvidenceRecordsInForm: fillEvidenceRecordsInForm,
     updateEvidenceRecordHeadings: updateEvidenceRecordHeadings,
     refreshAllEvidenceRowSelects: refreshAllEvidenceRowSelects,
+    toggleEvidenceFormOtherRow: toggleEvidenceFormOtherRow,
     bindInterviewSessionsUI: bindInterviewSessionsUI,
     fillInterviewSessions: fillInterviewSessions,
     refreshAllInterviewSessionLabels: refreshAllInterviewSessionLabels,

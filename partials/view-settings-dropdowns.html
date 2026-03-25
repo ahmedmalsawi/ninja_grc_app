@@ -1,0 +1,35 @@
+    <!-- Settings: dropdown lists subpage -->
+    <div id="viewSettings" class="view-settings">
+      <div class="settings-page-header">
+        <p class="settings-subpage-nav" style="margin:0 0 1rem 0;"><a href="settings.html" class="btn btn-sm btn-outline" id="settingsBackLink">Back to settings</a></p>
+        <h2 id="settingsPageDropdownsTitle" class="settings-page-title">Dropdown lists</h2>
+        <p class="settings-page-intro" id="settingsPageDropdownsIntro">Edit the options shown in case forms and filters. Click <strong>Edit</strong> on a list to add, remove, or change labels (English and Arabic).</p>
+      </div>
+
+      <section class="settings-section settings-section-list" aria-labelledby="settingsDropdownHeading">
+        <h3 id="settingsDropdownHeading" class="settings-section-title">Dropdown options</h3>
+        <p class="form-hint i18n-en-only" id="settingsEvidenceHelpEn">Evidence dropdowns here affect form options: form, category, examination, supporting party.</p>
+        <p class="form-hint i18n-ar-only" dir="rtl">قوائم الأدلة هنا تؤثر على خيارات النموذج: الشكل، الفئة، الفحص، الجهة المساندة.</p>
+        <div id="settingsDropdownList" class="settings-dropdown-list"></div>
+      </section>
+
+      <section id="settingsEditor" class="settings-editor" style="display:none;" aria-labelledby="settingsEditorTitle" aria-modal="true" role="dialog">
+        <div class="settings-editor-header">
+          <h3 id="settingsEditorTitle" class="settings-editor-title">Edit options</h3>
+          <p id="settingsEditorKey" class="settings-editor-key form-context"></p>
+        </div>
+        <div class="settings-editor-table-wrap">
+          <div id="settingsEditorOptions"></div>
+        </div>
+        <div class="settings-editor-actions form-actions">
+          <button type="button" class="btn btn-primary" id="settingsEditorSave" aria-label="Save changes">Save</button>
+          <button type="button" class="btn" id="settingsEditorAdd">Add option</button>
+          <button type="button" class="btn" id="settingsEditorPasteComma" title="Paste comma-separated values">Paste comma-separated</button>
+          <button type="button" class="btn" id="settingsEditorRestore">Restore defaults</button>
+          <button type="button" class="btn" id="settingsEditorCancel">Cancel</button>
+        </div>
+      </section>
+    </div>
+  <script>
+  (function(){function run(){if(window.NinjaApp&&window.NinjaApp.renderSettingsDropdownList)window.NinjaApp.renderSettingsDropdownList();}setTimeout(run,400);})();
+  </script>

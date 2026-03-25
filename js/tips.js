@@ -5,6 +5,8 @@
 (function () {
   var tipsData = {};
   var PREF_KEY = 'ninja-grc-show-tips-controls';
+  /** When tips controls are off, this section still shows its general tip by default */
+  var INTERVIEW_SECTION_TIP = 'sectionInterview';
 
   var HOVER_TIP_INPUTS = {
     sovereigntyTip: 'sovereignty',
@@ -132,11 +134,18 @@
       btn.style.display = enabled ? '' : 'none';
     });
     document.querySelectorAll('.section-tip').forEach(function (el) {
+      var tipKey = el.getAttribute('data-tip');
+      if (!enabled && tipKey === INTERVIEW_SECTION_TIP) {
+        el.classList.add('is-visible');
+        el.style.display = '';
+        return;
+      }
       if (!enabled) {
         el.classList.remove('is-visible');
         el.style.display = 'none';
       } else {
         el.style.display = '';
+        el.classList.remove('is-visible');
       }
     });
     document.querySelectorAll('.tip-conditional').forEach(function (el) {

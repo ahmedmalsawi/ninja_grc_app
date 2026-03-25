@@ -3,10 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Reports - Ninja GRC</title>
-  <script>
-  (function(){var lang=typeof localStorage!=='undefined'?localStorage.getItem('ninja-grc-lang'):null;var d=document.documentElement;if(lang==='ar'){d.setAttribute('dir','rtl');d.setAttribute('lang','ar');}else{d.setAttribute('dir','ltr');d.setAttribute('lang','en');}}());
-  </script>
+  <title>Ninja GRC - Report & Investigation Record</title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/theme-ninja.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,36 +17,24 @@
   </style>
 </head>
 <body>
-  <script>
-  (function(){var k='ninjaNavStyle';var v=typeof localStorage!=='undefined'?localStorage.getItem(k):null;if(v==='safe')document.documentElement.classList.add('nav-style-safe');})();
-  </script>
   <a href="#main" class="skip-link" id="skipLink">Skip to main content</a>
-  <header class="app-header app-header--ninja">
-    <a href="cases.html" class="app-logo" id="appLogo" aria-label="Ninja GRC">
-      <img src="https://web-assets.ananinja.com/_next/static/media/Logo-black.95b82e2c.png" alt="Ninja" width="120" height="40">
-      <span class="app-logo-fallback" style="display:none;font-weight:700;font-size:1.25rem;">Ninja</span>
-    </a>
-    <span class="app-brand" id="appBrand">GRC</span>
-    <div class="header-actions">
-      <div class="style-switch" role="group" aria-label="Navbar style">
-        <button type="button" id="styleDefault" class="style-switch-btn active" aria-pressed="true" title="Default theme">Default</button>
-        <button type="button" id="styleSafe" class="style-switch-btn" aria-pressed="false" title="Fail-safe minimal style">Safe</button>
-      </div>
-      <div class="lang-switcher">
-        <button type="button" id="langAr" aria-label="Arabic">عربي</button>
-        <button type="button" id="langEn" aria-label="English">English</button>
-      </div>
-      <nav class="nav-tabs" role="navigation" aria-label="Main sections">
-        <a href="cases.html" class="nav-tab nav-tab--cases" id="navCases">Cases</a>
-        <a href="reports.html" class="nav-tab nav-tab--reports active" aria-current="page" id="navReports">Reports</a>
-        <a href="settings.html" class="nav-tab nav-tab--settings" id="navSettings">Settings</a>
-        <a href="scoring-reference.html" class="nav-tab nav-tab--notes" id="navNotes">Scoring Reference</a>
-      </nav>
+  <header class="app-header">
+    <h1 class="app-title" id="appTitle">Ninja GRC</h1>
+    <div class="lang-switcher">
+      <button type="button" id="langAr" aria-label="Arabic">عربي</button>
+      <button type="button" id="langEn" aria-label="English">English</button>
     </div>
+    <nav class="nav-links">
+      <a href="index.html" class="nav-cases" id="navCases">Cases</a>
+      <a href="reports.html" class="nav-reports active" id="navReports">Reports</a>
+      <a href="settings.html" class="nav-settings" id="navSettings">Settings</a>
+    </nav>
   </header>
 
   <main class="main" id="main">
     <div id="messageArea"></div>
+
+    <!-- Reports view -->
     <div id="viewReports" class="view-reports">
       <h2 id="reportsTitle" class="reports-title">Reports</h2>
       <div class="reports-toolbar">
@@ -109,20 +94,23 @@
         </table>
       </div>
     </div>
+
   </main>
 
+  <!-- View is set only by js/router.js -->
   <script src="js/i18n.js"></script>
-  <script src="js/i18n-apply-standalone.js"></script>
   <script src="js/storage.js"></script>
   <script src="js/forms.js"></script>
   <script src="js/settings.js"></script>
+  <script src="js/sections.js"></script>
   <script src="js/tips.js"></script>
   <script src="js/utils.js"></script>
+  <script src="js/router.js"></script>
+  <script src="js/list-view.js"></script>
+  <script src="js/form-view.js"></script>
   <script src="js/reports-view.js"></script>
+  <script src="js/settings-view.js"></script>
   <script src="js/print-view.js"></script>
-  <script src="js/app-reports.js"></script>
-  <script>
-  (function(){var k='ninjaNavStyle';var def=document.getElementById('styleDefault');var safe=document.getElementById('styleSafe');function apply(mode){var isSafe=mode==='safe';document.documentElement.classList.toggle('nav-style-safe',isSafe);try{localStorage.setItem(k,mode);}catch(e){}if(def){def.classList.toggle('active',!isSafe);def.setAttribute('aria-pressed',!isSafe?'true':'false');}if(safe){safe.classList.toggle('active',isSafe);safe.setAttribute('aria-pressed',isSafe?'true':'false');}}function init(){var v;try{v=localStorage.getItem(k);}catch(e){v=null;}var isSafe=(v==='safe');document.documentElement.classList.toggle('nav-style-safe',isSafe);if(def){def.classList.toggle('active',!isSafe);def.setAttribute('aria-pressed',!isSafe?'true':'false');def.addEventListener('click',function(){apply('default');});}if(safe){safe.classList.toggle('active',isSafe);safe.setAttribute('aria-pressed',isSafe?'true':'false');safe.addEventListener('click',function(){apply('safe');});}}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();})();
-  </script>
+  <script src="js/app.js"></script>
 </body>
 </html>

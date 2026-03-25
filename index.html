@@ -3,11 +3,1154 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ninja GRC - Report &amp; Investigation Record</title>
-  <meta http-equiv="refresh" content="0;url=cases.html">
-  <link rel="canonical" href="cases.html">
+  <title>Ninja GRC - Report & Investigation Record</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/theme-ninja.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <style>
+    html, body, .main, .view-list, .view-form, .view-reports, .view-settings, .view-notes,
+    input, select, textarea, button, label, th, td, h1, h2, h3, h4, p, span, a {
+      font-family: 'Tajawal', 'Segoe UI', system-ui, sans-serif !important;
+    }
+  </style>
 </head>
 <body>
-  <p>Redirecting to <a href="cases.html">Cases</a>…</p>
+  <a href="#main" class="skip-link" id="skipLink">Skip to main content</a>
+  <header class="app-header">
+    <h1 class="app-title" id="appTitle">Ninja GRC</h1>
+    <div class="lang-switcher">
+      <button type="button" id="langAr" aria-label="Arabic">عربي</button>
+      <button type="button" id="langEn" aria-label="English">English</button>
+    </div>
+    <nav class="nav-links">
+      <a href="index.html" class="nav-cases active" id="navCases">Cases</a>
+      <a href="reports.html" class="nav-reports" id="navReports">Reports</a>
+      <a href="settings.html" class="nav-settings" id="navSettings">Settings</a>
+    </nav>
+  </header>
+
+  <main class="main" id="main">
+    <div id="messageArea"></div>
+
+    <!-- Case list view -->
+    <div id="viewList" class="view-list view-visible">
+      <div class="case-list-toolbar">
+        <h2 id="listTitle" class="list-title">Cases</h2>
+        <button type="button" class="btn btn-primary" id="btnNewCase">New case</button>
+        <button type="button" class="btn" id="btnPrintListReport">Print report</button>
+      </div>
+      <div id="caseListContent">
+        <p class="empty-state" id="emptyState">No cases yet. Click "New case" to add one.</p>
+        <table class="case-table" id="caseTable" style="display:none;">
+          <thead>
+            <tr>
+              <th id="thSeq">#</th>
+              <th id="thId">Case ID</th>
+              <th id="thReceived">Received</th>
+              <th id="thPhase">Phase</th>
+              <th id="thPath">Path</th>
+              <th id="thScore">Score</th>
+              <th id="thStatus">Status</th>
+              <th id="thActions">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="caseTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+
+    <!-- Case form view -->
+    <div id="viewForm" class="view-form">
+      <div class="case-list-toolbar">
+        <button type="button" class="btn" id="btnBackToList">Back to list</button>
+        <span class="form-context" id="formContext" aria-live="polite"></span>
+      </div>
+      <nav class="form-tabs" id="formSectionNav" role="tablist" aria-label="Form sections">
+        <button type="button" role="tab" class="form-tab active" data-section="sectionCaseInfo" aria-selected="true" aria-controls="sectionCaseInfo" id="tabCaseInfo">Case info</button>
+        <button type="button" role="tab" class="form-tab" data-section="sectionScoring" aria-selected="false" aria-controls="sectionScoring" id="tabScoring">Scoring</button>
+        <button type="button" role="tab" class="form-tab" data-section="sectionReporter" aria-selected="false" aria-controls="sectionReporter" id="tabReporter">Reporter</button>
+        <button type="button" role="tab" class="form-tab" data-section="sectionClassification" aria-selected="false" aria-controls="sectionClassification" id="tabClassification">Classification</button>
+        <button type="button" role="tab" class="form-tab" data-section="sectionScope" aria-selected="false" aria-controls="sectionScope" id="tabScope">Scope</button>
+        <button type="button" role="tab" class="form-tab" data-section="sectionProcess" aria-selected="false" aria-controls="sectionProcess" id="tabProcess">Process</button>
+        <button type="button" role="tab" class="form-tab" data-section="sectionInterview" aria-selected="false" aria-controls="sectionInterview" id="tabInterview">Interview</button>
+        <button type="button" role="tab" class="form-tab" data-section="sectionEvidence" aria-selected="false" aria-controls="sectionEvidence" id="tabEvidence">Evidence</button>
+        <button type="button" role="tab" class="form-tab" data-section="sectionExternalParties" aria-selected="false" aria-controls="sectionExternalParties" id="tabExternalParties">External parties</button>
+        <button type="button" role="tab" class="form-tab" data-section="sectionImpact" aria-selected="false" aria-controls="sectionImpact" id="tabImpact">Impact</button>
+        <button type="button" role="tab" class="form-tab" data-section="sectionReview" aria-selected="false" aria-controls="sectionReview" id="tabReview">Review &amp; Decision</button>
+        <button type="button" role="tab" class="form-tab" data-section="sectionGrievance" aria-selected="false" aria-controls="sectionGrievance" id="tabGrievance">Grievance / Appeal</button>
+      </nav>
+      <form id="caseForm" class="form-container">
+        <div id="formSectionContentSlot" class="form-section-content-slot">
+        <div class="form-section form-tab-panel" id="sectionCaseInfo" role="tabpanel" aria-labelledby="tabCaseInfo">
+          <div class="form-section-body" id="sectionCaseInfoBody">
+          <p class="section-tip" id="tipCaseInfo" data-tip="sectionCaseInfo" aria-live="polite"></p>
+          <button type="button" class="btn-link btn-toggle-tip" data-tip="sectionCaseInfo" aria-expanded="false"><span class="tip-label">Show tips</span></button>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="caseId" id="labelCaseId">Case ID</label>
+              <input type="text" id="caseId" name="id" required disabled>
+            </div>
+            <div class="form-group">
+              <label for="receivedDate" id="labelReceivedDate">Received date</label>
+              <input type="date" id="receivedDate" name="receivedDate">
+            </div>
+            <div class="form-group">
+              <label for="complexityDays" id="labelComplexityDays">Duration (days)</label>
+              <input type="number" id="complexityDays" name="complexityDays" min="0" value="0" title="Estimated or actual days to complete the investigation">
+            </div>
+            <div class="form-group">
+              <label for="targetCloseDate" id="labelTargetCloseDate">Target close date</label>
+              <input type="date" id="targetCloseDate" name="targetCloseDate" disabled>
+            </div>
+            <div class="form-group">
+              <label for="actualCloseDate" id="labelActualCloseDate">Actual close date</label>
+              <input type="date" id="actualCloseDate" name="actualCloseDate">
+            </div>
+            <div class="form-group">
+              <label for="actualDurationDays" id="labelActualDurationDays">Actual duration (days)</label>
+              <input type="number" id="actualDurationDays" name="actualDurationDays" disabled>
+            </div>
+            <div class="form-group">
+              <label for="durationVarianceDays" id="labelDurationVarianceDays">Variance vs target (days)</label>
+              <input type="number" id="durationVarianceDays" name="durationVarianceDays" disabled>
+              <p class="form-hint" id="durationVarianceNotice" aria-live="polite"></p>
+            </div>
+            <div class="form-group">
+              <label for="currentPhase" id="labelPhase">Phase</label>
+              <select id="currentPhase" name="currentPhase">
+                <option value="1">1</option><option value="2">2</option><option value="3">3</option>
+                <option value="4">4</option><option value="5">5</option><option value="6">6</option>
+                <option value="7">7</option><option value="8">8</option><option value="9">9</option>
+                <option value="10">10</option><option value="11">11</option><option value="12">12</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        </div>
+        <div id="formSectionPool" class="form-section-pool" aria-hidden="true" style="display:none;">
+        <div class="form-section form-tab-panel" id="sectionScoring" role="tabpanel" aria-labelledby="tabScoring">
+          <div class="form-section-body" id="sectionScoringBody">
+          <p class="section-tip" id="tipScoring" data-tip="sectionScoring" aria-live="polite"></p>
+          <button type="button" class="btn-link btn-toggle-tip" data-tip="sectionScoring" aria-expanded="false"><span class="tip-label">Show tips</span></button>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="sovereignty" id="labelSovereignty">Regulatory impact (1-5)</label>
+              <select id="sovereignty" name="sovereignty" title="1-2: Minor procedural breach. 3-4: Material policy breach. 5: Clear breach of relevant regulations.">
+                <option value="1" selected>1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="financial" id="labelFinancial">Financial (1-5)</label>
+              <select id="financial" name="financial">
+                <option value="1" selected>1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="evidence" id="labelEvidence">Evidence (1-5)</label>
+              <select id="evidence" name="evidence">
+                <option value="1" selected>1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="reputation" id="labelReputation">Reputation (1-5)</label>
+              <select id="reputation" name="reputation">
+                <option value="1" selected>1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-summary">
+            <span id="labelTotalScore">Total score:</span>
+            <strong id="totalScoreDisplay">4</strong>
+            <span id="labelPath">Path:</span>
+            <span id="pathDisplay" class="path-badge path-green">Green (4-8)</span>
+            <div id="pathDescription" class="path-description" role="status" aria-live="polite"></div>
+          </div>
+          </div>
+        </div>
+
+        <div class="form-section form-tab-panel" id="sectionReporter" role="tabpanel" aria-labelledby="tabReporter" >
+          <div class="form-section-body" id="sectionReporterBody">
+          <p class="section-tip" id="tipReporter" data-tip="sectionReporter" aria-live="polite"></p>
+          <button type="button" class="btn-link btn-toggle-tip" data-tip="sectionReporter" aria-expanded="false"><span class="tip-label">Show tips</span></button>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="reporterName" id="labelName">Name</label>
+              <input type="text" id="reporterName" name="reporter.name" data-required-if-not-anonymous>
+            </div>
+            <div class="form-group">
+              <label for="reporterPhone" id="labelPhone">Phone</label>
+              <input type="text" id="reporterPhone" name="reporter.phone" data-required-if-not-anonymous>
+            </div>
+            <div class="form-group">
+              <label for="reporterEmail" id="labelEmail">Email</label>
+              <input type="email" id="reporterEmail" name="reporter.email" data-required-if-not-anonymous>
+            </div>
+            <div class="form-group">
+              <label for="reporterType" id="labelType">Type</label>
+              <select id="reporterType" name="reporter.type">
+                <option value="">—</option>
+                <option value="Employee" id="optEmployee">Employee</option>
+                <option value="Customer" id="optCustomer">Customer</option>
+                <option value="Vendor" id="optVendor">Vendor</option>
+                <option value="Anonymous" id="optAnonymous">Anonymous</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="reporterDept" id="labelDepartment">Department</label>
+              <select id="reporterDept" name="reporter.department" data-required-if-employee>
+                <option value="">—</option>
+              </select>
+            </div>
+            <div class="form-group" id="reporterDeptOtherWrap" style="display:none;">
+              <label for="reporterDepartmentOther" id="labelReporterDepartmentOther">Specify department</label>
+              <input type="text" id="reporterDepartmentOther" name="reporter.departmentOther" data-placeholder-key="placeholderRelatedEntity">
+            </div>
+            <div class="form-group">
+              <label for="reporterSource" id="labelSource">Source</label>
+              <select id="reporterSource" name="reporter.source">
+                <option value="">—</option>
+                <option value="Hotline" id="optHotline">Hotline</option>
+                <option value="Email" id="optSourceEmail">Email</option>
+                <option value="Walk-in" id="optWalkIn">Walk-in</option>
+                <option value="Website" id="optWebsite">Website</option>
+                <option value="Portal">Portal</option>
+                <option value="Ninja Application">Ninja Application</option>
+                <option value="Official Letter">Official letter / complaint</option>
+                <option value="Sovereign">Sovereign</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label for="reporterNotes" id="labelNotes">Notes</label>
+              <textarea id="reporterNotes" name="reporter.notes"></textarea>
+            </div>
+          </div>
+          </div>
+        </div>
+
+        <div class="form-section form-tab-panel" id="sectionClassification" role="tabpanel" aria-labelledby="tabClassification" >
+          <div class="form-section-body" id="sectionClassificationBody">
+          <p class="section-tip" id="tipClassification" data-tip="sectionClassification" aria-live="polite"></p>
+          <button type="button" class="btn-link btn-toggle-tip" data-tip="sectionClassification" aria-expanded="false"><span class="tip-label">Show tips</span></button>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="reportType" id="labelReportType">Report type</label>
+              <select id="reportType" name="classification.reportType">
+                <option value="">—</option>
+                <option value="Internal" id="optInternal">Internal</option>
+                <option value="External" id="optExternal">External</option>
+                <option value="Institutional" id="optInstitutional">Institutional</option>
+                <option value="Third-Party" id="optThirdParty">Third-party</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="geographic" id="labelGeographic">Country</label>
+              <select id="geographic" name="classification.geographic" required aria-required="true">
+                <option value="">—</option>
+                <option value="KSA" id="optKSA">KSA</option>
+                <option value="Qatar">Qatar</option>
+                <option value="Bahrain">Bahrain</option>
+                <option value="Kuwait">Kuwait</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="geographicCity" id="labelGeographicCity">City</label>
+              <select id="geographicCity" name="classification.geographicCity">
+                <option value="">—</option>
+                <option value="Riyadh">Riyadh</option>
+                <option value="Jeddah">Jeddah</option>
+                <option value="Dammam">Dammam</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="form-group" id="geographicCityOtherWrap" style="display:none;">
+              <label for="geographicCityOther" id="labelGeographicCityOther">Other city</label>
+              <input type="text" id="geographicCityOther" name="classification.geographicCityOther" data-placeholder-key="placeholderGeographicCityOther">
+            </div>
+            <div class="form-group">
+              <label for="pdplAction" id="labelPdplAction">PDPL action</label>
+              <select id="pdplAction" name="classification.pdplAction">
+                <option value="">—</option>
+                <option value="None">None</option>
+                <option value="Minimize Data">Minimize data</option>
+                <option value="Mask Identities">Mask identities</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="reporterStatus" id="labelReporterStatus">Reporter status</label>
+              <select id="reporterStatus" name="classification.reporterStatus">
+                <option value="">—</option>
+                <option value="Known">Known</option>
+                <option value="Unknown">Unknown</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="currentStatus" id="labelCurrentStatus">Current status</label>
+              <select id="currentStatus" name="impact.currentStatus">
+                <option value="Open" id="optStatusOpen">Open</option>
+                <option value="In preparation" id="optStatusInPrep">In preparation</option>
+                <option value="In progress" id="optStatusInProgress">In progress</option>
+                <option value="Draft report" id="optStatusDraft">Draft report</option>
+                <option value="Closed" id="optStatusClosed">Closed</option>
+              </select>
+            </div>
+          </div>
+          </div>
+        </div>
+
+        <div class="form-section form-tab-panel" id="sectionScope" role="tabpanel" aria-labelledby="tabScope" >
+          <div class="form-section-body" id="sectionScopeBody">
+          <p class="section-tip" id="tipScope" data-tip="sectionScope" aria-live="polite"></p>
+          <button type="button" class="btn-link btn-toggle-tip" data-tip="sectionScope" aria-expanded="false"><span class="tip-label">Show tips</span></button>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="scopeType" id="labelScopeType">Scope</label>
+              <select id="scopeType" name="scope.scope">
+                <option value="">—</option>
+                <option value="Institutional">1. Institutional investigations</option>
+                <option value="Integrity">2. Integrity / due diligence</option>
+                <option value="Technical">3. Technical fraud / cyber</option>
+                <option value="Financial">4. Financial crimes</option>
+                <option value="IP">5. Intellectual property</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="subScope" id="labelSubScope">Sub-scope</label>
+              <select id="subScope" name="scope.subScope">
+                <option value="">—</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="escalationLevel" id="labelEscalationLevel">Escalation level</label>
+              <select id="escalationLevel" name="scope.escalationLevel">
+                <option value="">—</option>
+                <option value="Normal">Normal</option>
+                <option value="Senior management">Escalation to senior management</option>
+                <option value="Board">Escalation to board</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="severity" id="labelSeverity">Severity</label>
+              <select id="severity" name="scope.severity">
+                <option value="">—</option>
+                <option value="Low">Low</option>
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
+                <option value="Critical">Critical</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <span class="label-block" id="labelInvestigatingBody">Investigating body</span>
+              <div id="investigatingBodyGroup" class="checkbox-group" role="group" aria-labelledby="labelInvestigatingBody"></div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label for="escalationJustification" id="labelEscalationJustification">Escalation justification</label>
+              <select id="escalationJustification" name="scope.escalationJustification">
+                <option value="">—</option>
+              </select>
+            </div>
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label for="precautionaryMeasures" id="labelPrecautionaryMeasures">Precautionary measures</label>
+              <select id="precautionaryMeasures" name="scope.precautionaryMeasures">
+                <option value="">—</option>
+              </select>
+            </div>
+            <div class="form-group" id="precautionaryMeasuresOtherWrap" style="grid-column: 1 / -1; display: none;">
+              <label for="precautionaryMeasuresOther" id="labelPrecautionaryMeasuresOther">Other precautionary measures</label>
+              <textarea id="precautionaryMeasuresOther" name="scope.precautionaryMeasuresOther" rows="3"></textarea>
+            </div>
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <span class="label-block" id="labelTeamMembers">Investigation team members</span>
+              <div id="teamMembersGroup" class="checkbox-group" role="group" aria-labelledby="labelTeamMembers"></div>
+            </div>
+          </div>
+          <h4 id="labelInvestigationLimits">Part 4: Investigation limits</h4>
+          <div class="form-row">
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label for="investigationSubject" id="labelInvestigationSubject">Subject of investigation and general circumstances</label>
+              <textarea id="investigationSubject" name="scope.investigationSubject" rows="4" data-placeholder-key="placeholderInvestigationSubject"></textarea>
+            </div>
+            <div class="form-group">
+              <label for="scopeDateFrom" id="labelScopeDateFrom">Time scope from</label>
+              <input type="date" id="scopeDateFrom" name="scope.scopeDateFrom">
+            </div>
+            <div class="form-group">
+              <label for="scopeDateTo" id="labelScopeDateTo">Time scope to</label>
+              <input type="date" id="scopeDateTo" name="scope.scopeDateTo">
+            </div>
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <span class="label-block" id="labelScopeEntities">Entities / departments and individuals</span>
+              <div id="scopeEntitiesContainer"></div>
+              <p style="margin-top: 0.5rem;"><button type="button" class="btn btn-outline" id="btnAddScopeEntity"></button></p>
+              <template id="scopeEntityRowTpl">
+                <div class="scope-entity-block card" data-scope-entity style="margin-bottom: 0.75rem; padding: 0.75rem;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
+                    <strong class="scope-entity-heading"></strong>
+                    <button type="button" class="btn btn-sm btn-outline btn-remove-scope-entity"></button>
+                  </div>
+                  <div class="form-row interview-session-grid">
+                    <div class="form-group">
+                      <label><span class="label-relatedEntity">Related entity / department</span></label>
+                      <input type="text" data-se-k="relatedEntity" data-placeholder-key="placeholderRelatedEntity">
+                    </div>
+                    <div class="form-group">
+                      <label><span class="label-jobNumber">Job number</span></label>
+                      <input type="text" data-se-k="jobNumber" data-placeholder-key="placeholderJobNumberShort">
+                    </div>
+                    <div class="form-group">
+                      <label><span class="label-personName">Name</span></label>
+                      <input type="text" data-se-k="personName" data-placeholder-key="placeholderPersonName" autocomplete="name">
+                    </div>
+                  </div>
+                </div>
+              </template>
+            </div>
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <span class="label-block" id="labelScopeConstraints">Regulatory and legal constraints</span>
+              <div id="scopeConstraintsContainer"></div>
+              <p style="margin-top: 0.5rem;"><button type="button" class="btn btn-outline" id="btnAddScopeConstraint"></button></p>
+              <template id="scopeConstraintRowTpl">
+                <div class="form-row scope-constraint-block" data-scope-constraint style="margin-bottom: 0.5rem; align-items: flex-end;">
+                  <div class="form-group" style="flex: 1; min-width: 12rem;">
+                    <label><span class="label-constraintText">Constraint</span></label>
+                    <input type="text" data-sc-k="constraintText" data-placeholder-key="placeholderConstraintItem">
+                  </div>
+                  <button type="button" class="btn btn-sm btn-outline btn-remove-scope-constraint"></button>
+                </div>
+              </template>
+            </div>
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label for="scopeExclusions" id="labelScopeExclusions">What the investigation does NOT include</label>
+              <textarea id="scopeExclusions" name="scope.scopeExclusions" rows="3"></textarea>
+            </div>
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <fieldset>
+                <legend id="labelIndependenceCompliance">Independence compliance</legend>
+                <label><input type="checkbox" name="scope.independenceSigned" value="Yes"><span id="labelIndependenceSigned">Independence and confidentiality declaration signed by all members</span></label>
+                <label><input type="checkbox" name="scope.noConflictDisclosed" value="Yes"><span id="labelNoConflictDisclosed">No conflict of interest disclosed for each team member</span></label>
+                <label><input type="checkbox" name="scope.securityClearanceObtained" value="Yes"><span id="labelSecurityClearanceObtained">Security clearance obtained</span></label>
+              </fieldset>
+            </div>
+          </div>
+          </div>
+        </div>
+
+        <div class="form-section form-tab-panel" id="sectionProcess" role="tabpanel" aria-labelledby="tabProcess" >
+          <div class="form-section-body" id="sectionProcessBody">
+          <p class="section-tip" id="tipProcess" data-tip="sectionProcess" aria-live="polite"></p>
+          <button type="button" class="btn-link btn-toggle-tip" data-tip="sectionProcess" aria-expanded="false"><span class="tip-label">Show tips</span></button>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="caseAcceptanceStatus" id="labelCaseAcceptanceStatus">Case acceptance status</label>
+              <select id="caseAcceptanceStatus" name="process.caseAcceptanceStatus">
+                <option value="">—</option>
+                <option value="Approved">Approved</option>
+                <option value="Rejected">Rejected</option>
+                <option value="Scope amended">Scope amended</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="legalPrivilege" id="labelLegalPrivilege">Legal privilege</label>
+              <select id="legalPrivilege" name="process.legalPrivilege">
+                <option value="">—</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+                <option value="Not required">Not required</option>
+              </select>
+            </div>
+            <div id="legalPrivilegeJustificationGroup" class="form-group" style="grid-column: 1 / -1; display: none;">
+              <fieldset>
+                <legend id="labelLegalPrivilegeJustification">Legal privilege justification (immunity)</legend>
+                <p class="form-hint" id="labelLegalPrivilegeHint">Specify the reason for activating legal protection based on initial risk assessment:</p>
+                <label><input type="checkbox" name="process.legalPrivilegeJustification" value="parties"><span id="labelLegalPrivilegeParties">Nature of parties: investigation involves senior executives or board members</span></label>
+                <label><input type="checkbox" name="process.legalPrivilegeJustification" value="regulatory"><span id="labelLegalPrivilegeRegulatory">Regulatory risks: likelihood of external legal/judicial proceedings</span></label>
+                <label><input type="checkbox" name="process.legalPrivilegeJustification" value="sovereign"><span id="labelLegalPrivilegeSovereign">Sovereign requirements: investigation stems from regulatory requirements (e.g. SAMA, CMA)</span></label>
+                <label><input type="checkbox" name="process.legalPrivilegeJustification" value="protection"><span id="labelLegalPrivilegeProtection">Protection of interests: need to protect company legal defence strategy from unintended disclosure</span></label>
+              </fieldset>
+            </div>
+            <div class="form-group">
+              <label for="clearance" id="labelClearance">Note</label>
+              <input type="text" id="clearance" name="process.clearance" data-placeholder-key="placeholderClearance">
+            </div>
+            <div id="scopeAmendmentReasonWrap" class="form-group" style="grid-column: 1 / -1; display: none;">
+              <label for="scopeAmendmentReason" id="labelScopeAmendmentReason">Scope amendment reason</label>
+              <input type="text" id="scopeAmendmentReason" name="process.scopeAmendmentReason" data-placeholder-key="placeholderScopeAmendment">
+            </div>
+          </div>
+          </div>
+        </div>
+
+        <div class="form-section form-tab-panel" id="sectionInterview" role="tabpanel" aria-labelledby="tabInterview" >
+          <div class="form-section-body" id="sectionInterviewBody">
+          <p class="section-tip" id="tipInterview" data-tip="sectionInterview" aria-live="polite"></p>
+          <button type="button" class="btn-link btn-toggle-tip" data-tip="sectionInterview" aria-expanded="false"><span class="tip-label">Show tips</span></button>
+          <p class="form-hint" id="labelInterviewMulti">Multiple interviews supported. Document each interview below.</p>
+          <p class="form-hint" id="interviewDurationNote"><span id="labelInterviewDuration"></span> <span id="interviewDurationDays" class="form-readonly" aria-live="polite">—</span></p>
+          <div id="interviewSessionsContainer"></div>
+          <p style="margin-top: 0.5rem;"><button type="button" class="btn btn-outline" id="btnAddInterviewRecord"></button></p>
+          <template id="interviewSessionTpl">
+            <div class="interview-session-block card" data-interview-session style="margin-bottom: 1.25rem; padding: 1rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
+                <strong class="interview-session-heading"></strong>
+                <button type="button" class="btn btn-sm btn-outline btn-remove-interview-session"></button>
+              </div>
+              <div class="form-row interview-session-grid">
+                <div class="form-group">
+                  <label><span class="label-intervieweeName">Interviewee name</span></label>
+                  <input type="text" data-int-k="intervieweeName" data-placeholder-key="placeholderIntervieweeName">
+                </div>
+                <div class="form-group">
+                  <label><span class="label-intervieweeJobNumber">Job number / ID</span></label>
+                  <input type="text" data-int-k="intervieweeJobNumber" data-placeholder-key="placeholderIntervieweeJobNumber">
+                </div>
+                <div class="form-group">
+                  <label><span class="label-interviewClassification">Classification</span></label>
+                  <select data-int-k="classification" class="interview-session-select"><option value="">—</option></select>
+                </div>
+                <div class="form-group">
+                  <label><span class="label-interviewDate">Interview date (NJ-F-17)</span></label>
+                  <input type="date" data-int-k="interviewDate" class="interview-session-date">
+                </div>
+                <div class="form-group">
+                  <label><span class="label-rightsNotified">Rights notified</span></label>
+                  <select data-int-k="rightsNotified" class="interview-session-select"><option value="">—</option></select>
+                </div>
+                <div class="form-group">
+                  <label><span class="label-documentationMethod">Documentation method</span></label>
+                  <select data-int-k="documentationMethod" class="interview-session-select"><option value="">—</option></select>
+                </div>
+                <div class="form-group">
+                  <label><span class="label-receiptResponseStatus">Receipt / response status</span></label>
+                  <select data-int-k="receiptResponseStatus" class="interview-session-select interview-session-receipt"><option value="">—</option></select>
+                </div>
+                <div class="form-group">
+                  <label><span class="label-summonsId">Summons ID</span></label>
+                  <input type="text" data-int-k="summonsId" data-placeholder-key="placeholderSummonsId">
+                </div>
+                <div class="form-group">
+                  <label><span class="label-summonsStatus">Summons status</span></label>
+                  <select data-int-k="summonsStatus" class="interview-session-select interview-session-summons"><option value="">—</option></select>
+                </div>
+              </div>
+
+              <fieldset class="interview-fieldset">
+                <legend class="label-interviewTraitsLegend">Professional traits analysis</legend>
+                <div class="form-row interview-session-grid">
+                  <div class="form-group" style="grid-column: 1 / -1;">
+                    <label><span class="label-interviewTechnicalAuthorities">Technical authorities</span></label>
+                    <p class="form-hint label-interviewTechnicalAuthoritiesHint"></p>
+                    <textarea data-int-k="technicalAuthorities" rows="2" data-placeholder-key="placeholderInterviewTechnicalAuthorities"></textarea>
+                  </div>
+                  <div class="form-group" style="grid-column: 1 / -1;">
+                    <label><span class="label-interviewPersonalityInfluence">Personality influence</span></label>
+                    <p class="form-hint label-interviewPersonalityInfluenceHint"></p>
+                    <textarea data-int-k="personalityInfluence" rows="2" data-placeholder-key="placeholderInterviewPersonalityInfluence"></textarea>
+                  </div>
+                  <div class="form-group interview-checkbox-full" style="grid-column: 1 / -1;">
+                    <label class="checkbox-inline">
+                      <input type="checkbox" data-int-k="independenceVerified" value="yes">
+                      <span class="label-interviewIndependenceVerified"></span>
+                    </label>
+                  </div>
+                </div>
+              </fieldset>
+
+              <fieldset class="interview-fieldset">
+                <legend class="label-interviewGoalsLegend">Goals and intended outputs</legend>
+                <div class="form-row interview-session-grid">
+                  <div class="form-group" style="grid-column: 1 / -1;">
+                    <label><span class="label-interviewCoreObjective">Core objective</span></label>
+                    <p class="form-hint label-interviewCoreObjectiveHint"></p>
+                    <textarea data-int-k="sessionCoreObjective" rows="2" data-placeholder-key="placeholderInterviewCoreObjective"></textarea>
+                  </div>
+                  <div class="form-group" style="grid-column: 1 / -1;">
+                    <label><span class="label-interviewInfoToExtract">Information to extract</span></label>
+                    <textarea data-int-k="sessionInfoToExtract" rows="2" data-placeholder-key="placeholderInterviewInfoToExtract"></textarea>
+                  </div>
+                  <div class="form-group" style="grid-column: 1 / -1;">
+                    <label><span class="label-interviewEvidencePresented">Evidence presented</span></label>
+                    <textarea data-int-k="sessionEvidencePresented" rows="2" data-placeholder-key="placeholderInterviewEvidencePresented"></textarea>
+                  </div>
+                  <div class="form-group interview-outcomes-group" style="grid-column: 1 / -1;">
+                    <span class="label-interviewExpectedOutcomesLegend" style="display:block;font-weight:600;margin-bottom:0.35rem;"></span>
+                    <div class="interview-outcome-checks">
+                      <label class="checkbox-inline"><input type="checkbox" data-int-k="outcomePartialFullAdmission" value="yes"><span class="label-outcomePartialFullAdmission"></span></label>
+                      <label class="checkbox-inline"><input type="checkbox" data-int-k="outcomeRevealPartners" value="yes"><span class="label-outcomeRevealPartners"></span></label>
+                      <label class="checkbox-inline"><input type="checkbox" data-int-k="outcomeRefuteDefenses" value="yes"><span class="label-outcomeRefuteDefenses"></span></label>
+                      <label class="checkbox-inline"><input type="checkbox" data-int-k="outcomeSystemicGap" value="yes"><span class="label-outcomeSystemicGap"></span></label>
+                    </div>
+                  </div>
+                </div>
+              </fieldset>
+
+              <fieldset class="interview-fieldset">
+                <legend class="label-interviewTeamLegend">Execution team</legend>
+                <div class="interview-team-block">
+                  <p class="interview-team-role"><strong class="label-teamRoleLeadInvestigator"></strong> — <span class="label-teamRoleLeadInvestigatorHint"></span></p>
+                  <div class="form-row interview-session-grid">
+                    <div class="form-group">
+                      <label><span class="label-liName">Name</span></label>
+                      <input type="text" data-int-k="leadInvestigatorName" data-placeholder-key="placeholderPersonName">
+                    </div>
+                    <div class="form-group">
+                      <label><span class="label-liJob">Job number</span></label>
+                      <input type="text" data-int-k="leadInvestigatorJobNumber" data-placeholder-key="placeholderJobNumberShort">
+                    </div>
+                  </div>
+                </div>
+                <div class="interview-team-block">
+                  <p class="interview-team-role"><strong class="label-teamRoleWitnessRecorder"></strong> — <span class="label-teamRoleWitnessRecorderHint"></span></p>
+                  <div class="form-row interview-session-grid">
+                    <div class="form-group">
+                      <label><span class="label-wrName">Name</span></label>
+                      <input type="text" data-int-k="witnessRecorderName" data-placeholder-key="placeholderPersonName">
+                    </div>
+                    <div class="form-group">
+                      <label><span class="label-wrJob">Job number</span></label>
+                      <input type="text" data-int-k="witnessRecorderJobNumber" data-placeholder-key="placeholderJobNumberShort">
+                    </div>
+                  </div>
+                </div>
+                <div class="interview-team-block">
+                  <p class="interview-team-role"><strong class="label-teamRoleTechExpert"></strong> — <span class="label-teamRoleTechExpertHint"></span></p>
+                  <div class="form-row interview-session-grid">
+                    <div class="form-group">
+                      <label><span class="label-teName">Name</span></label>
+                      <input type="text" data-int-k="techExpertName" data-placeholder-key="placeholderPersonName">
+                    </div>
+                    <div class="form-group">
+                      <label><span class="label-teJob">Job number</span></label>
+                      <input type="text" data-int-k="techExpertJobNumber" data-placeholder-key="placeholderJobNumberShort">
+                    </div>
+                  </div>
+                </div>
+                <div class="interview-team-block">
+                  <p class="interview-team-role"><strong class="label-teamRoleDeptRep"></strong> — <span class="label-teamRoleDeptRepHint"></span></p>
+                  <div class="form-row interview-session-grid">
+                    <div class="form-group">
+                      <label><span class="label-drName">Name</span></label>
+                      <input type="text" data-int-k="deptRepName" data-placeholder-key="placeholderPersonName">
+                    </div>
+                    <div class="form-group">
+                      <label><span class="label-drJob">Job number</span></label>
+                      <input type="text" data-int-k="deptRepJobNumber" data-placeholder-key="placeholderJobNumberShort">
+                    </div>
+                  </div>
+                </div>
+              </fieldset>
+
+              <div class="form-row interview-session-grid" style="margin-top: 0.5rem;">
+                <div class="form-group" style="grid-column: 1 / -1;">
+                  <label><span class="label-interviewMinutes">Interview minutes / notes</span></label>
+                  <textarea data-int-k="minutes" rows="3"></textarea>
+                </div>
+              </div>
+            </div>
+          </template>
+          </div>
+        </div>
+
+        <template id="evidenceRecordTpl">
+          <div class="evidence-record-block card" data-evidence-record style="margin-bottom: 1.25rem; padding: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
+              <strong class="evidence-record-heading"></strong>
+              <button type="button" class="btn btn-sm btn-outline btn-remove-evidence-record"></button>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label><span class="label-formOfEvidence">Form of evidence</span></label>
+                <select data-ev-k="formOfEvidence" class="evidence-row-select"><option value="">—</option></select>
+              </div>
+              <div class="form-group evidence-form-other-wrap" style="display:none;">
+                <label><span class="label-formOfEvidenceOther">Specify form of evidence</span></label>
+                <input type="text" data-ev-k="formOfEvidenceOther" data-placeholder-key="placeholderFormOfEvidenceOther">
+              </div>
+              <div class="form-group">
+                <label><span class="label-dataCategory">Data category</span></label>
+                <select data-ev-k="dataCategory" class="evidence-row-select"><option value="">—</option></select>
+              </div>
+              <div class="form-group">
+                <label><span class="label-examinationType">Examination type</span></label>
+                <select data-ev-k="examinationType" class="evidence-row-select"><option value="">—</option></select>
+              </div>
+              <div class="form-group" style="grid-column: 1 / -1;">
+                <label><span class="label-evidenceHashValue">Identifier / hash</span></label>
+                <input type="text" data-ev-k="evidenceHashValue" data-placeholder-key="placeholderEvidenceHash">
+              </div>
+              <div class="form-group" style="grid-column: 1 / -1;">
+                <label><span class="label-chainOfCustody">Chain of custody</span></label>
+                <input type="text" data-ev-k="chainOfCustody" data-placeholder-key="placeholderChainOfCustody">
+              </div>
+              <div class="form-group">
+                <label><span class="label-supportingParty">Supporting party</span></label>
+                <select data-ev-k="supportingParty" class="evidence-row-select"><option value="">—</option></select>
+              </div>
+              <div class="form-group" style="grid-column: 1 / -1;">
+                <label><span class="label-evidenceLinkUrl">Evidence link (URL)</span></label>
+                <input type="url" data-ev-k="evidenceLinkUrl" data-placeholder-key="placeholderEvidenceLinkUrl" inputmode="url" autocomplete="url">
+              </div>
+            </div>
+          </div>
+        </template>
+        <div class="form-section form-tab-panel" id="sectionEvidence" role="tabpanel" aria-labelledby="tabEvidence" >
+          <div class="form-section-body" id="sectionEvidenceBody">
+          <p class="section-tip" id="tipEvidence" data-tip="sectionEvidence" aria-live="polite"></p>
+          <button type="button" class="btn-link btn-toggle-tip" data-tip="sectionEvidence" aria-expanded="false"><span class="tip-label">Show tips</span></button>
+          <div id="evidenceRecordsContainer"></div>
+          <p style="margin-top: 0.5rem;"><button type="button" class="btn btn-outline" id="btnAddEvidenceRecord">Add evidence</button></p>
+          </div>
+        </div>
+
+        <div class="form-section form-tab-panel" id="sectionExternalParties" role="tabpanel" aria-labelledby="tabExternalParties" >
+          <div class="form-section-body" id="sectionExternalPartiesBody">
+          <p class="section-tip" id="tipExternalParties" data-tip="sectionExternalParties" aria-live="polite"></p>
+          <button type="button" class="btn-link btn-toggle-tip" data-tip="sectionExternalParties" aria-expanded="false"><span class="tip-label">Show tips</span></button>
+          <div id="externalPartiesContainer"></div>
+          <p style="margin-top: 0.5rem;"><button type="button" class="btn btn-outline" id="btnAddExternalParty"></button></p>
+          <template id="externalPartyTpl">
+            <div class="external-party-block card" data-external-party style="margin-bottom: 1.25rem; padding: 1rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
+                <strong class="external-party-heading"></strong>
+                <button type="button" class="btn btn-sm btn-outline btn-remove-external-party"></button>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label><span class="label-ext-partyType">Party type</span></label>
+                  <select data-ext-k="partyType" class="external-party-select"><option value="">—</option></select>
+                </div>
+                <div class="form-group">
+                  <label><span class="label-ext-natureOfCommunication">Nature</span></label>
+                  <select data-ext-k="natureOfCommunication" class="external-party-select"><option value="">—</option></select>
+                </div>
+                <div class="form-group">
+                  <label><span class="label-ext-encryption">Encryption</span></label>
+                  <select data-ext-k="encryption" class="external-party-select"><option value="">—</option></select>
+                </div>
+                <div class="form-group">
+                  <label class="checkbox-inline">
+                    <input type="checkbox" data-ext-k="writtenAgreement" value="Yes">
+                    <span class="label-ext-writtenAgreement">Written agreement</span>
+                  </label>
+                </div>
+                <div class="form-group" style="grid-column: 1 / -1;">
+                  <label><span class="label-ext-confidentiality">Confidentiality</span></label>
+                  <input type="text" data-ext-k="confidentiality" data-placeholder-key="placeholderConfidentiality">
+                </div>
+              </div>
+            </div>
+          </template>
+          </div>
+        </div>
+
+        <div class="form-section form-tab-panel" id="sectionImpact" role="tabpanel" aria-labelledby="tabImpact" >
+          <div class="form-section-body" id="sectionImpactBody">
+          <p class="section-tip" id="tipImpact" data-tip="sectionImpact" aria-live="polite"></p>
+          <button type="button" class="btn-link btn-toggle-tip" data-tip="sectionImpact" aria-expanded="false"><span class="tip-label">Show tips</span></button>
+          <h4 id="labelDeficiencies">1. Discovered deficiencies</h4>
+          <div class="form-row">
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label for="technicalViolation" id="labelTechnicalViolation">Technical description of violation</label>
+              <textarea id="technicalViolation" name="impact.technicalViolation" rows="2" data-placeholder-key="placeholderTechnicalViolation"></textarea>
+            </div>
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <span class="label-block" id="labelFiveWhys">5-Whys RCA summary</span>
+              <label for="fiveWhys1" id="labelFiveWhys1" class="form-label-inline">Why 1</label>
+              <textarea id="fiveWhys1" name="impact.fiveWhys1" rows="2" data-placeholder-key="placeholderFiveWhys1"></textarea>
+              <label for="fiveWhys2" id="labelFiveWhys2" class="form-label-inline">Why 2</label>
+              <textarea id="fiveWhys2" name="impact.fiveWhys2" rows="2" data-placeholder-key="placeholderFiveWhys2"></textarea>
+              <label for="fiveWhys3" id="labelFiveWhys3" class="form-label-inline">Why 3</label>
+              <textarea id="fiveWhys3" name="impact.fiveWhys3" rows="2" data-placeholder-key="placeholderFiveWhys3"></textarea>
+              <label for="fiveWhys4" id="labelFiveWhys4" class="form-label-inline">Why 4</label>
+              <textarea id="fiveWhys4" name="impact.fiveWhys4" rows="2" data-placeholder-key="placeholderFiveWhys4"></textarea>
+              <label for="fiveWhys5" id="labelFiveWhys5" class="form-label-inline">Why 5</label>
+              <textarea id="fiveWhys5" name="impact.fiveWhys5" rows="2" data-placeholder-key="placeholderFiveWhys5"></textarea>
+            </div>
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <fieldset>
+                <legend id="labelRootCauseClass">Root cause classification</legend>
+                <label><input type="checkbox" name="impact.rootCauseHuman" value="Yes"> <span id="labelRootCauseHumanCb"></span></label><br>
+                <label><input type="checkbox" name="impact.rootCauseOrg" value="Yes"> <span id="labelRootCauseOrgCb"></span></label><br>
+                <label><input type="checkbox" name="impact.rootCauseTech" value="Yes"> <span id="labelRootCauseTechCb"></span></label>
+              </fieldset>
+            </div>
+          </div>
+          <h4 id="labelResultingImpact">2. Resulting impact</h4>
+          <div class="form-row">
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label for="regulatoryImpact" id="labelRegulatoryImpact">Regulatory/sovereign impact</label>
+              <textarea id="regulatoryImpact" name="impact.regulatoryImpact" rows="2" data-placeholder-key="placeholderRegulatoryImpact"></textarea>
+            </div>
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label for="financialOperationalImpact" id="labelFinancialOperationalImpact">Financial and operational impact</label>
+              <textarea id="financialOperationalImpact" name="impact.financialOperationalImpact" rows="2" data-placeholder-key="placeholderFinancialImpact"></textarea>
+            </div>
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label for="reputationLegalImpact" id="labelReputationLegalImpact">Reputation and legal risks</label>
+              <textarea id="reputationLegalImpact" name="impact.reputationLegalImpact" rows="2" data-placeholder-key="placeholderReputationImpact"></textarea>
+            </div>
+          </div>
+          <h4 id="labelImpactAccountableEntities">Entities / departments and individuals concerned</h4>
+          <p class="form-hint" id="labelImpactAccountableEntitiesHint"></p>
+          <div id="accountableEntitiesContainer"></div>
+          <p style="margin-top: 0.5rem;"><button type="button" class="btn btn-outline" id="btnAddAccountableEntity"></button></p>
+          <template id="accountableEntityTpl">
+            <div class="accountable-entity-block card" data-accountable-entity style="margin-bottom: 1.25rem; padding: 1rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
+                <strong class="accountable-entity-heading"></strong>
+                <button type="button" class="btn btn-sm btn-outline btn-remove-accountable-entity"></button>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label><span class="label-acc-personName">Name</span></label>
+                  <input type="text" data-acc-k="personName" data-placeholder-key="placeholderPersonName">
+                </div>
+                <div class="form-group">
+                  <label><span class="label-acc-jobNumber">Job number</span></label>
+                  <input type="text" data-acc-k="jobNumber" data-placeholder-key="placeholderJobNumberShort">
+                </div>
+                <div class="form-group" style="grid-column: 1 / -1;">
+                  <label><span class="label-acc-relatedEntity">Concerned department</span></label>
+                  <input type="text" data-acc-k="relatedEntity" data-placeholder-key="placeholderRelatedEntity">
+                </div>
+                <div class="form-group" style="grid-column: 1 / -1;">
+                  <label><span class="label-acc-convictionLevel">Conviction / liability level</span></label>
+                  <input type="text" data-acc-k="convictionLevel">
+                </div>
+                <div class="form-group" style="grid-column: 1 / -1;">
+                  <fieldset class="acc-guidance-fieldset">
+                    <legend class="label-acc-guidedBy">Guided by</legend>
+                    <label class="checkbox-inline"><input type="checkbox" data-acc-k="guidanceViolationProven" value="yes"><span class="label-acc-guidanceViolationProven"></span></label>
+                    <label class="checkbox-inline"><input type="checkbox" data-acc-k="guidanceNoViolation" value="yes"><span class="label-acc-guidanceNoViolation"></span></label>
+                    <label class="checkbox-inline"><input type="checkbox" data-acc-k="guidanceInsufficientEvidence" value="yes"><span class="label-acc-guidanceInsufficientEvidence"></span></label>
+                  </fieldset>
+                </div>
+              </div>
+            </div>
+          </template>
+          <h4 id="labelAssetRecovery">3. Asset recovery matrix</h4>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="recoveryOpportunityValue" id="labelRecoveryOpportunityValue">Recovery opportunity value (SAR)</label>
+              <input type="text" id="recoveryOpportunityValue" name="impact.recoveryOpportunityValue">
+            </div>
+            <div class="form-group">
+              <label for="recoveryStatus" id="labelRecoveryStatus">Recovery status</label>
+              <select id="recoveryStatus" name="impact.recoveryStatus">
+                <option value="">—</option>
+                <option value="Full">Full</option>
+                <option value="Partial">Partial</option>
+                <option value="Impossible">Impossible (with reason)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="recoveryPath" id="labelRecoveryPath">Recovery path</label>
+              <select id="recoveryPath" name="impact.recoveryPath">
+                <option value="">—</option>
+                <option value="Settlement">Amicable settlement</option>
+                <option value="Legal">Legal pursuit</option>
+                <option value="Actual">Actual recovery</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="amountRecovered" id="labelAmountRecovered">Amount recovered to date (SAR)</label>
+              <input type="text" id="amountRecovered" name="impact.amountRecovered">
+            </div>
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label for="assetRecoveryNotes" id="labelAssetRecoveryNotes">Notes</label>
+              <textarea id="assetRecoveryNotes" name="impact.assetRecoveryNotes" rows="2" data-placeholder-key="placeholderAssetRecoveryNotes"></textarea>
+            </div>
+          </div>
+          <h4 id="labelStrategicRecs">4. Strategic recommendations</h4>
+          <p class="form-hint" id="strategicRecsIntro" aria-live="polite"></p>
+          <div class="form-row">
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label for="correctiveActions" id="labelCorrectiveActions">Corrective actions</label>
+              <textarea id="correctiveActions" name="impact.correctiveActions" rows="3" data-placeholder-key="placeholderCorrectiveActions"></textarea>
+            </div>
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label for="preventiveActions" id="labelPreventiveActions">Preventive actions</label>
+              <textarea id="preventiveActions" name="impact.preventiveActions" rows="2" data-placeholder-key="placeholderPreventiveActions"></textarea>
+            </div>
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <fieldset>
+                <legend id="labelStrategicRecMultiselect">Strategic options</legend>
+                <label class="checkbox-inline"><input type="checkbox" name="impact.strategicOptAssetRecovery" id="strategicOptAssetRecovery" value="Yes"><span id="labelStrategicOptAssetRecovery"></span></label>
+                <label class="checkbox-inline"><input type="checkbox" name="impact.strategicOptReferProsecution" id="strategicOptReferProsecution" value="Yes"><span id="labelStrategicOptReferProsecution"></span></label>
+              </fieldset>
+            </div>
+            <div class="form-group" id="strategicAssetRecoveryAmountWrap" style="grid-column: 1 / -1; display:none;">
+              <label for="assetRecoveryAmount" id="labelAssetRecoveryAmount">Asset recovery: employee to return (SAR)</label>
+              <input type="text" id="assetRecoveryAmount" name="impact.assetRecoveryAmount">
+            </div>
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <fieldset>
+                <legend id="labelStrategicArt80Title">Article 80 termination — grounds (multi-select)</legend>
+                <div class="strategic-art80-grid">
+                  <label class="checkbox-block"><input type="checkbox" name="impact.strategicArt80EmployerAssault" id="strategicArt80EmployerAssault" value="Yes"><span id="labelStrategicArt80EmployerAssault"></span></label>
+                  <label class="checkbox-block"><input type="checkbox" name="impact.strategicArt80Obligations" id="strategicArt80Obligations" value="Yes"><span id="labelStrategicArt80Obligations"></span></label>
+                  <label class="checkbox-block"><input type="checkbox" name="impact.strategicArt80Misconduct" id="strategicArt80Misconduct" value="Yes"><span id="labelStrategicArt80Misconduct"></span></label>
+                  <label class="checkbox-block"><input type="checkbox" name="impact.strategicArt80IntentionalLoss" id="strategicArt80IntentionalLoss" value="Yes"><span id="labelStrategicArt80IntentionalLoss"></span></label>
+                  <label class="checkbox-block"><input type="checkbox" name="impact.strategicArt80Forgery" id="strategicArt80Forgery" value="Yes"><span id="labelStrategicArt80Forgery"></span></label>
+                  <label class="checkbox-block"><input type="checkbox" name="impact.strategicArt80Probation" id="strategicArt80Probation" value="Yes"><span id="labelStrategicArt80Probation"></span></label>
+                  <label class="checkbox-block"><input type="checkbox" name="impact.strategicArt80Absence" id="strategicArt80Absence" value="Yes"><span id="labelStrategicArt80Absence"></span></label>
+                  <label class="checkbox-block"><input type="checkbox" name="impact.strategicArt80PositionAbuse" id="strategicArt80PositionAbuse" value="Yes"><span id="labelStrategicArt80PositionAbuse"></span></label>
+                  <label class="checkbox-block"><input type="checkbox" name="impact.strategicArt80TradeSecrets" id="strategicArt80TradeSecrets" value="Yes"><span id="labelStrategicArt80TradeSecrets"></span></label>
+                </div>
+              </fieldset>
+            </div>
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <fieldset>
+                <legend id="labelStrategicInvestigationClosure">Close investigation (strategic)</legend>
+                <label class="checkbox-block"><input type="checkbox" name="impact.strategicClosureNoProof" id="strategicClosureNoProof" value="Yes"><span id="labelStrategicClosureNoProof"></span></label>
+                <label class="checkbox-block"><input type="checkbox" name="impact.strategicClosureMalicious" id="strategicClosureMalicious" value="Yes"><span id="labelStrategicClosureMalicious"></span></label>
+                <label class="checkbox-block"><input type="checkbox" name="impact.strategicClosurePartialAdmin" id="strategicClosurePartialAdmin" value="Yes"><span id="labelStrategicClosurePartialAdmin"></span></label>
+                <label class="checkbox-block"><input type="checkbox" name="impact.strategicClosureUnable" id="strategicClosureUnable" value="Yes"><span id="labelStrategicClosureUnable"></span></label>
+              </fieldset>
+            </div>
+          </div>
+          <div id="impactClosureSection" class="form-row" style="display:none;">
+            <h4 id="labelClosureReasons" style="grid-column: 1 / -1;">Closure reasons</h4>
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <fieldset>
+                <label><input type="checkbox" name="impact.closureNoViolation" value="Yes"> <span id="labelClosureNoViolationCb"></span></label><br>
+                <label><input type="checkbox" name="impact.closureMalicious" value="Yes"> <span id="labelClosureMaliciousCb"></span></label><br>
+                <label><input type="checkbox" name="impact.closurePartial" value="Yes"> <span id="labelClosurePartialCb"></span></label><br>
+                <label><input type="checkbox" name="impact.closureFileClosed" value="Yes"> <span id="labelClosureFileClosedCb"></span></label>
+              </fieldset>
+            </div>
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label for="closureObjectiveReasons" id="labelClosureObjectiveReasons">Objective reasons</label>
+              <textarea id="closureObjectiveReasons" name="impact.closureObjectiveReasons" rows="2"></textarea>
+            </div>
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label for="closureTechnicalReasons" id="labelClosureTechnicalReasons">Technical reasons</label>
+              <textarea id="closureTechnicalReasons" name="impact.closureTechnicalReasons" rows="2" data-placeholder-key="placeholderClosureTechnical"></textarea>
+            </div>
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label for="rcaGapClosed" id="labelRcaGapClosed">Was the root cause gap closed?</label>
+              <select id="rcaGapClosed" name="impact.rcaGapClosed">
+                <option value="">—</option>
+                <option value="Yes">Yes, via policy update</option>
+                <option value="No">No, requires separate control improvement project</option>
+              </select>
+            </div>
+          </div>
+          <div id="impactAccountabilitySection" class="form-row" style="display:none;">
+            <h4 id="labelAccountabilityDetails" style="grid-column: 1 / -1;">Accountability details</h4>
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <fieldset>
+                <legend id="labelInternalDisciplinary">Internal disciplinary</legend>
+                <label><input type="checkbox" name="impact.termImmediate" value="Yes"><span id="labelTermImmediate">Immediate termination: Art. 80 para (__) without severance</span></label>
+                <label><input type="checkbox" name="impact.deduction" value="Yes"><span id="labelDeduction">Salary deduction: (__) days/SAR</span></label>
+                <label><input type="checkbox" name="impact.finalWarning" value="Yes"><span id="labelFinalWarning">Final warning: transfer to non-sensitive duties</span></label>
+              </fieldset>
+            </div>
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <fieldset>
+                <legend id="labelExternalReferral">External referral</legend>
+                <label><input type="checkbox" name="impact.referralProsecution" value="Yes"><span id="labelReferralProsecution">Public Prosecution</span></label>
+                <label><input type="checkbox" name="impact.referralNazaha" value="Yes"><span id="labelReferralNazaha">Nazaha</span></label>
+                <label><input type="checkbox" name="impact.referralSecurity" value="Yes"><span id="labelReferralSecurity">Public Security</span></label>
+              </fieldset>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="recommendationType" id="labelRecommendationType">Recommendation type</label>
+              <select id="recommendationType" name="impact.recommendationType">
+                <option value="">—</option>
+                <option value="Referral">Legal/sovereign referral</option>
+                <option value="Controls">Improve controls</option>
+                <option value="Closure">Close investigation</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="disciplinaryAction" id="labelDisciplinaryAction">Disciplinary action</label>
+              <select id="disciplinaryAction" name="impact.disciplinaryAction">
+                <option value="">—</option>
+                <option value="Warning">Warning</option>
+                <option value="Deduction">Deduction</option>
+                <option value="Termination 80">Termination Art. 80 (no severance)</option>
+                <option value="Sovereign referral">Sovereign referral</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="form-group" id="disciplinaryActionOtherWrap" style="display:none;">
+              <label for="disciplinaryActionOther" id="labelDisciplinaryActionOther">Other disciplinary action</label>
+              <input type="text" id="disciplinaryActionOther" name="impact.disciplinaryActionOther" data-placeholder-key="placeholderDisciplinaryActionOther">
+            </div>
+            <div class="form-group">
+              <label for="mandatoryLevel" id="labelMandatoryLevel">Mandatory level</label>
+              <select id="mandatoryLevel" name="impact.mandatoryLevel">
+                <option value="">—</option>
+                <option value="Must" data-i18n-option="optMust">Must</option>
+                <option value="Should" data-i18n-option="optShould">Should</option>
+                <option value="May" data-i18n-option="optMay">May</option>
+              </select>
+            </div>
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <span class="label-block" id="labelRegulatoryRef">Regulatory reference</span>
+              <p class="form-hint" id="labelRegulatoryRefArticle">Article / clause per option</p>
+              <div id="regulatoryRefGroup" class="checkbox-group regulatory-ref-wrap" role="group" aria-labelledby="labelRegulatoryRef"></div>
+            </div>
+          </div>
+          </div>
+        </div>
+
+        <div class="form-section form-tab-panel" id="sectionReview" role="tabpanel" aria-labelledby="tabReview">
+          <div class="form-section-body" id="sectionReviewBody">
+          <p class="section-tip" id="tipReview" data-tip="sectionReview" aria-live="polite"></p>
+          <button type="button" class="btn-link btn-toggle-tip" data-tip="sectionReview" aria-expanded="false"><span class="tip-label">Show tips</span></button>
+          <h4 id="labelSectionFormChecklist">Form verification checklist</h4>
+          <div class="form-row">
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <p class="form-hint" id="labelFormChecklistHint">Verify that the following forms have been completed and attached:</p>
+              <div id="formChecklistGroup" class="checkbox-group"></div>
+              <label for="formChecklistNotes" id="labelFormChecklistNotes">Notes</label>
+              <textarea id="formChecklistNotes" name="impact.formChecklistNotes" rows="2"></textarea>
+            </div>
+          </div>
+          <h4 id="labelSectionQualityReview">Report quality review (Phase 10)</h4>
+          <div class="form-row">
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <p class="form-hint" id="labelQualityReviewHint">Compliance Manager must complete before final approval:</p>
+              <div id="qualityReviewGroup" class="checkbox-group"></div>
+              <label for="qualityReviewNotes" id="labelQualityReviewNotes">Notes</label>
+              <textarea id="qualityReviewNotes" name="impact.qualityReviewNotes" rows="2"></textarea>
+            </div>
+          </div>
+          <h4 id="labelSectionWhistleblower">Whistleblower incentives (Phase 11)</h4>
+          <div class="form-row">
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <fieldset>
+                <legend id="labelWhistleblowerIncentive">Incentive recommendation</legend>
+                <label><input type="checkbox" name="impact.whistleblowerCash" value="Yes"> <span id="labelWhistleblowerCashReward">Financial reward (SAR):</span> <input type="text" id="whistleblowerAmount" name="impact.whistleblowerAmount" size="10"></label>
+                <label><input type="checkbox" name="impact.whistleblowerThanks" value="Yes"> <span id="labelWhistleblowerThanksLetter">Letter of thanks (moral)</span></label>
+                <label><input type="checkbox" name="impact.whistleblowerNo" value="Yes"> <span id="labelWhistleblowerNoReward">No reward recommended</span> (<span id="labelWhistleblowerNoReason">reason:</span> <input type="text" id="whistleblowerNoReason" name="impact.whistleblowerNoReason" size="30">)</label>
+              </fieldset>
+            </div>
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label><input type="checkbox" name="impact.whistleblowerProtection" value="Yes"> <span id="labelWhistleblowerProtectionPlan">Whistleblower protection plan activated, file closed without negative impact</span></label>
+            </div>
+          </div>
+          <h4 id="labelFinalDecisionActions">Final decision and subsequent actions</h4>
+          <p class="form-hint" id="labelDecisionIntro"></p>
+          <div class="form-row review-final-decision" id="reviewDecisionBlock">
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <fieldset>
+                <legend id="labelDecisionPartA">Part A — Final decision</legend>
+                <p class="form-hint" id="labelDecisionPartASub"></p>
+                <div class="review-decision-lines">
+                  <label class="review-decision-line"><input type="checkbox" name="impact.fdArt80" id="fdArt80" value="Yes"><span id="labelFdArt80"></span><input type="text" id="fdArt80Paragraph" name="impact.fdArt80Paragraph" class="review-decision-inline-input" size="8" aria-label="Article 80 paragraph"></label>
+                  <label class="review-decision-line"><input type="checkbox" name="impact.fdDeduction" id="fdDeduction" value="Yes"><span id="labelFdDeduction"></span><input type="text" id="fdDeductionDetail" name="impact.fdDeductionDetail" class="review-decision-inline-input" size="14" aria-label="Deduction days or amount"></label>
+                  <label class="review-decision-line"><input type="checkbox" name="impact.fdFinalWarningTransfer" id="fdFinalWarningTransfer" value="Yes"><span id="labelFdFinalWarningTransfer"></span></label>
+                  <label class="review-decision-line"><input type="checkbox" name="impact.fdReferAuthorities" id="fdReferAuthorities" value="Yes"><span id="labelFdReferAuthorities"></span></label>
+                  <label class="review-decision-line"><input type="checkbox" name="impact.fdRepayAmount" id="fdRepayAmount" value="Yes"><span id="labelFdRepayAmount"></span><input type="text" id="fdRepayAmountValue" name="impact.fdRepayAmountValue" class="review-decision-inline-input" size="12" aria-label="Amount SAR"></label>
+                  <label class="review-decision-line"><input type="checkbox" name="impact.fdRevokeAccess" id="fdRevokeAccess" value="Yes"><span id="labelFdRevokeAccess"></span></label>
+                  <label class="review-decision-line"><input type="checkbox" name="impact.fdSalaryStopContinue" id="fdSalaryStopContinue" value="Yes"><span id="labelFdSalaryStopContinue"></span></label>
+                  <label class="review-decision-line"><input type="checkbox" name="impact.fdCloseInvestigation" id="fdCloseInvestigation" value="Yes"><span id="labelFdCloseInvestigation"></span></label>
+                </div>
+              </fieldset>
+            </div>
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <fieldset>
+                <legend id="labelDecisionPartB">Part B — Departments assigned</legend>
+                <p class="form-hint" id="labelDecisionPartBSub"></p>
+                <p class="review-decision-dept-title" id="labelFdDeptHR"></p>
+                <label class="review-decision-line"><input type="checkbox" name="impact.fdHrRestore" id="fdHrRestore" value="Yes"><span id="labelFdHrRestore"></span></label>
+                <label class="review-decision-line"><input type="checkbox" name="impact.fdHrCancelSuspension" id="fdHrCancelSuspension" value="Yes"><span id="labelFdHrCancelSuspension"></span></label>
+                <label class="review-decision-line"><input type="checkbox" name="impact.fdHrRecord" id="fdHrRecord" value="Yes"><span id="labelFdHrRecord"></span></label>
+                <p class="review-decision-dept-title" id="labelFdDeptTech"></p>
+                <label class="review-decision-line"><input type="checkbox" name="impact.fdTechRestoreAccess" id="fdTechRestoreAccess" value="Yes"><span id="labelFdTechRestoreAccess"></span></label>
+                <label class="review-decision-line"><input type="checkbox" name="impact.fdTechStopMonitoring" id="fdTechStopMonitoring" value="Yes"><span id="labelFdTechStopMonitoring"></span></label>
+                <p class="review-decision-dept-title" id="labelFdDeptPdpl"></p>
+                <label class="review-decision-line"><input type="checkbox" name="impact.fdPdplReturnAssets" id="fdPdplReturnAssets" value="Yes"><span id="labelFdPdplReturnAssets"></span></label>
+                <label class="review-decision-line"><input type="checkbox" name="impact.fdPdplDestroy" id="fdPdplDestroy" value="Yes"><span id="labelFdPdplDestroy"></span></label>
+                <label class="review-decision-line"><input type="checkbox" name="impact.fdPdplArchive" id="fdPdplArchive" value="Yes"><span id="labelFdPdplArchive"></span></label>
+              </fieldset>
+            </div>
+          </div>
+          </div>
+        </div>
+
+        <div class="form-section form-tab-panel" id="sectionGrievance" role="tabpanel" aria-labelledby="tabGrievance">
+          <div class="form-section-body" id="sectionGrievanceBody">
+          <p class="section-tip" id="tipGrievance" data-tip="sectionGrievance" aria-live="polite"></p>
+          <button type="button" class="btn-link btn-toggle-tip" data-tip="sectionGrievance" aria-expanded="false"><span class="tip-label">Show tips</span></button>
+          <h4 id="labelSectionGrievance">Grievance / Appeal (Phase 12)</h4>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="grievanceDate" id="labelGrievanceDate">Grievance submission date</label>
+              <input type="date" id="grievanceDate" name="impact.grievanceDate">
+            </div>
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label for="grievanceGrounds" id="labelGrievanceGrounds">Grievance grounds</label>
+              <textarea id="grievanceGrounds" name="impact.grievanceGrounds" rows="3"></textarea>
+            </div>
+            <div class="form-group">
+              <label for="grievanceAcceptance" id="labelGrievanceAcceptance">Acceptance decision</label>
+              <select id="grievanceAcceptance" name="impact.grievanceAcceptance">
+                <option value="">—</option>
+                <option value="Accepted" data-i18n-option="optAccepted">Accepted</option>
+                <option value="Rejected" data-i18n-option="optRejected">Rejected</option>
+                <option value="Pending" data-i18n-option="optPending">Pending</option>
+              </select>
+            </div>
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label for="grievanceDecisionAmendment" id="labelGrievanceDecisionAmendment">Decision amendment</label>
+              <textarea id="grievanceDecisionAmendment" name="impact.grievanceDecisionAmendment" rows="2"></textarea>
+            </div>
+          </div>
+          </div>
+        </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary" id="btnSave">Save</button>
+          <button type="button" class="btn" id="btnPrintReport" aria-label="Print report">Print report</button>
+          <button type="button" class="btn" id="btnCancel">Cancel</button>
+          <button type="button" class="btn btn-danger" id="btnDelete" style="display:none;">Delete</button>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <!-- View is set only by js/router.js -->
+  <script src="js/i18n.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/forms.js"></script>
+  <script src="js/settings.js"></script>
+  <script src="js/sections.js"></script>
+  <script src="js/tips.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/router.js"></script>
+  <script src="js/list-view.js"></script>
+  <script src="js/form-view.js"></script>
+  <script src="js/reports-view.js"></script>
+  <script src="js/settings-view.js"></script>
+  <script src="js/print-view.js"></script>
+  <script src="js/app.js"></script>
 </body>
 </html>

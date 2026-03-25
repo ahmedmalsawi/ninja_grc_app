@@ -2,31 +2,24 @@
     <div id="viewSettings" class="view-settings">
       <div class="settings-page-header">
         <h2 id="settingsTitle" class="settings-page-title">Settings</h2>
-        <p class="settings-page-intro" id="settingsIntro">Configure dropdown options used across the app. Changes are saved locally.</p>
+        <p class="settings-page-intro" id="settingsIntro">General preferences, backup, and tips. Dropdown lists are edited on a separate page.</p>
       </div>
 
-      <section class="settings-section settings-section-list" aria-labelledby="settingsDropdownHeading">
-        <h3 id="settingsDropdownHeading" class="settings-section-title">Dropdown options</h3>
-        <p class="settings-section-desc">Edit the options shown in case forms and filters. Click <strong>Edit</strong> on a list to add, remove, or change labels (English and Arabic).</p>
-        <div id="settingsDropdownList" class="settings-dropdown-list"></div>
+      <section class="settings-section" aria-labelledby="settingsNavDropdownsTitle">
+        <h3 id="settingsNavDropdownsTitle" class="settings-section-title">Dropdown lists</h3>
+        <p class="settings-section-desc" id="settingsNavDropdownsDesc">Edit the options shown in case forms and filters (English and Arabic). Changes are saved locally in this browser.</p>
+        <p style="margin-top:0.75rem;">
+          <a href="settings-dropdowns.html" class="btn btn-primary" id="settingsNavDropdownsLink">Open dropdown lists</a>
+        </p>
       </section>
 
-      <section class="settings-section scoring-ref-settings" aria-labelledby="scoringRefSettingsHeading">
-        <h3 id="scoringRefSettingsHeading" class="settings-section-title">Scoring Reference</h3>
-        <p class="scoring-ref-intro" id="scoringRefIntroSettings">Based on the unified report and investigation record. Use this as a guide when scoring cases.</p>
-        <div class="notes-ref">
-          <h4 class="notes-ref-sub">Scoring axes (1-5 each)</h4>
-          <p><strong>Sovereignty / الأثر النظامي:</strong> Impact on sovereign regulations (SAMA, ZATCA, PDPL) and local legislation. 1–2: Minor internal procedural breach. 3–4: Breach of material company policy. 5: Clear breach of sovereign regulations or labour law.</p>
-          <p><strong>Financial / القيمة المالية:</strong> Size of actual or potential loss. 1–2: Under 10,000 SAR. 3–4: Between 10,000 and 100,000 SAR. 5: Over 100,000 SAR or involves senior staff.</p>
-          <p><strong>Evidence / جودة الأدلة:</strong> Quality and availability of evidence. 1: Mere allegation or rumour. 2–3: Documents or messages partly support the claim. 4–5: Digital evidence (logs) or conclusive documents.</p>
-          <p><strong>Reputation / مخاطر السمعة:</strong> Reputational risk and senior involvement. 1: Very limited internal impact. 2–3: May affect department or management trust. 4–5: Senior executives involved or risk of public disclosure.</p>
-        </div>
-        <div class="notes-ref">
-          <h4 class="notes-ref-sub">Path (Total score 4-20)</h4>
-          <p><span class="path-badge path-green">Green (4-8)</span> Preliminary closure / administrative referral. Classified as non-material report or malicious complaint; record reason or refer to HR as "administrative dispute" not requiring formal investigation.</p>
-          <p><span class="path-badge path-yellow">Yellow (9-14)</span> Restricted follow-up. Move to first phase (preparation) with one investigator only for "exploratory review" before forming a full committee.</p>
-          <p><span class="path-badge path-red">Red (15-20)</span> Immediate formal investigation. Open official investigation file; activate legal privilege and notify board chair if score is 15–20.</p>
-        </div>
+      <section class="settings-section" aria-labelledby="settingsTipsHeading">
+        <h3 id="settingsTipsHeading" class="settings-section-title">Tips</h3>
+        <p class="settings-section-desc" id="settingsTipsDesc"></p>
+        <label class="checkbox-inline" style="margin-top:0.5rem;">
+          <input type="checkbox" id="prefShowTipsControls">
+          <span id="labelPrefShowTipsControls">Show tips controls in case form</span>
+        </label>
       </section>
 
       <section class="settings-section settings-backup" aria-labelledby="settingsBackupHeading">
@@ -40,22 +33,5 @@
         </div>
         <input type="file" id="inputImportSettings" accept=".json,application/json" style="display:none">
         <input type="file" id="inputImportAll" accept=".json,application/json" style="display:none">
-      </section>
-
-      <section id="settingsEditor" class="settings-editor" style="display:none;" aria-labelledby="settingsEditorTitle" aria-modal="true" role="dialog">
-        <div class="settings-editor-header">
-          <h3 id="settingsEditorTitle" class="settings-editor-title">Edit options</h3>
-          <p id="settingsEditorKey" class="settings-editor-key form-context"></p>
-        </div>
-        <div class="settings-editor-table-wrap">
-          <div id="settingsEditorOptions"></div>
-        </div>
-        <div class="settings-editor-actions form-actions">
-          <button type="button" class="btn btn-primary" id="settingsEditorSave" aria-label="Save changes">Save</button>
-          <button type="button" class="btn" id="settingsEditorAdd">Add option</button>
-          <button type="button" class="btn" id="settingsEditorPasteComma" title="Paste a line of comma-separated values to add multiple options at once">Paste comma-separated</button>
-          <button type="button" class="btn" id="settingsEditorRestore">Restore defaults</button>
-          <button type="button" class="btn" id="settingsEditorCancel">Cancel</button>
-        </div>
       </section>
     </div>

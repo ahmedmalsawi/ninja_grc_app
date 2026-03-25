@@ -46,7 +46,8 @@
       rootCauseClass: 'labelRootCauseClass', resultingImpact: 'labelResultingImpact', regulatoryImpact: 'labelRegulatoryImpact',
       financialOperationalImpact: 'labelFinancialOperationalImpact', reputationLegalImpact: 'labelReputationLegalImpact',
       assetRecovery: 'labelAssetRecovery', recoveryOpportunityValue: 'labelRecoveryOpportunityValue', recoveryStatus: 'labelRecoveryStatus', recoveryPath: 'labelRecoveryPath',
-      amountRecovered: 'labelAmountRecovered', netSavings: 'labelNetSavings', assetRecoveryNotes: 'labelAssetRecoveryNotes', strategicRecs: 'labelStrategicRecs',
+      amountRecovered: 'labelAmountRecovered', assetRecoveryNotes: 'labelAssetRecoveryNotes', strategicRecs: 'labelStrategicRecs',
+      reporterDepartmentOther: 'labelReporterDepartmentOther',
       strategicRecsIntro: 'strategicRecsIntro', correctiveActions: 'labelCorrectiveActions', preventiveActions: 'labelPreventiveActions', closureReasons: 'labelClosureReasons',
       closureObjectiveReasons: 'labelClosureObjectiveReasons', closureTechnicalReasons: 'labelClosureTechnicalReasons', rcaGapClosed: 'labelRcaGapClosed',
       accountabilityDetails: 'labelAccountabilityDetails', assetRecoveryAmount: 'labelAssetRecoveryAmount', whistleblowerIncentive: 'labelWhistleblowerIncentive',
@@ -113,6 +114,9 @@
       exportJson: 'btnExportJson', exportCsv: 'btnExportCsv', filterByPath: 'filterByPath', filterByPhase: 'filterByPhase', filterByStatus: 'filterByStatus', all: 'all',
       saved: 'saved', deleted: 'deleted', validationRequired: 'validationRequired', validationScore: 'validationScore',
       settingsTitle: 'settingsTitle', settingsIntro: 'settingsIntro', settingsEditOptions: 'settingsEditorTitle',
+      settingsNavDropdownsTitle: 'settingsNavDropdownsTitle', settingsNavDropdownsDesc: 'settingsNavDropdownsDesc', settingsNavDropdownsLink: 'settingsNavDropdownsLink',
+      settingsPageDropdownsTitle: 'settingsPageDropdownsTitle',
+      settingsDropdownSectionTitle: 'settingsDropdownHeading', settingsBackLink: 'settingsBackLink',
       settingsTipsHeading: 'settingsTipsHeading', settingsTipsDesc: 'settingsTipsDesc', prefShowTipsControls: 'labelPrefShowTipsControls',
       settingsAddOption: 'settingsEditorAdd', settingsRestoreDefaults: 'settingsEditorRestore'
     };
@@ -151,6 +155,16 @@
     if (settingsTitleEl) settingsTitleEl.textContent = t('settingsTitle');
     var settingsIntroEl = $('settingsIntro');
     if (settingsIntroEl) settingsIntroEl.textContent = t('settingsIntro');
+    var elBack = $('settingsBackLink');
+    if (elBack) elBack.textContent = t('settingsBackLink');
+    var elDropIntro = $('settingsPageDropdownsIntro');
+    if (elDropIntro) {
+      var introRaw = t('settingsPageDropdownsIntro');
+      elDropIntro.innerHTML = introRaw.indexOf('**') !== -1 ? introRaw.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>') : introRaw;
+    }
+    if (typeof document !== 'undefined' && /settings-dropdowns\.html/i.test(document.location.pathname || '') && document.title !== undefined) {
+      document.title = t('settingsDocumentDropdowns');
+    }
     ['btnPrintReport', 'btnPrintListReport', 'btnPrintReports'].forEach(function (id) {
       var el = $(id);
       if (el) el.textContent = t('printReport');
@@ -173,8 +187,6 @@
       var key = el.getAttribute('data-placeholder-key');
       if (key) el.placeholder = t(key);
     });
-    var hintNetSavings = $('hintNetSavings');
-    if (hintNetSavings) hintNetSavings.textContent = t('placeholderAssetRecoveryNotes') || '';
     var strategicIntro = $('strategicRecsIntro');
     if (strategicIntro) strategicIntro.textContent = t('strategicRecsIntro') || '';
     document.querySelectorAll('option[data-i18n-option]').forEach(function (el) {
@@ -386,19 +398,36 @@
     if (input) input.disabled = !show;
   }
 
-  function toggleSelectOtherField(selectId, wrapId, inputId) {
-    var sel = document.getElementById(selectId);
+  function toggleSelectOtherField(selectId, wrapId, inputId, isOtherValueFn) {
+    var sel = typeof selectId === 'string' ? document.getElementById(selectId) : selectId;
     var wrap = document.getElementById(wrapId);
     var input = document.getElementById(inputId);
     if (!sel || !wrap) return;
-    var show = (sel.value || '').trim() === 'Other';
+    var val = (sel.value || '').trim();
+    var show = isOtherValueFn ? isOtherValueFn(val) : val === 'Other';
     wrap.style.display = show ? 'block' : 'none';
     if (input) input.disabled = !show;
   }
 
+  function isGeographicCityOtherValue(val) {
+    var v = (val || '').trim();
+    return v === 'Other' || v.indexOf('Other-') === 0;
+  }
+
   function toggleOtherFreeTextFields() {
-    toggleSelectOtherField('geographicCity', 'geographicCityOtherWrap', 'geographicCityOther');
-    toggleSelectOtherField('disciplinaryAction', 'disciplinaryActionOtherWrap', 'disciplinaryActionOther');
+    toggleSelectOtherField('geographicCity', 'geographicCityOtherWrap', 'geographicCityOther', isGeographicCityOtherValue);
+    toggleSelectOtherField('reporterDept', 'reporterDeptOtherWrap', 'reporterDepartmentOther', null);
+    toggleSelectOtherField('disciplinaryAction', 'disciplinaryActionOtherWrap', 'disciplinaryActionOther', null);
+  }
+
+  function toggleAllEvidenceFormOtherRows(form) {
+    if (!form) form = document.getElementById('caseForm');
+    if (!form) return;
+    var c = form.querySelector('#evidenceRecordsContainer');
+    if (!c) return;
+    c.querySelectorAll('[data-evidence-record]').forEach(function (row) {
+      if (window.NinjaForms && NinjaForms.toggleEvidenceFormOtherRow) NinjaForms.toggleEvidenceFormOtherRow(row);
+    });
   }
 
   function setupInterviewWorkflow() {
@@ -471,11 +500,26 @@
     if (countrySel) {
       countrySel.addEventListener('change', toggleOtherFreeTextFields);
     }
+    var reporterDeptSel = form.querySelector('#reporterDept');
+    if (reporterDeptSel) {
+      reporterDeptSel.addEventListener('change', toggleOtherFreeTextFields);
+    }
     var disciplinaryOtherSel = form.querySelector('#disciplinaryAction');
     if (disciplinaryOtherSel) {
       disciplinaryOtherSel.addEventListener('change', toggleOtherFreeTextFields);
     }
+    var evidenceContainer = form.querySelector('#evidenceRecordsContainer');
+    if (evidenceContainer) {
+      evidenceContainer.addEventListener('change', function (e) {
+        var t = e.target;
+        if (t && t.getAttribute && t.getAttribute('data-ev-k') === 'formOfEvidence') {
+          var row = t.closest && t.closest('[data-evidence-record]');
+          if (row && window.NinjaForms && NinjaForms.toggleEvidenceFormOtherRow) NinjaForms.toggleEvidenceFormOtherRow(row);
+        }
+      });
+    }
     toggleOtherFreeTextFields();
+    toggleAllEvidenceFormOtherRows(form);
   }
   window.NinjaApp = window.NinjaApp || {};
   window.NinjaApp.updateInterviewDuration = updateInterviewDuration;
@@ -483,6 +527,7 @@
   window.NinjaApp.toggleScopeAmendmentReason = toggleScopeAmendmentReason;
   window.NinjaApp.toggleStrategicAssetRecoveryAmount = toggleStrategicAssetRecoveryAmount;
   window.NinjaApp.toggleOtherFreeTextFields = toggleOtherFreeTextFields;
+  window.NinjaApp.toggleAllEvidenceFormOtherRows = toggleAllEvidenceFormOtherRows;
   window.NinjaApp.updateCloseDateComputations = updateCloseDateComputations;
 
   function init() {

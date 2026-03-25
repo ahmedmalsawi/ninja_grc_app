@@ -348,12 +348,20 @@
       if (!options || !options.length) return;
       container.innerHTML = '';
       if (cfg.containerId === 'regulatoryRefGroup') {
+        var tHdr = (typeof NinjaI18n !== 'undefined' && NinjaI18n.t) ? NinjaI18n.t.bind(NinjaI18n) : function (k) { return k; };
         var table = document.createElement('table');
         table.className = 'regulatory-ref-table';
         table.setAttribute('role', 'presentation');
         var thead = document.createElement('thead');
         var thr = document.createElement('tr');
-        thr.innerHTML = '<th scope="col">Option</th><th scope="col">Article / clause</th>';
+        var thOpt = document.createElement('th');
+        thOpt.setAttribute('scope', 'col');
+        thOpt.textContent = tHdr('regulatoryRefColOption');
+        var thArt = document.createElement('th');
+        thArt.setAttribute('scope', 'col');
+        thArt.textContent = tHdr('regulatoryRefColArticle');
+        thr.appendChild(thOpt);
+        thr.appendChild(thArt);
         thead.appendChild(thr);
         table.appendChild(thead);
         var tbody = document.createElement('tbody');

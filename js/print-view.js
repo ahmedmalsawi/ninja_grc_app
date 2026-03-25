@@ -75,14 +75,22 @@
     html += row(t('phone'), r.phone);
     html += row(t('email'), r.email);
     html += row(t('type'), r.type);
-    html += row(t('department'), r.department);
+    var deptDisp = r.department;
+    if (r.department === 'Other' && (r.departmentOther || '').trim()) deptDisp = r.departmentOther;
+    else if (r.department === 'Other') deptDisp = t('other') || 'Other';
+    html += row(t('department'), deptDisp);
     html += row(t('source'), r.source);
     html += '</table>';
 
     html += '<h3 class="print-section">' + t('sectionClassification') + '</h3><table class="print-table">';
     html += row(t('reportType'), cl.reportType);
     html += row(t('geographic'), cl.geographic);
-    html += row(t('city'), cl.geographicCity);
+    var cityDisp = cl.geographicCity;
+    var gc = cl.geographicCity;
+    if (cl.geographicCityOther && (gc === 'Other' || (gc && String(gc).indexOf('Other-') === 0))) {
+      cityDisp = [cl.geographicCity, cl.geographicCityOther].filter(Boolean).join(' — ');
+    }
+    html += row(t('city'), cityDisp);
     html += '</table>';
 
     html += '<h3 class="print-section">' + t('sectionScope') + '</h3><table class="print-table">';
@@ -203,7 +211,10 @@
     edList.forEach(function (ev, evIdx) {
       if (edList.length > 1) html += '<p class="print-section" style="margin-bottom:0.25rem"><strong>' + escapeHtml((t('evidenceRecordTitle') || '') + ' ' + (evIdx + 1)) + '</strong></p>';
       html += '<table class="print-table">';
-      html += row(t('formOfEvidence'), ev.formOfEvidence);
+      var foeDisp = ev.formOfEvidence;
+      if (ev.formOfEvidence === 'Other' && (ev.formOfEvidenceOther || '').trim()) foeDisp = ev.formOfEvidenceOther;
+      else if (ev.formOfEvidence === 'Other') foeDisp = t('other') || 'Other';
+      html += row(t('formOfEvidence'), foeDisp);
       html += row(t('dataCategory'), ev.dataCategory);
       html += row(t('examinationType'), ev.examinationType);
       html += row(t('evidenceHashValue'), ev.evidenceHashValue);
@@ -248,7 +259,6 @@
     html += row(t('recoveryOpportunityValue'), im.recoveryOpportunityValue);
     html += row(t('recoveryStatus'), im.recoveryStatus);
     html += row(t('amountRecovered'), im.amountRecovered);
-    html += row(t('netSavings'), im.netSavings);
     if (im.assetRecoveryNotes) html += row(t('assetRecoveryNotes'), im.assetRecoveryNotes);
     html += row(t('correctiveActions'), im.correctiveActions);
     html += row(t('preventiveActions'), im.preventiveActions);
