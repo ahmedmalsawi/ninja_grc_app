@@ -27,7 +27,7 @@
           <div class="form-row">
             <div class="form-group">
               <label for="caseId" id="labelCaseId">Case ID</label>
-              <input type="text" id="caseId" name="id" required>
+              <input type="text" id="caseId" name="id" required disabled>
             </div>
             <div class="form-group">
               <label for="receivedDate" id="labelReceivedDate">Received date</label>
@@ -39,11 +39,20 @@
             </div>
             <div class="form-group">
               <label for="targetCloseDate" id="labelTargetCloseDate">Target close date</label>
-              <input type="date" id="targetCloseDate" name="targetCloseDate">
+              <input type="date" id="targetCloseDate" name="targetCloseDate" disabled>
             </div>
             <div class="form-group">
               <label for="actualCloseDate" id="labelActualCloseDate">Actual close date</label>
               <input type="date" id="actualCloseDate" name="actualCloseDate">
+            </div>
+            <div class="form-group">
+              <label for="actualDurationDays" id="labelActualDurationDays">Actual duration (days)</label>
+              <input type="number" id="actualDurationDays" name="actualDurationDays" disabled>
+            </div>
+            <div class="form-group">
+              <label for="durationVarianceDays" id="labelDurationVarianceDays">Variance vs target (days)</label>
+              <input type="number" id="durationVarianceDays" name="durationVarianceDays" disabled>
+              <p class="form-hint" id="durationVarianceNotice" aria-live="polite"></p>
             </div>
             <div class="form-group">
               <label for="currentPhase" id="labelPhase">Phase</label>
@@ -465,19 +474,19 @@
                   <label><span class="label-rightsNotified">Rights notified</span></label>
                   <select data-int-k="rightsNotified" class="interview-session-select">
                     <option value="">—</option>
-                    <option value="Yes signed">Yes, signed</option>
-                    <option value="Yes verbal">Yes, verbal with witness</option>
-                    <option value="No">No</option>
+                    <option value="Yes signed" data-i18n-option="optRightsNotifiedYesSigned">Yes, signed</option>
+                    <option value="Yes verbal" data-i18n-option="optRightsNotifiedYesVerbal">Yes, verbal with witness</option>
+                    <option value="No" data-i18n-option="optNo">No</option>
                   </select>
                 </div>
                 <div class="form-group">
                   <label><span class="label-documentationMethod">Documentation method</span></label>
                   <select data-int-k="documentationMethod" class="interview-session-select">
                     <option value="">—</option>
-                    <option value="Written minutes">Written signed minutes</option>
-                    <option value="Digital recording">Digital recording (with consent)</option>
-                    <option value="Notes">Real-time notes</option>
-                    <option value="Transcript">Audio transcript</option>
+                    <option value="Written minutes" data-i18n-option="optDocumentationWrittenMinutes">Written signed minutes</option>
+                    <option value="Digital recording" data-i18n-option="optDocumentationDigitalRecording">Digital recording (with consent)</option>
+                    <option value="Notes" data-i18n-option="optDocumentationNotes">Real-time notes</option>
+                    <option value="Transcript" data-i18n-option="optDocumentationTranscript">Audio transcript</option>
                   </select>
                 </div>
                 <div class="form-group">
@@ -986,13 +995,13 @@
             <div class="form-group" style="grid-column: 1 / -1;">
               <fieldset>
                 <legend id="labelWhistleblowerIncentive">Incentive recommendation</legend>
-                <label><input type="checkbox" name="impact.whistleblowerCash" value="Yes"> Financial reward (SAR): <input type="text" id="whistleblowerAmount" name="impact.whistleblowerAmount" size="10"></label>
-                <label><input type="checkbox" name="impact.whistleblowerThanks" value="Yes"> Letter of thanks (moral)</label>
-                <label><input type="checkbox" name="impact.whistleblowerNo" value="Yes"> No reward recommended (reason: <input type="text" id="whistleblowerNoReason" name="impact.whistleblowerNoReason" size="30">)</label>
+                <label><input type="checkbox" name="impact.whistleblowerCash" value="Yes"> <span id="labelWhistleblowerCashReward">Financial reward (SAR):</span> <input type="text" id="whistleblowerAmount" name="impact.whistleblowerAmount" size="10"></label>
+                <label><input type="checkbox" name="impact.whistleblowerThanks" value="Yes"> <span id="labelWhistleblowerThanksLetter">Letter of thanks (moral)</span></label>
+                <label><input type="checkbox" name="impact.whistleblowerNo" value="Yes"> <span id="labelWhistleblowerNoReward">No reward recommended</span> (<span id="labelWhistleblowerNoReason">reason:</span> <input type="text" id="whistleblowerNoReason" name="impact.whistleblowerNoReason" size="30">)</label>
               </fieldset>
             </div>
             <div class="form-group" style="grid-column: 1 / -1;">
-              <label><input type="checkbox" name="impact.whistleblowerProtection" value="Yes"> Whistleblower protection plan activated, file closed without negative impact</label>
+              <label><input type="checkbox" name="impact.whistleblowerProtection" value="Yes"> <span id="labelWhistleblowerProtectionPlan">Whistleblower protection plan activated, file closed without negative impact</span></label>
             </div>
           </div>
           <h4 id="labelFinalDecisionActions">Final decision and subsequent actions</h4>
@@ -1053,9 +1062,9 @@
               <label for="grievanceAcceptance" id="labelGrievanceAcceptance">Acceptance decision</label>
               <select id="grievanceAcceptance" name="impact.grievanceAcceptance">
                 <option value="">—</option>
-                <option value="Accepted">Accepted</option>
-                <option value="Rejected">Rejected</option>
-                <option value="Pending">Pending</option>
+                <option value="Accepted" data-i18n-option="optAccepted">Accepted</option>
+                <option value="Rejected" data-i18n-option="optRejected">Rejected</option>
+                <option value="Pending" data-i18n-option="optPending">Pending</option>
               </select>
             </div>
             <div class="form-group" style="grid-column: 1 / -1;">

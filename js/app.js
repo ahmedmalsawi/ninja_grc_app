@@ -30,6 +30,8 @@
       newCase: 'newCase', backToList: 'backToList', save: 'save', cancel: 'cancel', delete: 'delete', edit: 'edit',
       noCases: 'emptyState', caseId: 'labelCaseId', receivedDate: 'labelReceivedDate', complexityDays: 'labelComplexityDays',
       targetCloseDate: 'labelTargetCloseDate', actualCloseDate: 'labelActualCloseDate', phase: 'labelPhase',
+      actualDurationDays: 'labelActualDurationDays',
+      durationVarianceDays: 'labelDurationVarianceDays',
       sovereignty: 'labelSovereignty', financial: 'labelFinancial', evidence: 'labelEvidence', reputation: 'labelReputation',
       totalScore: 'labelTotalScore', path: 'labelPath',       sectionCaseInfo: 'labelSectionCaseInfo', sectionScoring: 'labelSectionScoring',
       sectionReporter: 'labelSectionReporter', sectionClassification: 'labelSectionClassification',
@@ -50,6 +52,7 @@
       accountabilityDetails: 'labelAccountabilityDetails', assetRecoveryAmount: 'labelAssetRecoveryAmount', whistleblowerIncentive: 'labelWhistleblowerIncentive',
       grievanceDate: 'labelGrievanceDate', grievanceGrounds: 'labelGrievanceGrounds', grievanceAcceptance: 'labelGrievanceAcceptance', grievanceDecisionAmendment: 'labelGrievanceDecisionAmendment',
       sectionFormChecklist: 'labelSectionFormChecklist', sectionQualityReview: 'labelSectionQualityReview', sectionWhistleblower: 'labelSectionWhistleblower',
+      whistleblowerCashReward: 'labelWhistleblowerCashReward', whistleblowerThanksLetter: 'labelWhistleblowerThanksLetter', whistleblowerNoReward: 'labelWhistleblowerNoReward', whistleblowerNoReason: 'labelWhistleblowerNoReason', whistleblowerProtectionPlan: 'labelWhistleblowerProtectionPlan',
       finalDecisionActions: 'labelFinalDecisionActions', decisionIntro: 'labelDecisionIntro', decisionPartA: 'labelDecisionPartA', decisionPartB: 'labelDecisionPartB',
       decisionPartASub: 'labelDecisionPartASub', decisionPartBSub: 'labelDecisionPartBSub', formChecklistNotes: 'labelFormChecklistNotes', qualityReviewNotes: 'labelQualityReviewNotes',
       impactAccountableEntities: 'labelImpactAccountableEntities',
@@ -278,6 +281,86 @@
     }
   }
 
+  function formatDateInputValue(d) {
+    if (!d || isNaN(d.getTime())) return '';
+    var yyyy = d.getFullYear();
+    var mm = String(d.getMonth() + 1).padStart(2, '0');
+    var dd = String(d.getDate()).padStart(2, '0');
+    return yyyy + '-' + mm + '-' + dd;
+  }
+
+  function parseDateInputValue(v) {
+    if (!v) return null;
+    var d = new Date(v);
+    return isNaN(d.getTime()) ? null : d;
+  }
+
+  function updateCloseDateComputations() {
+    var receivedEl = document.getElementById('receivedDate');
+    var daysEl = document.getElementById('complexityDays');
+    var targetEl = document.getElementById('targetCloseDate');
+    var actualEl = document.getElementById('actualCloseDate');
+    var actualDurEl = document.getElementById('actualDurationDays');
+    var varianceEl = document.getElementById('durationVarianceDays');
+    var varianceNotice = document.getElementById('durationVarianceNotice');
+    if (!receivedEl) return;
+
+    var r = parseDateInputValue(receivedEl.value);
+    var days = daysEl ? (parseInt(daysEl.value, 10) || 0) : 0;
+
+    if (targetEl) {
+      if (r && days >= 0) {
+        var t = new Date(r.getTime());
+        t.setDate(t.getDate() + days);
+        targetEl.value = formatDateInputValue(t);
+      } else {
+        targetEl.value = '';
+      }
+    }
+
+    if (actualDurEl) {
+      var a = actualEl ? parseDateInputValue(actualEl.value) : null;
+      if (r && a) {
+        var diff = Math.round((a - r) / (24 * 60 * 60 * 1000));
+        actualDurEl.value = diff >= 0 ? String(diff) : '';
+      } else {
+        actualDurEl.value = '';
+      }
+    }
+
+    if (varianceEl) {
+      var actualDays = actualDurEl && actualDurEl.value !== '' ? (parseInt(actualDurEl.value, 10) || 0) : null;
+      var targetDays = daysEl ? (parseInt(daysEl.value, 10) || 0) : null;
+      if (actualDays != null && targetDays != null && r && actualEl && parseDateInputValue(actualEl.value)) {
+        var v = actualDays - targetDays;
+        varianceEl.value = String(v);
+        if (varianceNotice && typeof NinjaI18n !== 'undefined' && NinjaI18n.t) {
+          varianceNotice.classList.add('duration-variance-notice');
+          varianceNotice.classList.remove('is-on-time', 'is-ahead', 'is-delayed');
+          if (v === 0) varianceNotice.textContent = NinjaI18n.t('durationVarianceOnTime');
+          else if (v < 0) varianceNotice.textContent = (NinjaI18n.t('durationVarianceAhead') || '').replace('(__)', String(Math.abs(v)));
+          else varianceNotice.textContent = (NinjaI18n.t('durationVarianceDelayed') || '').replace('(__)', String(v));
+          if (v === 0) varianceNotice.classList.add('is-on-time');
+          else if (v < 0) varianceNotice.classList.add('is-ahead');
+          else varianceNotice.classList.add('is-delayed');
+        } else if (varianceNotice) {
+          varianceNotice.classList.add('duration-variance-notice');
+          varianceNotice.classList.remove('is-on-time', 'is-ahead', 'is-delayed');
+          varianceNotice.textContent = v === 0 ? 'On target.' : v < 0 ? ('Ahead by ' + Math.abs(v) + ' days.') : ('Delayed by ' + v + ' days.');
+          if (v === 0) varianceNotice.classList.add('is-on-time');
+          else if (v < 0) varianceNotice.classList.add('is-ahead');
+          else varianceNotice.classList.add('is-delayed');
+        }
+      } else {
+        varianceEl.value = '';
+        if (varianceNotice) {
+          varianceNotice.textContent = '';
+          varianceNotice.classList.remove('duration-variance-notice', 'is-on-time', 'is-ahead', 'is-delayed');
+        }
+      }
+    }
+  }
+
   function toggleScopeAmendmentReason() {
     var sel = document.getElementById('caseAcceptanceStatus');
     var wrap = document.getElementById('scopeAmendmentReasonWrap');
@@ -329,10 +412,17 @@
     var interview = form.querySelector('#interviewDate');
     var sessionsContainer = form.querySelector('#interviewSessionsContainer');
     if (received) received.addEventListener('change', updateInterviewDuration);
+    if (received) received.addEventListener('change', updateCloseDateComputations);
+    var complexity = form.querySelector('#complexityDays');
+    if (complexity) complexity.addEventListener('input', updateCloseDateComputations);
+    if (complexity) complexity.addEventListener('change', updateCloseDateComputations);
+    var actualClose = form.querySelector('#actualCloseDate');
+    if (actualClose) actualClose.addEventListener('change', updateCloseDateComputations);
     if (interview) interview.addEventListener('change', updateInterviewDuration);
     if (sessionsContainer) sessionsContainer.addEventListener('change', function (e) {
       if (e.target && e.target.getAttribute && e.target.getAttribute('data-int-k') === 'interviewDate') updateInterviewDuration();
     });
+    updateCloseDateComputations();
     var receipt = form.querySelector('#receiptResponseStatus');
     var obstAlert = form.querySelector('#obstructionAlert');
     if (receipt && obstAlert) {
@@ -392,6 +482,7 @@
   window.NinjaApp.toggleScopeAmendmentReason = toggleScopeAmendmentReason;
   window.NinjaApp.toggleStrategicAssetRecoveryAmount = toggleStrategicAssetRecoveryAmount;
   window.NinjaApp.toggleOtherFreeTextFields = toggleOtherFreeTextFields;
+  window.NinjaApp.updateCloseDateComputations = updateCloseDateComputations;
 
   function init() {
     function setNavActiveFromPage() {

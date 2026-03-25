@@ -86,7 +86,7 @@
           <div class="form-row">
             <div class="form-group">
               <label for="caseId" id="labelCaseId">Case ID</label>
-              <input type="text" id="caseId" name="id" required>
+              <input type="text" id="caseId" name="id" required disabled>
             </div>
             <div class="form-group">
               <label for="receivedDate" id="labelReceivedDate">Received date</label>
@@ -98,11 +98,20 @@
             </div>
             <div class="form-group">
               <label for="targetCloseDate" id="labelTargetCloseDate">Target close date</label>
-              <input type="date" id="targetCloseDate" name="targetCloseDate">
+              <input type="date" id="targetCloseDate" name="targetCloseDate" disabled>
             </div>
             <div class="form-group">
               <label for="actualCloseDate" id="labelActualCloseDate">Actual close date</label>
               <input type="date" id="actualCloseDate" name="actualCloseDate">
+            </div>
+            <div class="form-group">
+              <label for="actualDurationDays" id="labelActualDurationDays">Actual duration (days)</label>
+              <input type="number" id="actualDurationDays" name="actualDurationDays" disabled>
+            </div>
+            <div class="form-group">
+              <label for="durationVarianceDays" id="labelDurationVarianceDays">Variance vs target (days)</label>
+              <input type="number" id="durationVarianceDays" name="durationVarianceDays" disabled>
+              <p class="form-hint" id="durationVarianceNotice" aria-live="polite"></p>
             </div>
             <div class="form-group">
               <label for="currentPhase" id="labelPhase">Phase</label>

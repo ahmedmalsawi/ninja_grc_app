@@ -942,6 +942,7 @@
     caseObj.complexityDays = get('complexityDays', true);
     caseObj.targetCloseDate = get('targetCloseDate');
     caseObj.actualCloseDate = get('actualCloseDate');
+    caseObj.actualDurationDays = get('actualDurationDays', true);
     caseObj.currentPhase = Math.min(12, Math.max(1, get('currentPhase', true) || 1));
     caseObj.sovereignty = get('sovereignty', true) || 1;
     caseObj.financial = get('financial', true) || 1;
@@ -1189,6 +1190,7 @@
     set('complexityDays', caseObj.complexityDays);
     set('targetCloseDate', caseObj.targetCloseDate || '');
     set('actualCloseDate', caseObj.actualCloseDate || '');
+    set('actualDurationDays', caseObj.actualDurationDays || '');
     set('currentPhase', caseObj.currentPhase);
     set('sovereignty', caseObj.sovereignty);
     set('financial', caseObj.financial);
@@ -1415,6 +1417,7 @@
     updateScoreDisplay(formEl, caseObj.totalScore, caseObj.path);
     updateReporterRequired(formEl);
     if (window.NinjaApp && window.NinjaApp.toggleOtherFreeTextFields) window.NinjaApp.toggleOtherFreeTextFields();
+    if (window.NinjaApp && window.NinjaApp.updateCloseDateComputations) window.NinjaApp.updateCloseDateComputations();
   }
 
   function updateReporterRequired(formEl) {
